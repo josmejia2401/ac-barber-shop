@@ -1,0 +1,41 @@
+.card-header {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.btn-create-customer {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.no-found-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 35px;
+    color: var(--no-found-color);
+}
+
+
+.no-found-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 20px;
+    color: var(--no-found-color);
+}
+
+.center-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+
+.card-content {
+    padding: 15px;
+}

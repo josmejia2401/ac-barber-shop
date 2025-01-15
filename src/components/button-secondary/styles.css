@@ -1,0 +1,23 @@
+.btn-secondary-custom {
+    background-color: var(--off-white-color);
+    outline: 1px solid;
+    outline-color: var(--outline-color);
+    border: none;
+    color: var(--matte-black-color);
+}
+
+.btn-secondary-custom:hover {
+    border: none;
+    outline-color: var(--outline-color);
+    text-shadow: 1px 1px 3px var(--off-white-color);
+    background-color: var(--secondary-color);
+    color: var(--off-white-color);
+}
+
+.btn-secondary-custom:disabled,
+button[disabled] {
+    outline-color: var(--outline-color);
+    border: none;
+    background-color: var(--disabled-color);
+    color: var(--off-white-color);
+}

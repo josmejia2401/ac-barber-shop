@@ -1,0 +1,71 @@
+#mainNav {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: var(--color-white);
+}
+
+#mainNav .navbar-brand {
+  font-family: "Kanit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+#mainNav .navbar-brand:hover,
+#mainNav .navbar-brand:active {
+  color: var(--color-gray);
+  font-weight: bold;
+}
+
+#mainNav .navbar-toggler {
+  font-size: 0.875rem;
+  padding: 0.75rem 1rem;
+  color: var(--color-gray-900);
+}
+
+#mainNav .navbar-nav .nav-item .nav-link {
+  color: var(--color-gray-900);
+}
+
+#mainNav .navbar-nav .nav-item .nav-link:hover {
+  color: var(--color-gray);
+}
+
+#mainNav .navbar-nav .nav-item .nav-link.active {
+  color: var(--color-gray);
+  font-weight: bold;
+}
+
+
+
+.navbar-toggler:focus {
+  outline: unset;
+  box-shadow: unset;
+}
+
+
+
+
+
+
+.spinner-border {
+  z-index: 9999 !important;
+}
+
+
+.justify-content-center-spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+/*
+https://colorhunt.co/palettes/pastel
+https://colorhunt.co/palette/ff8a8af4deb3f0eaaccce0ac
+*/
+.bg-primary {
+  background-color: var(--color-orange-pastel) !important;
+}
+
+.text-bg-primary {
+  background-color: var(--color-orange-pastel) !important;
+}

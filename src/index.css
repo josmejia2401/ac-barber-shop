@@ -1,0 +1,173 @@
+@charset "UTF-8";
+
+/*
+// Extra small devices (portrait phones, less than 576px)
+// No media query for `xs` since this is the default in Bootstrap
+
+// Small devices (landscape phones, 576px and up)
+@media (min-width: 576px) { ... }
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) { ... }
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) { ... }
+
+// Extra large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) { ... }
+*/
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bs-gray-200);
+}
+
+:root {
+  --color-outline: transparent;
+  --color-black: #000;
+  --color-white: #fff;
+  --color-gray: #6c757d;
+  --color-gray-dark: #343a40;
+  --color-gray-100: #f8f9fa;
+  --color-gray-200: #e9ecef;
+  --color-gray-300: #dee2e6;
+  --color-gray-400: #ced4da;
+  --color-gray-500: #adb5bd;
+  --color-gray-600: #6c757d;
+  --color-gray-700: #495057;
+  --color-gray-800: #343a40;
+  --color-gray-900: #212529;
+  --color-primary: #262224;
+  --color-secondary: #e6d677;
+  --color-success: #5c8c74;
+  --color-info: #0dcaf0;
+  --color-warning: #ffc107;
+  --color-danger: #dc3545;
+  --color-light: #f8f9fa;
+  --color-dark: #212529;
+  --color-link-color: #2937f0;
+  --color-link-hover-color: #212cc0;
+  --color-code-color: #d63384;
+  --color-highlight-bg: #fff3cd;
+  --color-orange-pastel: #FF8A8A;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--bs-body-font-family);
+  font-size: var(--bs-body-font-size);
+  font-weight: var(--bs-body-font-weight);
+  line-height: var(--bs-body-line-height);
+  color: var(--bs-body-color);
+  text-align: var(--bs-body-text-align);
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.fade {
+  transition: opacity 0.15s linear;
+}
+
+.main-router {
+  width: 100vw;
+  height: 100vh;
+}
+
+@media (max-width: 576px) {
+  .container, .container-sm {
+      max-width: 100%;
+  }
+  .px-5 {
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .container, .container-sm {
+      max-width: 100%;
+  }
+  .px-5 {
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
+  }
+}
+
+@media (max-width: 1200px) {
+    .container, .container-lg, .container-md, .container-sm {
+        max-width: 960px;
+    }
+    .px-5 {
+      padding-right: 1rem !important;
+      padding-left: 1rem !important;
+    }
+}
+
+
+
+
+/* Skeleton styles*/
+
+.skeleton-panel {
+  border: 1px dashed #aaa;
+  background: linear-gradient(90deg, rgba(221, 221, 221, 1) 0%, rgba(255, 255, 255, 1) 100%);
+  border-radius: 6px;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.skeleton-line {
+  display: block;
+  width: 60%;
+  height: 20px;
+  margin: 10px;
+  border-radius: 4px;
+  background: #f0f0f0;
+  animation: scale 4s infinite;
+}
+
+/* Skeleton animation*/
+@keyframes scale {
+  0% {
+    transform: scale(0.9)
+  }
+
+  100% {
+    transform: scale(1)
+  }
+}
+
+.primary-color {
+  color: var(--color-dark) !important;
+}

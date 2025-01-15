@@ -1,0 +1,33 @@
+.btn-primary-custom {
+    background-color: var(--color-primary);
+    outline: 1px solid;
+    outline-color: var(--color-outline);
+    border: none;
+    color: var(--color-white);
+    height: 45px;
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+.btn-primary-custom:hover {
+    border: none;
+    outline-color: var(--outline-color);
+    text-shadow: 1px 1px 3px var(---color-gray-100);
+    background-color: var(--color-gray-dark);
+    color: var(--color-white);
+}
+
+.btn-primary-custom:disabled,
+button[disabled] {
+    outline-color: var(--outline-color);
+    border: none;
+    background-color: var(--color-gray-600);
+    color: var(--color-white);
+}
+
+.btn-primary-custom:active {
+    border: none !important;
+    outline-color: var(--outline-color) !important;
+    text-shadow: 1px 1px 3px var(---color-gray-100) !important;
+    background-color: var(--color-gray-dark) !important;
+    color: var(--color-white) !important;
+}
