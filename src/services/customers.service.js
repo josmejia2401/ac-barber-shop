@@ -2,68 +2,26 @@ import { axiosInstance } from './fetch.service.js'
 import api from './api.constants';
 import { buildAndThrowNewError, buildDefaultHeaders } from '../lib/auth.js';
 
-export const create = async (payload) => {
+export const createItem = async (payload) => {
     try {
-        /*const authHeaders = buildDefaultHeaders();
-        const res = await axiosInstance.post(`${api.functionalities.create}`, payload, {
-            headers: {
-                ...authHeaders
-            },
-        });
-        return res.data;*/
         return new Promise((resolveOuter) => {
             resolveOuter({
+                code: 200,
+                message: 'Successful operation',
                 lastEvaluatedKey: undefined,
-                data: [{
-                    "customerId": "C001",
-                    "name": "Juan Pérez",
+                data: {
+                    "id": 1234567,
+                    "firstName": "Juan",
+                    "lastName": "Pérez",
                     "email": "juan.perez@example.com",
-                    "phone": "+11234567890",
+                    "phone": "+573105397699",
                     "address": "Av. Siempre Viva 123, Ciudad, País",
-                    "birthdate": "1990-05-15",
+                    "birthdate": new Date().toISOString(),
                     "preferences": ["envíos rápidos", "descuentos exclusivos"],
-                    "purchaseHistory": [
-                        {
-                            "transactionId": 123456,
-                            "date": "2025-01-10",
-                            "amount": 1200,
-                            "items": [
-                                {
-                                    "id": 123456,
-                                    "name": "Laptop Lenovo T14",
-                                    "reference": "20W1S2YY2P",
-                                    "stock": 70,
-                                    "price": 1200,
-                                    "category": {
-                                        "id": 1,
-                                        "name": "Electrónica"
-                                    },
-                                    "stockLocation": {
-                                        "id": 1,
-                                        "name": "Bodega principal"
-                                    },
-                                    "description": "I7 11th+16GB+SSD256GB"
-                                },
-                                {
-                                    "id": 123456,
-                                    "name": "Smartphone Samsung Galaxy",
-                                    "reference": "20W1S2YY2P",
-                                    "stock": 70,
-                                    "price": 1200,
-                                    "category": {
-                                        "id": 1,
-                                        "name": "Electrónica"
-                                    },
-                                    "stockLocation": {
-                                        "id": 1,
-                                        "name": "Bodega principal"
-                                    },
-                                    "description": "I7 11th+16GB+SSD256GB"
-                                }
-                            ]
-                        }
-                    ]
-                }]
+                    "createdAt": new Date().toISOString(),
+                    "status": 1,
+                    "purchaseHistory": []
+                }
             });
         });
     } catch (error) {
@@ -72,29 +30,41 @@ export const create = async (payload) => {
     }
 }
 
-export const find = async (id, projectId) => {
+export const findItemById = async (id) => {
     try {
-        const authHeaders = buildDefaultHeaders();
-        const res = await axiosInstance.get(`${api.functionalities.find
-            .replace(":id", id)
-            .replace(":projectId", projectId)}`, {
-            headers: {
-                ...authHeaders
-            },
+        return new Promise((resolveOuter) => {
+            resolveOuter({
+                code: 200,
+                message: 'Successful operation',
+                lastEvaluatedKey: undefined,
+                data: {
+                    "id": 1234567,
+                    "firstName": "Juan",
+                    "lastName": "Pérez",
+                    "email": "juan.perez@example.com",
+                    "phone": "+573105397699",
+                    "address": "Av. Siempre Viva 123, Ciudad, País",
+                    "birthdate": new Date().toISOString(),
+                    "preferences": ["envíos rápidos", "descuentos exclusivos"],
+                    "createdAt": new Date().toISOString(),
+                    "status": 1,
+                    "purchaseHistory": []
+                }
+            });
         });
-        const data = res.data;
-        return data;
     } catch (error) {
         console.error(error);
         buildAndThrowNewError(error);
     }
 }
 
-export const filter = async (payload) => {
+export const filterItems = async (payload) => {
     try {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve({
+                    code: 200,
+                    message: 'Successful operation',
                     lastEvaluatedKey: undefined,
                     data: [
                         {
@@ -173,16 +143,28 @@ export const filter = async (payload) => {
 }
 
 
-export const update = async (id, payload) => {
+export const updateItemById = async (id, payload) => {
     try {
-        const authHeaders = buildDefaultHeaders();
-        const res = await axiosInstance.put(`${api.functionalities.update.replace(":id", id)}`, payload, {
-            headers: {
-                ...authHeaders
-            },
+        return new Promise((resolveOuter) => {
+            resolveOuter({
+                code: 200,
+                message: 'Successful operation',
+                lastEvaluatedKey: undefined,
+                data: {
+                    "id": 1234567,
+                    "firstName": "Juan",
+                    "lastName": "Pérez",
+                    "email": "juan.perez@example.com",
+                    "phone": "+573105397699",
+                    "address": "Av. Siempre Viva 123, Ciudad, País",
+                    "birthdate": new Date().toISOString(),
+                    "preferences": ["envíos rápidos", "descuentos exclusivos"],
+                    "createdAt": new Date().toISOString(),
+                    "status": 1,
+                    "purchaseHistory": []
+                }
+            });
         });
-        const data = res.data;
-        return data;
     } catch (error) {
         console.error(error);
         buildAndThrowNewError(error);
@@ -190,18 +172,28 @@ export const update = async (id, payload) => {
 }
 
 
-export const del = async (id, projectId) => {
+export const deleteItemById = async (id) => {
     try {
-        const authHeaders = buildDefaultHeaders();
-        const res = await axiosInstance.delete(`${api.functionalities.delete
-            .replace(":id", id)
-            .replace(":projectId", projectId)}`, {
-            headers: {
-                ...authHeaders
-            },
+        return new Promise((resolveOuter) => {
+            resolveOuter({
+                code: 200,
+                message: 'Successful operation',
+                lastEvaluatedKey: undefined,
+                data: {
+                    "id": 1234567,
+                    "firstName": "Juan",
+                    "lastName": "Pérez",
+                    "email": "juan.perez@example.com",
+                    "phone": "+573105397699",
+                    "address": "Av. Siempre Viva 123, Ciudad, País",
+                    "birthdate": new Date().toISOString(),
+                    "preferences": ["envíos rápidos", "descuentos exclusivos"],
+                    "createdAt": new Date().toISOString(),
+                    "status": 1,
+                    "purchaseHistory": []
+                }
+            });
         });
-        const data = res.data;
-        return data;
     } catch (error) {
         console.error(error);
         buildAndThrowNewError(error);
