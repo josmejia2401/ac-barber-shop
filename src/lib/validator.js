@@ -18,17 +18,12 @@ export default class Validator {
             }
         }
         if (schema.email !== undefined && schema.email === true) {
-            if (!String(value)
+            if (value && !String(value)
                 .toLowerCase()
                 .match(
                     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                 )) {
                 errors.push(`${schema.name} no es válido.`);
-            }
-        }
-        if (schema.selectedOptions !== undefined && schema.selectedOptions >= 0) {
-            if (String(value).length > schema.maxLength) {
-                errors.push(`${schema.name} requiere una longitud máxima de ${schema.maxLength}.`);
             }
         }
         return errors;

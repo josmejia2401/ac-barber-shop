@@ -5,24 +5,26 @@ import { buildAndThrowNewError, buildDefaultHeaders } from '../lib/auth.js';
 export const createItem = async (payload) => {
     try {
         return new Promise((resolveOuter) => {
-            resolveOuter({
-                code: 200,
-                message: 'Successful operation',
-                lastEvaluatedKey: undefined,
-                data: {
-                    "id": 1234567,
-                    "firstName": "Juan",
-                    "lastName": "Pérez",
-                    "email": "juan.perez@example.com",
-                    "phone": "+573105397699",
-                    "address": "Av. Siempre Viva 123, Ciudad, País",
-                    "birthdate": new Date().toISOString(),
-                    "preferences": ["envíos rápidos", "descuentos exclusivos"],
-                    "createdAt": new Date().toISOString(),
-                    "status": 1,
-                    "purchaseHistory": []
-                }
-            });
+            setTimeout(() => {
+                resolveOuter({
+                    code: 200,
+                    message: 'Successful operation',
+                    lastEvaluatedKey: undefined,
+                    data: {
+                        "id": 1234567,
+                        "firstName": "Juan",
+                        "lastName": "Pérez",
+                        "email": "juan.perez@example.com",
+                        "phone": "+573105397699",
+                        "address": "Av. Siempre Viva 123, Ciudad, País",
+                        "birthdate": new Date().toISOString(),
+                        "preferences": ["envíos rápidos", "descuentos exclusivos"],
+                        "createdAt": new Date().toISOString(),
+                        "status": 1,
+                        "purchaseHistory": []
+                    }
+                });
+            }, 2000);
         });
     } catch (error) {
         console.error(error);
@@ -81,7 +83,7 @@ export const filterItems = async (payload) => {
                             "purchaseHistory": [
                                 {
                                     "transactionId": 123456,
-                                    "date": "2025-01-10",
+                                    "date": new Date().toISOString(),
                                     "amount": 1200,
                                     "items": [
                                         {
@@ -130,7 +132,8 @@ export const filterItems = async (payload) => {
                             "birthdate": "1990-05-15",
                             "preferences": ["envíos rápidos", "descuentos exclusivos"],
                             "createdAt": new Date().toISOString(),
-                            "purchaseHistory": []
+                            "purchaseHistory": [],
+                            "status": 1,
                         }
                     ]
                 })

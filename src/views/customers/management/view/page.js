@@ -1,15 +1,13 @@
 import * as React from 'react';
 import "./styles.css";
+import { Link } from 'react-router-dom';
 import CreateComponent from '../components/create';
 import EditComponent from '../components/edit';
 import RemoveComponent from '../components/remove';
+import ButtonIcon from '../../../../components/button-icon';
 import { filterItems } from '../../../../services/customers.service';
 import { buildAndGetClassStatus, findStatusById } from '../../../../lib/list-values';
-import ButtonIcon from '../../../../components/button-icon';
-import { formatDateToView, formatTextToView } from '../../../../lib/format';
-import { Link } from 'react-router-dom';
-
-
+import { formatBirthdateToView, formatTextToView } from '../../../../lib/format';
 
 class Page extends React.Component {
 
@@ -61,7 +59,7 @@ class Page extends React.Component {
         });
     }
 
-    propagateState() { }
+    async propagateState() { }
 
     updateState(payload) {
         this.setState({ ...payload }, () => this.propagateState());
@@ -120,7 +118,7 @@ class Page extends React.Component {
         this.updateState({ currentItemSelected: undefined, currentDialog: undefined });
     }
 
-    setChangeInputEvent(event) {
+    async setChangeInputEvent(event) {
         const tableInputSearch = event.target.value;
         if (tableInputSearch) {
             const dataFiltered = this.state.data.filter(p => {
@@ -138,13 +136,13 @@ class Page extends React.Component {
     }
 
 
-    handleAfterClosedDialog(reloadData = false) {
+    async handleAfterClosedDialog(reloadData = false) {
         if (reloadData === true) {
             this.handleLoadData();
         }
     }
 
-    handleSortTableByColumn(key) {
+    async handleSortTableByColumn(key) {
         this.state.dataFiltered.sort((a, b) => {
             if (this.state.tableOrderBy === true) {
                 return (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0);
@@ -160,7 +158,7 @@ class Page extends React.Component {
 
     render() {
         return (
-            <div className="col py-1 panel-view">
+            <div className="col py-3 panel-view">
                 <section className="section container px-5" style={{
                     marginTop: '90px'
                 }}>
@@ -240,9 +238,12 @@ class Page extends React.Component {
                                                         <td className="text-color">{item.email}</td>
                                                         <td className="text-color">{item.phone}</td>
                                                         <td className="text-color">{formatTextToView(item.address)}</td>
-                                                        <td className="text-color">{formatDateToView(item.birthdate)}</td>
-                                                        <td className="text-color">{item.preferences}</td>
-                                                        <td><span className={buildAndGetClassStatus(item.status)}>{findStatusById(item?.status).name}</span></td>
+                                                        <td className="text-color">{formatBirthdateToView(item.birthdate)}</td>
+                                                        <td className="text-color">{item.preferences && item.preferences.map(preference => {
+                                                            return (<span className="badge text-bg-dark">{preference}</span>
+                                                            );
+                                                        })}</td>
+                                                        <td><span className={buildAndGetClassStatus(item.status)}>{findStatusById(item.status).name}</span></td>
                                                         <td>
                                                             <Link to={"#"}>
                                                                 <i className="fa-regular fa-pen-to-square primary-color" onClick={() => this.handleShowDialog('edit', item)}></i>
@@ -288,13 +289,12 @@ class Page extends React.Component {
                         handleAfterClosedDialog={this.handleAfterClosedDialog}
                         handleHideDialog={this.handleHideDialog}></EditComponent>)}
                     {this.state.currentDialog === "remove" && (<RemoveComponent
-                        $navigate={this.props.navigate}
-                        $location={this.props.location}
+                        navigate={this.props.navigate}
+                        location={this.props.location}
                         data={this.state.currentItemSelected}
                         handleAfterClosedDialog={this.handleAfterClosedDialog}
                         handleHideDialog={this.handleHideDialog}></RemoveComponent>)}
                 </section>
-
             </div>
         );
     }
