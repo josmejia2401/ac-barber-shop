@@ -500,7 +500,7 @@ class LocalComponent extends React.Component {
                                                                         value={this.state.data.status.value}
                                                                         required={false}
                                                                         onChange={(event) => this.handleSetChangeInputEvent('status', event)}
-                                                                        disabled={true}>
+                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}>
                                                                         <option value={null}>Seleccionar...</option>
                                                                         {status.map((item, index) => {
                                                                             return (<option value={item.id} key={index}>{item.name}</option>);
