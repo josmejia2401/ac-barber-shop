@@ -1,10 +1,11 @@
 import * as React from 'react';
 import "./styles.css";
-import Utils from '../../../../../lib/utils';
 import ButtonPrimary from '../../../../../components/button-primary';
 import ButtonSecondary from '../../../../../components/button-secondary';
-import { languages, status, technologies } from '../../../../../lib/list-values';
-import { update } from '../../../../../services/functionalities.services';
+import TagsInput from '../../../../../components/tags';
+import { createItem } from '../../../../../services/customers.service';
+import { status } from '../../../../../lib/list-values';
+import Validator from '../../../../../lib/validator';
 
 class LocalComponent extends React.Component {
 
@@ -12,61 +13,125 @@ class LocalComponent extends React.Component {
         super(props);
         this.state = this.defaultState();
         this.defaultState = this.defaultState.bind(this);
+        this.resetState = this.resetState.bind(this);
         this.validateForm = this.validateForm.bind(this);
-        this.setChangeInputEvent = this.setChangeInputEvent.bind(this);
+        this.handleSetChangeInputEvent = this.handleSetChangeInputEvent.bind(this);
         this.propagateState = this.propagateState.bind(this);
         this.updateState = this.updateState.bind(this);
-        this.loadFirstData = this.loadFirstData.bind(this);
-        this.loadData = this.loadData.bind(this);
-
-        //own
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.buildAndGetStatus = this.buildAndGetStatus.bind(this);
-
+        this.handleSelectedTags = this.handleSelectedTags.bind(this);
     }
 
-
     componentDidMount() {
-        this.resetData({});
-        this.loadFirstData(this.props.data);
+        const { data } = this.props;
+        if (data) {
+            const dataTemp = this.state.data;
+            dataTemp.id.value = data.id;
+            dataTemp.firstName.value = data.firstName;
+            dataTemp.lastName.value = data.lastName;
+            dataTemp.email.value = data.email;
+            dataTemp.phone.value = data.phone;
+            dataTemp.address.value = data.address;
+            dataTemp.birthdate.value = data.birthdate;
+            dataTemp.tags.value = data.tags;
+            dataTemp.status.value = data.status;
+            dataTemp.createdAt.value = data.createdAt;
+            dataTemp.description.value = data.description;
+            this.resetState({ data: dataTemp, dataLoaded: true });
+        } else {
+            this.resetState();
+        }
     }
 
     componentWillUnmount() {
-        this.resetData();
+        this.resetState();
     }
 
     defaultState() {
         return {
             loading: false,
+            processed: false,
+            dataLoaded: false,
+            processedMessage: undefined,
+            processedError: false,
             isFormValid: false,
-            errorMessage: undefined,
-            successMessage: undefined,
             data: {
                 id: {
                     value: '',
                     errors: [],
                     schema: {
-                        name: 'Id',
+                        name: 'ID',
+                        required: false,
+                        minLength: 0,
+                        maxLength: 100,
+                    }
+                },
+                firstName: {
+                    value: '',
+                    errors: [],
+                    schema: {
+                        name: 'Nombres',
                         required: true,
                         minLength: 1,
                         maxLength: 100,
                     }
                 },
-                name: {
+                lastName: {
                     value: '',
                     errors: [],
                     schema: {
-                        name: 'Nombre del proyecto',
+                        name: 'Apellidos',
                         required: true,
                         minLength: 1,
+                        maxLength: 1000,
+                    }
+                },
+                email: {
+                    value: '',
+                    errors: [],
+                    schema: {
+                        name: 'Correo',
+                        required: false,
+                        minLength: 0,
+                        maxLength: 1000,
+                        email: true
+                    }
+                },
+                phone: {
+                    value: '',
+                    errors: [],
+                    schema: {
+                        name: 'Teléfono',
+                        required: false,
+                        minLength: 0,
+                        maxLength: 15,
+                    }
+                },
+                address: {
+                    value: '',
+                    errors: [],
+                    schema: {
+                        name: 'Dirección',
+                        required: false,
+                        minLength: 0,
                         maxLength: 100,
                     }
                 },
-                description: {
+                birthdate: {
                     value: '',
                     errors: [],
                     schema: {
-                        name: 'Descripción',
+                        name: 'Fecha nacimiento',
+                        required: false,
+                        minLength: 0,
+                        maxLength: 19,
+                    }
+                },
+                tags: {
+                    value: [],
+                    errors: [],
+                    schema: {
+                        name: 'Etiquetas',
                         required: false,
                         minLength: 0,
                         maxLength: 1000,
@@ -77,119 +142,69 @@ class LocalComponent extends React.Component {
                     errors: [],
                     schema: {
                         name: 'Estado',
-                        required: true,
+                        required: false,
                         minLength: 0,
                         maxLength: 9,
+                        select: true,
+                        multiple: false
                     }
                 },
                 createdAt: {
-                    value: 1,
+                    value: '',
                     errors: [],
                     schema: {
                         name: 'Fecha de creación',
                         required: false,
                         minLength: 0,
-                        maxLength: 30,
+                        maxLength: 19,
+                        select: false,
+                        multiple: false
                     }
                 },
-                projectId: {
-                    value: undefined,
+                description: {
+                    value: '',
                     errors: [],
                     schema: {
-                        name: 'ID del proyecto',
+                        name: 'Descripción',
                         required: false,
                         minLength: 0,
-                        maxLength: 30,
-                    }
-                },
-                languages: {
-                    value: [],
-                    errors: [],
-                    schema: {
-                        name: 'Lenguajes',
-                        required: true,
-                        minLength: 0,
-                        maxLength: 9,
-                    }
-                },
-                technologies: {
-                    value: [],
-                    errors: [],
-                    schema: {
-                        name: 'Tecnologías',
-                        required: true,
-                        minLength: 0,
-                        maxLength: 9,
+                        maxLength: 1000,
+                        select: false,
+                        multiple: false
                     }
                 },
             },
         };
     }
 
-
-    resetData(override = {}) {
+    async resetState(override = {}) {
         this.updateState({
             ...this.defaultState(),
             ...override
         });
     }
 
-    loadFirstData(dataFirst) {
-        if (Utils.isEmpty(dataFirst)) {
-            return;
-        }
-        const { data } = this.state;
-        data.id.value = dataFirst.id;
-        data.name.value = dataFirst.name;
-        data.description.value = dataFirst.description;
-        data.createdAt.value = dataFirst.createdAt;
-        data.status.value = dataFirst.status;
-        data.projectId.value = dataFirst.projectId;
-        data.technologies.value = dataFirst.technologies?.map(p => p.id) || [];
-        data.languages.value = dataFirst.languages?.map(p => p.id) || [];
-        this.updateState({ data });
-    }
-
-    loadData(e) { }
-
-    validateForm(key) {
+    async validateForm(key) {
         const { data } = this.state;
         const schema = data[key].schema;
         const value = data[key].value;
-        data[key].errors = [];
-        if (schema.required === true) {
-            if (value === undefined || value === null || value === '' || value.length === 0) {
-                data[key].errors.push(`${schema.name} es requerido.`);
-            }
-        }
-        if (schema.minLength !== undefined && schema.minLength >= 0) {
-            if (String(value).length < schema.minLength) {
-                data[key].errors.push(`${schema.name} requiere una longitud mínima de ${schema.minLength}.`);
-            }
-        }
-        if (schema.minLength !== undefined && schema.maxLength >= 0) {
-            if (String(value).length > schema.maxLength) {
-                data[key].errors.push(`${schema.name} requiere una longitud máxima de ${schema.maxLength}.`);
-            }
-        }
-        let isFormValid = true;
+        data[key].errors = Validator.validate(value, schema);
+        let isFormValid = data[key].errors.length > 0 ? false : true;
+        this.updateState({ data: data });
         const keys = Object.keys(data);
         for (const key of keys) {
-            if (data[key].errors.length !== 0) {
-                isFormValid = false;
-                break;
-            }
-            if (data[key].schema.required && !data[key].value) {
+            const errors = Validator.validate(data[key].value, data[key].schema);
+            if (errors.length > 0) {
                 isFormValid = false;
                 break;
             }
         }
-        this.updateState({ data: data, isFormValid: isFormValid });
+        this.updateState({ isFormValid: isFormValid });
     }
 
-    setChangeInputEvent(key, event) {
+    async handleSetChangeInputEvent(key, event) {
         const { data } = this.state;
-        if (key === 'languages' || key === 'technologies') {
+        if (data[key].schema.select && data[key].schema.multiple) {
             const value = Array.from(event.target.selectedOptions, option => option.value);
             data[key].value = value;
         } else {
@@ -199,17 +214,13 @@ class LocalComponent extends React.Component {
         this.validateForm(key);
     }
 
-    propagateState() { }
+    async propagateState() { }
 
-    updateState(payload) {
+    async updateState(payload) {
         this.setState({ ...payload }, () => this.propagateState());
     }
 
-    buildAndGetStatus() {
-        return status.filter(p => [1, 2].includes(p.id));
-    }
-
-    handleSubmit(event) {
+    async handleSubmit(event) {
         if (event) {
             event.preventDefault();
             event.stopPropagation();
@@ -218,106 +229,269 @@ class LocalComponent extends React.Component {
         const isValid = form.checkValidity();
         const { data, isFormValid } = this.state;
         if (isFormValid === true && isValid === true) {
-            this.updateState({ loading: true, errorMessage: undefined, successMessage: undefined });
-            update(data.id.value,
-                {
-                    name: data.name.value,
-                    description: data.description.value,
-                    status: data.status.value,
-                    projectId: data.projectId.value,
-                    technologies: this.state.data.technologies.value.map(p => ({ id: p })),
-                    languages: this.state.data.languages.value.map(p => ({ id: p }))
-                })
-                .then(response => {
-                    console.log(response);
-                    this.updateState({
-                        successMessage: "Actualización exitosa!",
-                        errorMessage: undefined
-                    });
-                    this.props.afterClosedDialog(true);
-                })
-                .catch(error => {
-                    this.updateState({
-                        errorMessage: error.message
-                    });
-                    console.error(error);
-                })
-                .finally(() => this.updateState({ loading: false }));
+            this.updateState({
+                loading: true,
+                processed: false,
+                processedMessage: undefined,
+                processedError: false,
+            });
+            const payload = {};
+            Object.keys(data).forEach(key => {
+                payload[key] = data[key].value;
+            });
+            console.log("payload", payload);
+            createItem(payload).then(_ => {
+                this.updateState({
+                    processed: true,
+                    processedMessage: "Procesado correctamente",
+                    processedError: false,
+                });
+                this.props.handleAfterClosedDialog(true);
+            }).catch(error => {
+                this.updateState({
+                    processed: true,
+                    processedMessage: error.message,
+                    processedError: true,
+                });
+            }).finally(() => this.updateState({ loading: false, processed: true }));
         }
         form.classList.add('was-validated');
     }
 
 
+    async handleSelectedTags(tags) {
+        const data = this.state.data;
+        data.tags.value = tags;
+        this.updateState({
+            data: data
+        });
+    }
 
     render() {
+        if (!this.state.dataLoaded) {
+            return (<div style={{ textAlign: 'center' }}>
+                <div className="spinner-border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
+            </div>);
+        }
         return (
-            <div className="modal fade text-left show"
+            <div className="modal fade show"
                 style={{ display: 'block' }}
                 tabIndex="-1"
                 role="dialog"
-                aria-hidden="true"
                 data-keyboard="false"
                 data-backdrop="static"
                 data-bs-backdrop="static"
-                data-bs-keyboard="false">
-                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl"
-                    role="document">
+                data-bs-keyboard="false"
+                aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
                     <div className="modal-content">
+
                         <div className="modal-header">
-                            <h4 className="modal-title">Modificar</h4>
-                            <button type="button" className="close btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={this.props.hideDialog}>
-                                <i data-feather="x"></i>
+                            <h4 className="modal-title" id='myModalLabel33'>Editar elemento</h4>
+                            <button type="button" className="close btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={this.props.handleHideDialog}>
+                                <i data-feather="x" ></i>
                             </button>
                         </div>
+
                         <form className="needs-validation form" onSubmit={this.handleSubmit} noValidate>
 
-                            {this.state.successMessage && <div className="alert alert-success" role="alert">
-                                <h5 className="alert-heading">EXITOSO</h5>
-                                <p className='p-error'>{this.state.successMessage}</p>
+                            {this.state.processed && !this.state.processedError && <div className="alert alert-success" role="alert">
+                                {/*<h5 className="alert-heading">EXITOSO</h5>*/}
+                                <p className='p-error'>{this.state.processedMessage}</p>
                             </div>}
 
-                            {this.state.errorMessage && <div className="alert alert-danger" role="alert">
-                                <h5 className="alert-heading">ERROR</h5>
-                                <p className='p-error'>{this.state.errorMessage}</p>
+                            {this.state.processed && this.state.processedError && <div className="alert alert-danger" role="alert">
+                                {/*<h5 className="alert-heading">ERROR</h5>*/}
+                                <p className='p-error'>{this.state.processedMessage}</p>
                             </div>}
 
                             <div className="modal-body">
-                                <section>
+                                <section id="multiple-column-form">
                                     <div className="row match-height">
                                         <div className="col-12">
                                             <div className="card">
                                                 <div className="card-content">
                                                     <div className="card-body">
-
-
-                                                        <div className="row">
+                                                        <div className="row mb-2">
                                                             <div className="col-12 col-md-6">
-                                                                <div className="form-group mandatory required">
-                                                                    <label htmlFor="name" className="form-label control-label">Nombre</label>
+                                                                <div className="form-group">
+                                                                    <label htmlFor="firstName" className="form-label control-label">Nombres (*)</label>
                                                                     <input
                                                                         type="text"
-                                                                        id="name"
+                                                                        id="firstName"
+                                                                        name="firstName"
                                                                         className="form-control"
                                                                         placeholder="Ingrese el nombre"
-                                                                        name="name"
                                                                         required={true}
-                                                                        value={this.state.data.name.value}
-                                                                        onChange={(event) => this.setChangeInputEvent('name', event)}
-                                                                        disabled={this.state.loading}
+                                                                        value={this.state.data.firstName.value}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent('firstName', event)}
+                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                         autoComplete='off'
                                                                     />
                                                                     <div
                                                                         className="invalid-feedback"
                                                                         style={{
-                                                                            display: this.state.data.name.errors.length > 0 ? 'block' : 'none'
+                                                                            display: this.state.data.firstName.errors.length > 0 ? 'block' : 'none'
                                                                         }}>
-                                                                        {this.state.data.name.errors[0]}
+                                                                        {this.state.data.firstName.errors[0]}
                                                                     </div>
                                                                 </div>
                                                             </div>
 
                                                             <div className="col-12 col-md-6">
-                                                                <div className="form-group mandatory required">
+                                                                <div className="form-group">
+                                                                    <label htmlFor="lastName" className="form-label control-label">Apellidos (*)</label>
+                                                                    <input
+                                                                        type="text"
+                                                                        id="lastName"
+                                                                        name="lastName"
+                                                                        className="form-control"
+                                                                        required={true}
+                                                                        value={this.state.data.lastName.value}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent('lastName', event)}
+                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                        autoComplete='off'
+                                                                    />
+                                                                    <div
+                                                                        className="invalid-feedback"
+                                                                        style={{
+                                                                            display: this.state.data.lastName.errors.length > 0 ? 'block' : 'none'
+                                                                        }}>
+                                                                        {this.state.data.lastName.errors[0]}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div className="row mb-2">
+                                                            <div className="col-12 col-md-6">
+                                                                <div className="form-group">
+                                                                    <label htmlFor="email" className="form-label control-label">Email</label>
+                                                                    <input
+                                                                        type="email"
+                                                                        id="email"
+                                                                        name="email"
+                                                                        className="form-control"
+                                                                        required={false}
+                                                                        value={this.state.data.email.value}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent('email', event)}
+                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                        autoComplete='off'
+                                                                    />
+                                                                    <div
+                                                                        className="invalid-feedback"
+                                                                        style={{
+                                                                            display: this.state.data.email.errors.length > 0 ? 'block' : 'none'
+                                                                        }}>
+                                                                        {this.state.data.email.errors[0]}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="col-12 col-md-6">
+                                                                <div className="form-group">
+                                                                    <label htmlFor="phone" className="form-label control-label">Teléfono</label>
+                                                                    <input
+                                                                        type="text"
+                                                                        id="phone"
+                                                                        name="phone"
+                                                                        className="form-control"
+                                                                        placeholder="Ejemplo de teléfono: +5730010001010"
+                                                                        required={false}
+                                                                        value={this.state.data.phone.value}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent('phone', event)}
+                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                        autoComplete='off'
+                                                                    />
+                                                                    <div
+                                                                        className="invalid-feedback"
+                                                                        style={{
+                                                                            display: this.state.data.phone.errors.length > 0 ? 'block' : 'none'
+                                                                        }}>
+                                                                        {this.state.data.phone.errors[0]}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div className="row mb-2">
+                                                            <div className="col-12 col-md-6">
+                                                                <div className="form-group">
+                                                                    <label htmlFor="address" className="form-label control-label">Dirección</label>
+                                                                    <input
+                                                                        type="text"
+                                                                        id="address"
+                                                                        name="address"
+                                                                        className="form-control"
+                                                                        required={false}
+                                                                        value={this.state.data.address.value}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent('address', event)}
+                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                        autoComplete='off'
+                                                                    />
+                                                                    <div
+                                                                        className="invalid-feedback"
+                                                                        style={{
+                                                                            display: this.state.data.address.errors.length > 0 ? 'block' : 'none'
+                                                                        }}>
+                                                                        {this.state.data.address.errors[0]}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="col-12 col-md-6">
+                                                                <div className="form-group">
+                                                                    <label htmlFor="birthdate" className="form-label control-label">Fecha de nacimiento</label>
+                                                                    <input
+                                                                        type="date"
+                                                                        id="birthdate"
+                                                                        name="birthdate"
+                                                                        className="form-control"
+                                                                        required={false}
+                                                                        value={this.state.data.birthdate.value}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent('birthdate', event)}
+                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                        autoComplete='off'
+                                                                    />
+                                                                    <div
+                                                                        className="invalid-feedback"
+                                                                        style={{
+                                                                            display: this.state.data.birthdate.errors.length > 0 ? 'block' : 'none'
+                                                                        }}>
+                                                                        {this.state.data.birthdate.errors[0]}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div className="row mb-2">
+                                                            <div className="col-12 col-md-6">
+                                                                <div className="form-group">
+                                                                    <label htmlFor="tags" className="form-label control-label">Etiquetas</label>
+                                                                    <TagsInput
+                                                                        selectedTags={this.handleSelectedTags}
+                                                                        tags={this.state.data.tags.value} type="text"
+                                                                        required={false}
+                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                        autoComplete='off'
+                                                                    />
+                                                                    <div
+                                                                        className="invalid-feedback"
+                                                                        style={{
+                                                                            display: this.state.data.tags.errors.length > 0 ? 'block' : 'none'
+                                                                        }}>
+                                                                        {this.state.data.tags.errors[0]}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="col-12 col-md-6">
+                                                                <div className="form-group">
                                                                     <label htmlFor="status" className="form-label control-label">Estado</label>
                                                                     <select
                                                                         className="form-select"
@@ -325,10 +499,10 @@ class LocalComponent extends React.Component {
                                                                         name='status'
                                                                         value={this.state.data.status.value}
                                                                         required={false}
-                                                                        onChange={(event) => this.setChangeInputEvent('status', event)}
-                                                                        disabled={this.state.loading || this.state.isSuccessfullyCreation}>
+                                                                        onChange={(event) => this.handleSetChangeInputEvent('status', event)}
+                                                                        disabled={true}>
                                                                         <option value={null}>Seleccionar...</option>
-                                                                        {this.buildAndGetStatus().map((item, index) => {
+                                                                        {status.map((item, index) => {
                                                                             return (<option value={item.id} key={index}>{item.name}</option>);
                                                                         })}
                                                                     </select>
@@ -343,81 +517,19 @@ class LocalComponent extends React.Component {
                                                             </div>
                                                         </div>
 
-
-                                                        <div className="row mb-2">
-                                                            <div className="col-12 col-md-6">
-                                                                <div className="form-group mandatory required">
-                                                                    <label htmlFor="languages" className="form-label control-label">Lenguajes</label>
-                                                                    <select
-                                                                        className="form-select"
-                                                                        id="languages"
-                                                                        name='languages'
-                                                                        value={this.state.data.languages.value}
-                                                                        required={true}
-                                                                        multiple={true}
-                                                                        onChange={(event) => this.setChangeInputEvent('languages', event)}
-                                                                        disabled={this.state.loading || this.state.isSuccessfullyCreation}>
-                                                                        <option value={null}>Seleccionar...</option>
-                                                                        {languages.map((item, index) => {
-                                                                            return (<option value={item.id} key={index}>{item.name}</option>);
-                                                                        })}
-                                                                    </select>
-
-                                                                    <div
-                                                                        className="invalid-feedback"
-                                                                        style={{
-                                                                            display: this.state.data.languages.errors.length > 0 ? 'block' : 'none'
-                                                                        }}>
-                                                                        {this.state.data.languages.errors[0]}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="col-12 col-md-6">
-                                                                <div className="form-group mandatory required">
-                                                                    <label htmlFor="technologies" className="form-label control-label">Lenguaje</label>
-
-                                                                    <select
-                                                                        className="form-select"
-                                                                        id="technologies"
-                                                                        name='technologies'
-                                                                        value={this.state.data.technologies.value}
-                                                                        required={true}
-                                                                        multiple={true}
-                                                                        onChange={(event) => this.setChangeInputEvent('technologies', event)}
-                                                                        disabled={this.state.loading || this.state.isSuccessfullyCreation}>
-                                                                        <option value={null}>Seleccionar...</option>
-                                                                        {technologies.map((item, index) => {
-                                                                            return (<option value={item.id} key={index}>{item.name}</option>);
-                                                                        })}
-                                                                    </select>
-
-                                                                    <div
-                                                                        className="invalid-feedback"
-                                                                        style={{
-                                                                            display: this.state.data.technologies.errors.length > 0 ? 'block' : 'none'
-                                                                        }}>
-                                                                        {this.state.data.technologies.errors[0]}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-
-
                                                         <div className="row">
                                                             <div className="col-12 col-md-12">
                                                                 <div className="form-group mandatory">
                                                                     <label htmlFor="description" className="form-label">Descripción</label>
                                                                     <textarea
                                                                         id="description"
+                                                                        name="description"
                                                                         className="form-control"
                                                                         placeholder="Ingrese la descripción"
-                                                                        name="description"
                                                                         required={false}
                                                                         value={this.state.data.description.value}
-                                                                        onChange={(event) => this.setChangeInputEvent('description', event)}
-                                                                        disabled={this.state.loading}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent('description', event)}
+                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                         autoComplete='off'
                                                                         rows="3"></textarea>
                                                                     <div
@@ -427,7 +539,6 @@ class LocalComponent extends React.Component {
                                                                         }}>
                                                                         {this.state.data.description.errors[0]}
                                                                     </div>
-
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -439,16 +550,15 @@ class LocalComponent extends React.Component {
                                 </section>
                             </div>
                             <div className="modal-footer">
-                                <ButtonSecondary text={'Regresar'} type="button" onClick={this.props.hideDialog}></ButtonSecondary>
-
+                                <ButtonSecondary text={'Regresar'} type="button" onClick={this.props.handleHideDialog}></ButtonSecondary>
                                 <ButtonPrimary
-                                    disabled={!this.state.isFormValid || this.state.loading}
+                                    disabled={!this.state.isFormValid || this.state.loading || (this.state.processed && !this.state.processedError)}
                                     className="btn-block btn-lg background-color-primary"
                                     type='submit'
                                     loading={this.state.loading}
                                     showText={true}
-                                    textLoading={'Actualizando...'}
-                                    text='Actualizar'
+                                    textLoading={'Procesando...'}
+                                    text='Editar'
                                 />
                             </div>
                         </form>

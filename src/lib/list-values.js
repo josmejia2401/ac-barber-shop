@@ -121,6 +121,9 @@ export function buildAndGetClassPhase(recordStatus) {
 
 
 
+
+
+// TODO: Eliminar
 export const languages = [
     {
         id: 1,

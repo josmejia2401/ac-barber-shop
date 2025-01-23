@@ -3,10 +3,10 @@ import "./styles.css";
 import ButtonPrimary from '../../../../../components/button-primary';
 import ButtonSecondary from '../../../../../components/button-secondary';
 import TagsInput from '../../../../../components/tags';
-
 import { createItem } from '../../../../../services/customers.service';
 import { status } from '../../../../../lib/list-values';
 import Validator from '../../../../../lib/validator';
+
 class LocalComponent extends React.Component {
 
     constructor(props) {
@@ -19,8 +19,7 @@ class LocalComponent extends React.Component {
         this.propagateState = this.propagateState.bind(this);
         this.updateState = this.updateState.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.selectedTags = this.selectedTags.bind(this);
-
+        this.handleSelectedTags = this.handleSelectedTags.bind(this);
     }
 
     componentDidMount() {
@@ -34,7 +33,7 @@ class LocalComponent extends React.Component {
             dataTemp.phone.value = data.phone;
             dataTemp.address.value = data.address;
             dataTemp.birthdate.value = data.birthdate;
-            dataTemp.preferences.value = data.preferences;
+            dataTemp.tags.value = data.tags;
             dataTemp.status.value = data.status;
             dataTemp.createdAt.value = data.createdAt;
             dataTemp.description.value = data.description;
@@ -127,11 +126,11 @@ class LocalComponent extends React.Component {
                         maxLength: 19,
                     }
                 },
-                preferences: {
+                tags: {
                     value: [],
                     errors: [],
                     schema: {
-                        name: 'Preferencias',
+                        name: 'Etiquetas',
                         required: false,
                         minLength: 0,
                         maxLength: 1000,
@@ -239,6 +238,7 @@ class LocalComponent extends React.Component {
             Object.keys(data).forEach(key => {
                 payload[key] = data[key].value;
             });
+            console.log("payload", payload);
             createItem(payload).then(_ => {
                 this.updateState({
                     processed: true,
@@ -258,9 +258,9 @@ class LocalComponent extends React.Component {
     }
 
 
-    async selectedTags(tags) {
+    async handleSelectedTags(tags) {
         const data = this.state.data;
-        data.preferences.value = tags;
+        data.tags.value = tags;
         this.updateState({
             data: data
         });
@@ -419,7 +419,6 @@ class LocalComponent extends React.Component {
                                                                         id="address"
                                                                         name="address"
                                                                         className="form-control"
-                                                                        placeholder="Ingrese el nombre"
                                                                         required={false}
                                                                         value={this.state.data.address.value}
                                                                         onChange={(event) => this.handleSetChangeInputEvent('address', event)}
@@ -440,11 +439,10 @@ class LocalComponent extends React.Component {
                                                                 <div className="form-group">
                                                                     <label htmlFor="birthdate" className="form-label control-label">Fecha de nacimiento</label>
                                                                     <input
-                                                                        type="local-datetime"
+                                                                        type="date"
                                                                         id="birthdate"
                                                                         name="birthdate"
                                                                         className="form-control"
-                                                                        placeholder="Ingrese el nombre"
                                                                         required={false}
                                                                         value={this.state.data.birthdate.value}
                                                                         onChange={(event) => this.handleSetChangeInputEvent('birthdate', event)}
@@ -466,10 +464,10 @@ class LocalComponent extends React.Component {
                                                         <div className="row mb-2">
                                                             <div className="col-12 col-md-6">
                                                                 <div className="form-group">
-                                                                    <label htmlFor="preferences" className="form-label control-label">Preferencias</label>
+                                                                    <label htmlFor="tags" className="form-label control-label">Etiquetas</label>
                                                                     <TagsInput
-                                                                        selectedTags={this.selectedTags}
-                                                                        tags={[]}
+                                                                        selectedTags={this.handleSelectedTags}
+                                                                        tags={this.state.data.tags.value}
                                                                         type="text"
                                                                         required={false}
                                                                         disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
@@ -478,9 +476,9 @@ class LocalComponent extends React.Component {
                                                                     <div
                                                                         className="invalid-feedback"
                                                                         style={{
-                                                                            display: this.state.data.preferences.errors.length > 0 ? 'block' : 'none'
+                                                                            display: this.state.data.tags.errors.length > 0 ? 'block' : 'none'
                                                                         }}>
-                                                                        {this.state.data.preferences.errors[0]}
+                                                                        {this.state.data.tags.errors[0]}
                                                                     </div>
                                                                 </div>
                                                             </div>

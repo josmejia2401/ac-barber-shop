@@ -18,7 +18,7 @@ export const createItem = async (payload) => {
                         "phone": "+573105397699",
                         "address": "Av. Siempre Viva 123, Ciudad, País",
                         "birthdate": new Date().toISOString(),
-                        "preferences": ["envíos rápidos", "descuentos exclusivos"],
+                        "tags": ["envíos rápidos", "descuentos exclusivos"],
                         "createdAt": new Date().toISOString(),
                         "status": 1,
                         "purchaseHistory": []
@@ -47,7 +47,7 @@ export const findItemById = async (id) => {
                     "phone": "+573105397699",
                     "address": "Av. Siempre Viva 123, Ciudad, País",
                     "birthdate": new Date().toISOString(),
-                    "preferences": ["envíos rápidos", "descuentos exclusivos"],
+                    "tags": ["envíos rápidos", "descuentos exclusivos"],
                     "createdAt": new Date().toISOString(),
                     "status": 1,
                     "purchaseHistory": []
@@ -77,7 +77,7 @@ export const filterItems = async (payload) => {
                             "phone": "+573105397699",
                             "address": "Av. Siempre Viva 123, Ciudad, País",
                             "birthdate": new Date().toISOString(),
-                            "preferences": ["envíos rápidos", "descuentos exclusivos"],
+                            "tags": ["envíos rápidos", "descuentos exclusivos"],
                             "createdAt": new Date().toISOString(),
                             "status": 1,
                             "purchaseHistory": [
@@ -130,7 +130,7 @@ export const filterItems = async (payload) => {
                             "phone": "+573105397699",
                             "address": "Av. Siempre Viva 123, Ciudad, País",
                             "birthdate": "1990-05-15",
-                            "preferences": ["envíos rápidos", "descuentos exclusivos"],
+                            "tags": ["envíos rápidos", "descuentos exclusivos"],
                             "createdAt": new Date().toISOString(),
                             "purchaseHistory": [],
                             "status": 1,
@@ -161,7 +161,7 @@ export const updateItemById = async (id, payload) => {
                     "phone": "+573105397699",
                     "address": "Av. Siempre Viva 123, Ciudad, País",
                     "birthdate": new Date().toISOString(),
-                    "preferences": ["envíos rápidos", "descuentos exclusivos"],
+                    "tags": ["envíos rápidos", "descuentos exclusivos"],
                     "createdAt": new Date().toISOString(),
                     "status": 1,
                     "purchaseHistory": []
@@ -190,7 +190,7 @@ export const deleteItemById = async (id) => {
                     "phone": "+573105397699",
                     "address": "Av. Siempre Viva 123, Ciudad, País",
                     "birthdate": new Date().toISOString(),
-                    "preferences": ["envíos rápidos", "descuentos exclusivos"],
+                    "tags": ["envíos rápidos", "descuentos exclusivos"],
                     "createdAt": new Date().toISOString(),
                     "status": 1,
                     "purchaseHistory": []

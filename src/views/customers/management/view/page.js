@@ -68,9 +68,7 @@ class Page extends React.Component {
     async handleLoadData(e) {
         e?.preventDefault();
         e?.stopPropagation();
-        this.updateState({
-            loading: true,
-        });
+        this.updateState({ loading: true });
         filterItems({}).then(result => {
             this.updateState({
                 data: result.data,
@@ -78,10 +76,7 @@ class Page extends React.Component {
                 loading: false,
                 lastEvaluatedKey: result.lastEvaluatedKey
             });
-        }).catch(err => {
-            console.log(err.fileName, err);
-            this.updateState({ loading: false });
-        });
+        }).catch(err => this.updateState({ loading: false }));
     }
 
     async handleLoadMoreData(e) {
@@ -207,7 +202,7 @@ class Page extends React.Component {
                                                     <th><b>Teléfono</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('phone')}></i></th>
                                                     <th><b>Dirección</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('address')}></i></th>
                                                     <th><b>Cumpleaños</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('birthdate')}></i></th>
-                                                    <th><b>Preferencias</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('preferences')}></i></th>
+                                                    <th><b>Etiquetas</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('tags')}></i></th>
                                                     <th><b>Estado</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('status')}></i></th>
                                                     <th>Acción</th>
                                                 </tr>
@@ -239,8 +234,8 @@ class Page extends React.Component {
                                                         <td className="text-color">{item.phone}</td>
                                                         <td className="text-color">{formatTextToView(item.address)}</td>
                                                         <td className="text-color">{formatBirthdateToView(item.birthdate)}</td>
-                                                        <td className="text-color">{item.preferences && item.preferences.map(preference => {
-                                                            return (<span className="badge text-bg-dark">{preference}</span>
+                                                        <td className="text-color">{item.tags && item.tags.map(tag => {
+                                                            return (<span className="badge text-bg-dark">{tag}</span>
                                                             );
                                                         })}</td>
                                                         <td><span className={buildAndGetClassStatus(item.status)}>{findStatusById(item.status).name}</span></td>

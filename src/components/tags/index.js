@@ -7,10 +7,21 @@ const TagsInput = props => {
         props.selectedTags([...tags.filter((_, index) => index !== indexToRemove)]);
     };
     const addTags = event => {
+        if (event) {
+            console.log(">event.key", event.key);
+            event.preventDefault();
+            event.stopPropagation();
+        }
         if (event.target.value !== "") {
             setTags([...tags, event.target.value]);
             props.selectedTags([...tags, event.target.value]);
             event.target.value = "";
+        }
+    };
+
+    const keyUp = (event) => {
+        if (event.key === "Tab") {
+            addTags(event);
         }
     };
     return (
@@ -25,8 +36,9 @@ const TagsInput = props => {
             </ul>
             <input
                 type="text"
-                onKeyUp={event => event.key === "Enter" ? addTags(event) : null}
-                placeholder="Ingresar más datos y presiona enter para agregar"
+                //onKeyUp={(event) => keyUp(event)}
+                onKeyDown={(event) => keyUp(event)}
+                placeholder="Ingresa y presiona Tab para agregar"
                 className='form-control input'
                 {...props}
             />
