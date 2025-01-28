@@ -39,7 +39,7 @@ class LocalComponent extends React.Component {
             dataTemp.description.value = data.description;
             this.resetState({ data: dataTemp, dataLoaded: true });
         } else {
-            this.resetState();
+            this.resetState({ dataLoaded: true });
         }
     }
 
@@ -202,7 +202,11 @@ class LocalComponent extends React.Component {
         this.updateState({ isFormValid: isFormValid });
     }
 
-    async handleSetChangeInputEvent(key, event) {
+    async handleSetChangeInputEvent(event, key) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         const { data } = this.state;
         if (data[key].schema.select && data[key].schema.multiple) {
             const value = Array.from(event.target.selectedOptions, option => option.value);
@@ -224,6 +228,9 @@ class LocalComponent extends React.Component {
         if (event) {
             event.preventDefault();
             event.stopPropagation();
+            if (event.key === 'Enter' || event.target?.keyCode === 13 || event.target?.key === 'Enter') {
+                return;
+            }
         }
         const form = event.target;
         const isValid = form.checkValidity();
@@ -259,7 +266,11 @@ class LocalComponent extends React.Component {
     }
 
 
-    async handleSelectedTags(tags) {
+    async handleSelectedTags(event, tags) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         const data = this.state.data;
         data.tags.value = tags;
         this.updateState({
@@ -326,7 +337,7 @@ class LocalComponent extends React.Component {
                                                                         placeholder="Ingrese el nombre"
                                                                         required={true}
                                                                         value={this.state.data.firstName.value}
-                                                                        onChange={(event) => this.handleSetChangeInputEvent('firstName', event)}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent(event, 'firstName')}
                                                                         disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                         autoComplete='off'
                                                                     />
@@ -350,7 +361,7 @@ class LocalComponent extends React.Component {
                                                                         className="form-control"
                                                                         required={true}
                                                                         value={this.state.data.lastName.value}
-                                                                        onChange={(event) => this.handleSetChangeInputEvent('lastName', event)}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent(event, 'lastName')}
                                                                         disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                         autoComplete='off'
                                                                     />
@@ -377,7 +388,7 @@ class LocalComponent extends React.Component {
                                                                         className="form-control"
                                                                         required={false}
                                                                         value={this.state.data.email.value}
-                                                                        onChange={(event) => this.handleSetChangeInputEvent('email', event)}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent(event, 'email')}
                                                                         disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                         autoComplete='off'
                                                                     />
@@ -402,7 +413,7 @@ class LocalComponent extends React.Component {
                                                                         placeholder="Ejemplo de teléfono: +5730010001010"
                                                                         required={false}
                                                                         value={this.state.data.phone.value}
-                                                                        onChange={(event) => this.handleSetChangeInputEvent('phone', event)}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent(event, 'phone')}
                                                                         disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                         autoComplete='off'
                                                                     />
@@ -429,7 +440,7 @@ class LocalComponent extends React.Component {
                                                                         className="form-control"
                                                                         required={false}
                                                                         value={this.state.data.address.value}
-                                                                        onChange={(event) => this.handleSetChangeInputEvent('address', event)}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent(event, 'address')}
                                                                         disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                         autoComplete='off'
                                                                     />
@@ -453,7 +464,7 @@ class LocalComponent extends React.Component {
                                                                         className="form-control"
                                                                         required={false}
                                                                         value={this.state.data.birthdate.value}
-                                                                        onChange={(event) => this.handleSetChangeInputEvent('birthdate', event)}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent(event, 'birthdate')}
                                                                         disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                         autoComplete='off'
                                                                     />
@@ -479,6 +490,7 @@ class LocalComponent extends React.Component {
                                                                         required={false}
                                                                         disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                         autoComplete='off'
+                                                                        maxLength={3}
                                                                     />
                                                                     <div
                                                                         className="invalid-feedback"
@@ -499,7 +511,7 @@ class LocalComponent extends React.Component {
                                                                         name='status'
                                                                         value={this.state.data.status.value}
                                                                         required={false}
-                                                                        onChange={(event) => this.handleSetChangeInputEvent('status', event)}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent(event, 'status')}
                                                                         disabled={this.state.loading || (this.state.processed && !this.state.processedError)}>
                                                                         <option value={null}>Seleccionar...</option>
                                                                         {status.map((item, index) => {
@@ -528,7 +540,7 @@ class LocalComponent extends React.Component {
                                                                         placeholder="Ingrese la descripción"
                                                                         required={false}
                                                                         value={this.state.data.description.value}
-                                                                        onChange={(event) => this.handleSetChangeInputEvent('description', event)}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent(event, 'description')}
                                                                         disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                         autoComplete='off'
                                                                         rows="3"></textarea>

@@ -2,19 +2,21 @@ import React from 'react';
 import './styles.css';
 const TagsInput = props => {
     const [tags, setTags] = React.useState(props.tags);
-    const removeTags = indexToRemove => {
+    const removeTags = (event, indexToRemove) => {
         setTags([...tags.filter((_, index) => index !== indexToRemove)]);
-        props.selectedTags([...tags.filter((_, index) => index !== indexToRemove)]);
+        props.selectedTags(event, [...tags.filter((_, index) => index !== indexToRemove)]);
     };
     const addTags = event => {
         if (event) {
-            console.log(">event.key", event.key);
             event.preventDefault();
             event.stopPropagation();
         }
+        if (props.maxLength && tags.length >= props.maxLength) {
+            return;
+        }
         if (event.target.value !== "") {
             setTags([...tags, event.target.value]);
-            props.selectedTags([...tags, event.target.value]);
+            props.selectedTags(event, [...tags, event.target.value]);
             event.target.value = "";
         }
     };
@@ -28,9 +30,9 @@ const TagsInput = props => {
         <div className="tags-input">
             <ul id="tags">
                 {tags.map((tag, index) => (
-                    <li key={index} className="tag">
+                    <li key={index} className={`tag ${props.disabled ? 'tag-disabled' : ''}`}>
                         <span className='tag-title'>{tag}</span>
-                        <span className='tag-close-icon' onClick={() => removeTags(index)}>x</span>
+                        <span className='tag-close-icon' onClick={(event) => removeTags(event, index)}>x</span>
                     </li>
                 ))}
             </ul>
@@ -38,7 +40,7 @@ const TagsInput = props => {
                 type="text"
                 //onKeyUp={(event) => keyUp(event)}
                 onKeyDown={(event) => keyUp(event)}
-                placeholder="Ingresa y presiona Tab para agregar"
+                placeholder={`${props.disabled ? '' : 'Ingresa y presiona Tab para agregar'}`}
                 className='form-control input'
                 {...props}
             />

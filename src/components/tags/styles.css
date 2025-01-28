@@ -90,3 +90,8 @@
         width: calc(100vw - 32px);
     }
 }
+
+.tag-disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}

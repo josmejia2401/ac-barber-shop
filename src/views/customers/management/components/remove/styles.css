@@ -11,3 +11,15 @@
 .modal {
     background: rgba(0, 0, 0, .5);
 }
+
+.form-group.required .control-label:after {
+    color: #d00;
+    content: "*";
+    position: absolute;
+    margin-left: 3px;
+    top: 10px;
+}
+
+.alert {
+    margin: 15px;
+}
