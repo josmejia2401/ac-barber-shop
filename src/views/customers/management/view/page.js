@@ -105,6 +105,7 @@ class Page extends React.Component {
      */
     async handleShowDialog(key, item = null) {
         setTimeout(() => {
+            console.log("handleShowDialog", key);
             this.updateState({ currentItemSelected: item, currentDialog: key });
         }, 100);
     }

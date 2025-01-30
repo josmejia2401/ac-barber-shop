@@ -1,6 +1,7 @@
 import { axiosInstance } from './fetch.service.js'
 import api from './api.constants';
 import { buildAndThrowNewError, buildDefaultHeaders } from '../lib/auth.js';
+import DateUtil from '../lib/date.js';
 
 export const createItem = async (payload) => {
     try {
@@ -17,9 +18,9 @@ export const createItem = async (payload) => {
                         "email": "juan.perez@example.com",
                         "phone": "+573105397699",
                         "address": "Av. Siempre Viva 123, Ciudad, País",
-                        "birthdate": new Date().toISOString(),
+                        "birthdate": DateUtil.currentDateToFormat3(),
                         "tags": ["envíos rápidos", "descuentos exclusivos"],
-                        "createdAt": new Date().toISOString(),
+                        "createdAt": DateUtil.currentDateToISO(),
                         "status": 1,
                         "purchaseHistory": []
                     }
@@ -46,9 +47,9 @@ export const findItemById = async (id) => {
                     "email": "juan.perez@example.com",
                     "phone": "+573105397699",
                     "address": "Av. Siempre Viva 123, Ciudad, País",
-                    "birthdate": new Date().toISOString(),
+                    "birthdate": DateUtil.currentDateToFormat3(),
                     "tags": ["envíos rápidos", "descuentos exclusivos"],
-                    "createdAt": new Date().toISOString(),
+                    "createdAt": DateUtil.currentDateToISO(),
                     "status": 1,
                     "purchaseHistory": []
                 }
@@ -76,14 +77,14 @@ export const filterItems = async (payload) => {
                             "email": "juan.perez@example.com",
                             "phone": "+573105397699",
                             "address": "Av. Siempre Viva 123, Ciudad, País",
-                            "birthdate": new Date().toISOString(),
+                            "birthdate": DateUtil.currentDateToFormat3(),
                             "tags": ["envíos rápidos", "descuentos exclusivos"],
-                            "createdAt": new Date().toISOString(),
+                            "createdAt": DateUtil.currentDateToISO(),
                             "status": 1,
                             "purchaseHistory": [
                                 {
                                     "transactionId": 123456,
-                                    "date": new Date().toISOString(),
+                                    "date": DateUtil.currentDateToISO(),
                                     "amount": 1200,
                                     "items": [
                                         {
@@ -129,9 +130,9 @@ export const filterItems = async (payload) => {
                             "email": "juan.perez@example.com",
                             "phone": "+573105397699",
                             "address": "Av. Siempre Viva 123, Ciudad, País",
-                            "birthdate": "1990-05-15",
+                            "birthdate": DateUtil.currentDateToFormat3(),
                             "tags": ["envíos rápidos", "descuentos exclusivos"],
-                            "createdAt": new Date().toISOString(),
+                            "createdAt": DateUtil.currentDateToISO(),
                             "purchaseHistory": [],
                             "status": 1,
                         }
@@ -160,9 +161,9 @@ export const updateItemById = async (id, payload) => {
                     "email": "juan.perez@example.com",
                     "phone": "+573105397699",
                     "address": "Av. Siempre Viva 123, Ciudad, País",
-                    "birthdate": new Date().toISOString(),
+                    "birthdate": DateUtil.currentDateToFormat3(),
                     "tags": ["envíos rápidos", "descuentos exclusivos"],
-                    "createdAt": new Date().toISOString(),
+                    "createdAt": DateUtil.currentDateToISO(),
                     "status": 1,
                     "purchaseHistory": []
                 }
@@ -189,9 +190,9 @@ export const deleteItemById = async (id) => {
                     "email": "juan.perez@example.com",
                     "phone": "+573105397699",
                     "address": "Av. Siempre Viva 123, Ciudad, País",
-                    "birthdate": new Date().toISOString(),
+                    "birthdate": DateUtil.currentDateToFormat3(),
                     "tags": ["envíos rápidos", "descuentos exclusivos"],
-                    "createdAt": new Date().toISOString(),
+                    "createdAt": DateUtil.currentDateToISO(),
                     "status": 1,
                     "purchaseHistory": []
                 }

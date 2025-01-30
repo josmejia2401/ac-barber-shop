@@ -156,7 +156,7 @@ class LocalComponent extends React.Component {
                         name: 'Fecha de creación',
                         required: false,
                         minLength: 0,
-                        maxLength: 19,
+                        maxLength: 24,
                         select: false,
                         multiple: false
                     }
@@ -224,7 +224,7 @@ class LocalComponent extends React.Component {
         this.setState({ ...payload }, () => this.propagateState());
     }
 
-    async handleSubmit(event) {
+    handleSubmit(event) {
         if (event) {
             event.preventDefault();
             event.stopPropagation();

@@ -3,7 +3,7 @@ import "./styles.css";
 import ButtonPrimary from '../../../../../components/button-primary';
 import ButtonSecondary from '../../../../../components/button-secondary';
 import TagsInput from '../../../../../components/tags';
-import { createItem } from '../../../../../services/customers.service';
+import { deleteItemById } from '../../../../../services/customers.service';
 import { status } from '../../../../../lib/list-values';
 import Validator from '../../../../../lib/validator';
 
@@ -37,7 +37,7 @@ class LocalComponent extends React.Component {
             dataTemp.status.value = data.status;
             dataTemp.createdAt.value = data.createdAt;
             dataTemp.description.value = data.description;
-            this.resetState({ data: dataTemp, dataLoaded: true });
+            this.resetState({ data: dataTemp, dataLoaded: true, isFormValid: true });
         } else {
             this.resetState({ dataLoaded: true });
         }
@@ -156,7 +156,7 @@ class LocalComponent extends React.Component {
                         name: 'Fecha de creación',
                         required: false,
                         minLength: 0,
-                        maxLength: 19,
+                        maxLength: 24,
                         select: false,
                         multiple: false
                     }
@@ -247,7 +247,7 @@ class LocalComponent extends React.Component {
                 payload[key] = data[key].value;
             });
             console.log("payload", payload);
-            createItem(payload).then(_ => {
+            deleteItemById(payload).then(_ => {
                 this.updateState({
                     processed: true,
                     processedMessage: "Procesado correctamente",
