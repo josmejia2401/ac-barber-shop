@@ -622,7 +622,7 @@ class LocalComponent extends React.Component {
 
 
 
-                                                        <div className="row">
+                                                        <div className="row mb-4">
                                                             <div className="col-12 col-md-12">
                                                                 <div className="accordion" id="accordionExample">
                                                                     <div className="accordion-item">
@@ -633,31 +633,7 @@ class LocalComponent extends React.Component {
                                                                         </h2>
                                                                         <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
                                                                             <div className="accordion-body">
-                                                                                <div className="row mb-4">
-                                                                                    <div className="col-12 col-md-12">
-                                                                                        <div className="form-group mandatory">
-                                                                                            <label htmlFor="description" className="form-label">Descripción</label>
-                                                                                            <textarea
-                                                                                                id="description"
-                                                                                                name="description"
-                                                                                                className="form-control"
-                                                                                                placeholder="Ingrese una descripción o nota"
-                                                                                                required={false}
-                                                                                                value={this.state.data.description.value}
-                                                                                                onChange={(event) => this.handleSetChangeInputEvent(event, 'description')}
-                                                                                                disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
-                                                                                                autoComplete='off'
-                                                                                                rows="3"></textarea>
-                                                                                            <div
-                                                                                                className="invalid-feedback"
-                                                                                                style={{
-                                                                                                    display: this.state.data.description.errors.length > 0 ? 'block' : 'none'
-                                                                                                }}>
-                                                                                                {this.state.data.description.errors[0]}
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
+                                                                              
 
                                                                                 <div className="row mb-2">
                                                                                     <div className="col-12 col-md-12">
@@ -702,6 +678,33 @@ class LocalComponent extends React.Component {
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
+
+                                                                                <div className="row">
+                                                                                    <div className="col-12 col-md-12">
+                                                                                        <div className="form-group mandatory">
+                                                                                            <label htmlFor="description" className="form-label">Descripción</label>
+                                                                                            <textarea
+                                                                                                id="description"
+                                                                                                name="description"
+                                                                                                className="form-control"
+                                                                                                placeholder="Ingrese una descripción o nota"
+                                                                                                required={false}
+                                                                                                value={this.state.data.description.value}
+                                                                                                onChange={(event) => this.handleSetChangeInputEvent(event, 'description')}
+                                                                                                disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                                autoComplete='off'
+                                                                                                rows="3"></textarea>
+                                                                                            <div
+                                                                                                className="invalid-feedback"
+                                                                                                style={{
+                                                                                                    display: this.state.data.description.errors.length > 0 ? 'block' : 'none'
+                                                                                                }}>
+                                                                                                {this.state.data.description.errors[0]}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                
                                                                             </div>
                                                                         </div>
                                                                     </div>
