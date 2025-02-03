@@ -19,6 +19,7 @@ class Page extends React.Component {
         this.resetState = this.resetState.bind(this);
         this.propagateState = this.propagateState.bind(this);
         this.updateState = this.updateState.bind(this);
+        this.updateData = this.updateData.bind(this);
         //TABLE
         this.setChangeInputEvent = this.setChangeInputEvent.bind(this);
         this.handleLoadData = this.handleLoadData.bind(this);
@@ -29,7 +30,6 @@ class Page extends React.Component {
         this.handleShowDialog = this.handleShowDialog.bind(this);
         this.handleHideDialog = this.handleHideDialog.bind(this);
     }
-
 
     componentDidMount() {
         this.handleLoadData();
@@ -42,6 +42,7 @@ class Page extends React.Component {
     defaultState() {
         return {
             loading: false,
+            loadingMoreData: false,
             data: [],
             dataFiltered: [],
             currentItemSelected: undefined,
@@ -59,7 +60,9 @@ class Page extends React.Component {
         });
     }
 
-    async propagateState() { }
+    async propagateState() {
+        this.forceUpdate();
+    }
 
     updateState(payload) {
         this.setState({ ...payload }, () => this.propagateState());
@@ -82,19 +85,19 @@ class Page extends React.Component {
     async handleLoadMoreData(e) {
         e?.preventDefault();
         e?.stopPropagation();
-        this.updateState({ loading: true });
+        this.updateState({ loadingMoreData: true });
         filterItems(this.state.lastEvaluatedKey).then(result => {
             this.state.data.push(...result.data);
             this.state.dataFiltered.push(...result.data);
             this.updateState({
                 data: this.state.data,
                 dataFiltered: this.state.dataFiltered,
-                loading: false,
+                loadingMoreData: false,
                 lastEvaluatedKey: result.lastEvaluatedKey
             });
         }).catch(err => {
             console.log(err.fileName, err);
-            this.updateState({ loading: false });
+            this.updateState({ loadingMoreData: false });
         });
     }
 
@@ -105,7 +108,6 @@ class Page extends React.Component {
      */
     async handleShowDialog(key, item = null) {
         setTimeout(() => {
-            console.log("handleShowDialog", key);
             this.updateState({ currentItemSelected: item, currentDialog: key });
         }, 100);
     }
@@ -131,10 +133,30 @@ class Page extends React.Component {
         }
     }
 
+    updateData(data, eventType, newData) {
+        const index = data.findIndex(p => p.id === newData.id);
+        if (index === -1) {
+            return;
+        } else {
+            if (eventType === "deleted") {
+                data.splice(index, 1);
+            } else {
+                data[index] = newData;
+            }
+        }
+    }
 
-    async handleAfterClosedDialog(reloadData = false) {
-        if (reloadData === true) {
-            this.handleLoadData();
+    async handleAfterClosedDialog(newData = undefined, eventType = undefined) {
+        if (newData && eventType) {
+            const { data, dataFiltered } = this.state;
+            if (eventType === 'created') {
+                data.unshift(newData);
+                dataFiltered.unshift(newData);
+            } else {
+                this.updateData(dataFiltered, eventType, newData);
+                this.updateData(data, eventType, newData);
+            }
+            this.updateState({ data: data, dataFiltered: dataFiltered });
         }
     }
 
@@ -254,18 +276,19 @@ class Page extends React.Component {
                                                 })}
                                             </tbody>
 
-                                            {!this.state.loading && this.state.lastEvaluatedKey && <tfoot>
+                                            {this.state.lastEvaluatedKey && (<tfoot>
                                                 <tr>
-                                                    <td colSpan={9}>
-                                                        <Link
+                                                    <td colSpan={9} style={{ textAlign: 'center', alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
+                                                        {this.state.loadingMoreData ? (<div className="spinner-border" role="status">
+                                                            <span class="visually-hidden">Loading...</span>
+                                                        </div>) : (<Link
                                                             to={"#"}
                                                             className='center-text'
                                                             onClick={this.handleLoadMoreData} >Cargar más
-                                                        </Link>
+                                                        </Link>)}
                                                     </td>
                                                 </tr>
-                                            </tfoot>}
-
+                                            </tfoot>)}
                                         </table>
                                     </div>
                                 </div>

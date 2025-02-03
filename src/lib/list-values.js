@@ -43,6 +43,14 @@ export const status = [
     {
         id: 4,
         name: 'PENDIENTE'
+    },
+    {
+        id: 5,
+        name: 'POTENCIAL'
+    },
+    {
+        id: 6,
+        name: 'PERDIDO'
     }
 ];
 
@@ -66,6 +74,9 @@ export function buildAndGetClassStatus(recordStatus) {
     }
     return null;
 }
+
+
+
 
 
 

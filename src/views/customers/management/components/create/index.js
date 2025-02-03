@@ -4,7 +4,7 @@ import ButtonPrimary from '../../../../../components/button-primary';
 import ButtonSecondary from '../../../../../components/button-secondary';
 import TagsInput from '../../../../../components/tags';
 import { createItem } from '../../../../../services/customers.service';
-import { status } from '../../../../../lib/list-values';
+import { documentTypes, status } from '../../../../../lib/list-values';
 import Validator from '../../../../../lib/validator';
 
 class LocalComponent extends React.Component {
@@ -20,6 +20,8 @@ class LocalComponent extends React.Component {
         this.updateState = this.updateState.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectedTags = this.handleSelectedTags.bind(this);
+        this.handleSelectedAssociatedCampaigns = this.handleSelectedAssociatedCampaigns.bind(this);
+
     }
 
     componentDidMount() {
@@ -37,6 +39,8 @@ class LocalComponent extends React.Component {
             dataTemp.status.value = data.status;
             dataTemp.createdAt.value = data.createdAt;
             dataTemp.description.value = data.description;
+            dataTemp.associatedCampaigns.value = data.associatedCampaigns;
+
             this.resetState({ data: dataTemp, dataLoaded: true });
         } else {
             this.resetState({ dataLoaded: true });
@@ -127,16 +131,6 @@ class LocalComponent extends React.Component {
                         maxLength: 19,
                     }
                 },
-                tags: {
-                    value: [],
-                    errors: [],
-                    schema: {
-                        name: 'Etiquetas',
-                        required: false,
-                        minLength: 0,
-                        maxLength: 1000,
-                    }
-                },
                 status: {
                     value: 1,
                     errors: [],
@@ -161,11 +155,59 @@ class LocalComponent extends React.Component {
                         multiple: false
                     }
                 },
+                documentType: {
+                    value: '',
+                    errors: [],
+                    schema: {
+                        name: 'Tipo de documento',
+                        required: false,
+                        minLength: 0,
+                        maxLength: 9,
+                        select: false,
+                        multiple: false
+                    }
+                },
+                documentNumber: {
+                    value: '',
+                    errors: [],
+                    schema: {
+                        name: 'Número de documento',
+                        required: false,
+                        minLength: 0,
+                        maxLength: 25,
+                        select: false,
+                        multiple: false
+                    }
+                },
+
+                //Información de adicional
+                tags: {
+                    value: [],
+                    errors: [],
+                    schema: {
+                        name: 'Etiquetas',
+                        required: false,
+                        minLength: 0,
+                        maxLength: 1000,
+                    }
+                },
                 description: {
                     value: '',
                     errors: [],
                     schema: {
                         name: 'Descripción',
+                        required: false,
+                        minLength: 0,
+                        maxLength: 1000,
+                        select: false,
+                        multiple: false
+                    }
+                },
+                associatedCampaigns: {
+                    value: [],
+                    errors: [],
+                    schema: {
+                        name: 'Campañas asociadas',
                         required: false,
                         minLength: 0,
                         maxLength: 1000,
@@ -247,13 +289,13 @@ class LocalComponent extends React.Component {
                 payload[key] = data[key].value;
             });
             console.log("payload", payload);
-            createItem(payload).then(_ => {
+            createItem(payload).then(result => {
                 this.updateState({
                     processed: true,
                     processedMessage: "Procesado correctamente",
                     processedError: false,
                 });
-                this.props.handleAfterClosedDialog(true);
+                this.props.handleAfterClosedDialog(result.data, 'created');
             }).catch(error => {
                 this.updateState({
                     processed: true,
@@ -273,6 +315,18 @@ class LocalComponent extends React.Component {
         }
         const data = this.state.data;
         data.tags.value = tags;
+        this.updateState({
+            data: data
+        });
+    }
+
+    async handleSelectedAssociatedCampaigns(event, tags) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        const data = this.state.data;
+        data.associatedCampaigns.value = tags;
         this.updateState({
             data: data
         });
@@ -374,6 +428,61 @@ class LocalComponent extends React.Component {
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
+
+
+                                                        <div className="row mb-2">
+
+                                                            <div className="col-12 col-md-6">
+                                                                <div className="form-group">
+                                                                    <label htmlFor="documentType" className="form-label control-label">Tipo de documento</label>
+                                                                    <select
+                                                                        className="form-select"
+                                                                        id="documentType"
+                                                                        name='documentType'
+                                                                        value={this.state.data.documentType.value}
+                                                                        required={false}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent(event, 'documentType')}
+                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}>
+                                                                        <option value={null}>Seleccionar...</option>
+                                                                        {documentTypes.map((item, index) => {
+                                                                            return (<option value={item.id} key={index}>{item.name}</option>);
+                                                                        })}
+                                                                    </select>
+                                                                    <div
+                                                                        className="invalid-feedback"
+                                                                        style={{
+                                                                            display: this.state.data.documentType.errors.length > 0 ? 'block' : 'none'
+                                                                        }}>
+                                                                        {this.state.data.documentType.errors[0]}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-12 col-md-6">
+
+                                                                <div className="form-group">
+                                                                    <label htmlFor="documentNumber" className="form-label control-label">Número de documento</label>
+                                                                    <input
+                                                                        type="text"
+                                                                        id="documentNumber"
+                                                                        name="documentNumber"
+                                                                        className="form-control"
+                                                                        required={true}
+                                                                        value={this.state.data.documentNumber.value}
+                                                                        onChange={(event) => this.handleSetChangeInputEvent(event, 'documentNumber')}
+                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                        autoComplete='off'
+                                                                    />
+                                                                    <div
+                                                                        className="invalid-feedback"
+                                                                        style={{
+                                                                            display: this.state.data.documentNumber.errors.length > 0 ? 'block' : 'none'
+                                                                        }}>
+                                                                        {this.state.data.documentNumber.errors[0]}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
                                                         </div>
 
 
@@ -480,27 +589,7 @@ class LocalComponent extends React.Component {
                                                         </div>
 
 
-                                                        <div className="row mb-2">
-                                                            <div className="col-12 col-md-6">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="tags" className="form-label control-label">Etiquetas</label>
-                                                                    <TagsInput
-                                                                        selectedTags={this.handleSelectedTags}
-                                                                        tags={this.state.data.tags.value} type="text"
-                                                                        required={false}
-                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
-                                                                        autoComplete='off'
-                                                                        maxLength={3}
-                                                                    />
-                                                                    <div
-                                                                        className="invalid-feedback"
-                                                                        style={{
-                                                                            display: this.state.data.tags.errors.length > 0 ? 'block' : 'none'
-                                                                        }}>
-                                                                        {this.state.data.tags.errors[0]}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                        <div className="row mb-4">
 
                                                             <div className="col-12 col-md-6">
                                                                 <div className="form-group">
@@ -527,29 +616,94 @@ class LocalComponent extends React.Component {
                                                                     </div>
                                                                 </div>
                                                             </div>
+
                                                         </div>
+
+
+
 
                                                         <div className="row">
                                                             <div className="col-12 col-md-12">
-                                                                <div className="form-group mandatory">
-                                                                    <label htmlFor="description" className="form-label">Descripción</label>
-                                                                    <textarea
-                                                                        id="description"
-                                                                        name="description"
-                                                                        className="form-control"
-                                                                        placeholder="Ingrese la descripción"
-                                                                        required={false}
-                                                                        value={this.state.data.description.value}
-                                                                        onChange={(event) => this.handleSetChangeInputEvent(event, 'description')}
-                                                                        disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
-                                                                        autoComplete='off'
-                                                                        rows="3"></textarea>
-                                                                    <div
-                                                                        className="invalid-feedback"
-                                                                        style={{
-                                                                            display: this.state.data.description.errors.length > 0 ? 'block' : 'none'
-                                                                        }}>
-                                                                        {this.state.data.description.errors[0]}
+                                                                <div className="accordion" id="accordionExample">
+                                                                    <div className="accordion-item">
+                                                                        <h2 className="accordion-header">
+                                                                            <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                                                Información de segmentación
+                                                                            </button>
+                                                                        </h2>
+                                                                        <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                                                            <div className="accordion-body">
+                                                                                <div className="row mb-4">
+                                                                                    <div className="col-12 col-md-12">
+                                                                                        <div className="form-group mandatory">
+                                                                                            <label htmlFor="description" className="form-label">Descripción</label>
+                                                                                            <textarea
+                                                                                                id="description"
+                                                                                                name="description"
+                                                                                                className="form-control"
+                                                                                                placeholder="Ingrese una descripción o nota"
+                                                                                                required={false}
+                                                                                                value={this.state.data.description.value}
+                                                                                                onChange={(event) => this.handleSetChangeInputEvent(event, 'description')}
+                                                                                                disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                                autoComplete='off'
+                                                                                                rows="3"></textarea>
+                                                                                            <div
+                                                                                                className="invalid-feedback"
+                                                                                                style={{
+                                                                                                    display: this.state.data.description.errors.length > 0 ? 'block' : 'none'
+                                                                                                }}>
+                                                                                                {this.state.data.description.errors[0]}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div className="row mb-2">
+                                                                                    <div className="col-12 col-md-12">
+                                                                                        <div className="form-group">
+                                                                                            <label htmlFor="associatedCampaigns" className="form-label control-label">Camapañas asociadas</label>
+                                                                                            <TagsInput
+                                                                                                selectedTags={this.handleSelectedAssociatedCampaigns}
+                                                                                                tags={this.state.data.associatedCampaigns.value} type="text"
+                                                                                                required={false}
+                                                                                                disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                                autoComplete='off'
+                                                                                                maxLength={5}
+                                                                                            />
+                                                                                            <div
+                                                                                                className="invalid-feedback"
+                                                                                                style={{
+                                                                                                    display: this.state.data.associatedCampaigns.errors.length > 0 ? 'block' : 'none'
+                                                                                                }}>
+                                                                                                {this.state.data.associatedCampaigns.errors[0]}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <div className="col-12 col-md-12">
+                                                                                        <div className="form-group">
+                                                                                            <label htmlFor="tags" className="form-label control-label">Etiquetas</label>
+                                                                                            <TagsInput
+                                                                                                selectedTags={this.handleSelectedTags}
+                                                                                                tags={this.state.data.tags.value} type="text"
+                                                                                                required={false}
+                                                                                                disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                                autoComplete='off'
+                                                                                                maxLength={5}
+                                                                                            />
+                                                                                            <div
+                                                                                                className="invalid-feedback"
+                                                                                                style={{
+                                                                                                    display: this.state.data.tags.errors.length > 0 ? 'block' : 'none'
+                                                                                                }}>
+                                                                                                {this.state.data.tags.errors[0]}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>

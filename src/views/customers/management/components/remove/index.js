@@ -247,13 +247,13 @@ class LocalComponent extends React.Component {
                 payload[key] = data[key].value;
             });
             console.log("payload", payload);
-            deleteItemById(payload).then(_ => {
+            deleteItemById(payload).then(result => {
                 this.updateState({
                     processed: true,
                     processedMessage: "Procesado correctamente",
                     processedError: false,
                 });
-                this.props.handleAfterClosedDialog(true);
+                this.props.handleAfterClosedDialog(result.data, 'deleted');
             }).catch(error => {
                 this.updateState({
                     processed: true,

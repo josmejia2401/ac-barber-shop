@@ -12,7 +12,7 @@ export const createItem = async (payload) => {
                     message: 'Successful operation',
                     lastEvaluatedKey: undefined,
                     data: {
-                        "id": 1234567,
+                        "id": 12345,
                         "firstName": "Juan",
                         "lastName": "Pérez",
                         "email": "juan.perez@example.com",
@@ -41,7 +41,7 @@ export const findItemById = async (id) => {
                 message: 'Successful operation',
                 lastEvaluatedKey: undefined,
                 data: {
-                    "id": 1234567,
+                    "id": id,
                     "firstName": "Juan",
                     "lastName": "Pérez",
                     "email": "juan.perez@example.com",
@@ -68,10 +68,10 @@ export const filterItems = async (payload) => {
                 resolve({
                     code: 200,
                     message: 'Successful operation',
-                    lastEvaluatedKey: undefined,
+                    lastEvaluatedKey: { id: 1 },
                     data: [
                         {
-                            "id": 1234567,
+                            "id": 12345,
                             "firstName": "Juan",
                             "lastName": "Pérez",
                             "email": "juan.perez@example.com",
@@ -124,7 +124,7 @@ export const filterItems = async (payload) => {
                             ]
                         },
                         {
-                            "id": 12345678,
+                            "id": 123456,
                             "firstName": "Juanx",
                             "lastName": "Mejia",
                             "email": "juan.perez@example.com",
@@ -150,24 +150,26 @@ export const filterItems = async (payload) => {
 export const updateItemById = async (id, payload) => {
     try {
         return new Promise((resolveOuter) => {
-            resolveOuter({
-                code: 200,
-                message: 'Successful operation',
-                lastEvaluatedKey: undefined,
-                data: {
-                    "id": 1234567,
-                    "firstName": "Juan",
-                    "lastName": "Pérez",
-                    "email": "juan.perez@example.com",
-                    "phone": "+573105397699",
-                    "address": "Av. Siempre Viva 123, Ciudad, País",
-                    "birthdate": DateUtil.currentDateToFormat3(),
-                    "tags": ["envíos rápidos", "descuentos exclusivos"],
-                    "createdAt": DateUtil.currentDateToISO(),
-                    "status": 1,
-                    "purchaseHistory": []
-                }
-            });
+            setTimeout(() => {
+                resolveOuter({
+                    code: 200,
+                    message: 'Successful operation',
+                    lastEvaluatedKey: undefined,
+                    data: {
+                        "id": 12345,
+                        "firstName": "Juan",
+                        "lastName": "Pérez",
+                        "email": "juan.perez@example.com",
+                        "phone": "+573105397699",
+                        "address": "Av. Siempre Viva 123, Ciudad, País",
+                        "birthdate": DateUtil.currentDateToFormat3(),
+                        "tags": ["envíos rápidos", "descuentos exclusivos"],
+                        "createdAt": DateUtil.currentDateToISO(),
+                        "status": 1,
+                        "purchaseHistory": []
+                    }
+                });
+            }, 2000);
         });
     } catch (error) {
         console.error(error);
@@ -179,24 +181,27 @@ export const updateItemById = async (id, payload) => {
 export const deleteItemById = async (id) => {
     try {
         return new Promise((resolveOuter) => {
-            resolveOuter({
-                code: 200,
-                message: 'Successful operation',
-                lastEvaluatedKey: undefined,
-                data: {
-                    "id": 1234567,
-                    "firstName": "Juan",
-                    "lastName": "Pérez",
-                    "email": "juan.perez@example.com",
-                    "phone": "+573105397699",
-                    "address": "Av. Siempre Viva 123, Ciudad, País",
-                    "birthdate": DateUtil.currentDateToFormat3(),
-                    "tags": ["envíos rápidos", "descuentos exclusivos"],
-                    "createdAt": DateUtil.currentDateToISO(),
-                    "status": 1,
-                    "purchaseHistory": []
-                }
-            });
+
+            setTimeout(() => {
+                resolveOuter({
+                    code: 200,
+                    message: 'Successful operation',
+                    lastEvaluatedKey: undefined,
+                    data: {
+                        "id": 12345,
+                        "firstName": "Juan",
+                        "lastName": "Pérez",
+                        "email": "juan.perez@example.com",
+                        "phone": "+573105397699",
+                        "address": "Av. Siempre Viva 123, Ciudad, País",
+                        "birthdate": DateUtil.currentDateToFormat3(),
+                        "tags": ["envíos rápidos", "descuentos exclusivos"],
+                        "createdAt": DateUtil.currentDateToISO(),
+                        "status": 1,
+                        "purchaseHistory": []
+                    }
+                });
+            }, 2000);
         });
     } catch (error) {
         console.error(error);

@@ -248,13 +248,13 @@ class LocalComponent extends React.Component {
                 payload[key] = data[key].value;
             });
             console.log("payload", payload);
-            updateItemById(payload).then(_ => {
+            updateItemById(payload).then(result => {
                 this.updateState({
                     processed: true,
                     processedMessage: "Procesado correctamente",
                     processedError: false,
                 });
-                this.props.handleAfterClosedDialog(true);
+                this.props.handleAfterClosedDialog(result.data, 'updated');
             }).catch(error => {
                 this.updateState({
                     processed: true,
