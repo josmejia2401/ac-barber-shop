@@ -71,7 +71,7 @@ class Page extends React.Component {
     async handleLoadData(e) {
         e?.preventDefault();
         e?.stopPropagation();
-        this.updateState({ loading: true });
+        this.updateState({ loading: true, lastEvaluatedKey: undefined, loadingMoreData: false });
         filterItems({}).then(result => {
             this.updateState({
                 data: result.data,

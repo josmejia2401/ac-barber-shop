@@ -4,7 +4,9 @@ const TagsInput = props => {
     const [tags, setTags] = React.useState(props.tags);
     const removeTags = (event, indexToRemove) => {
         setTags([...tags.filter((_, index) => index !== indexToRemove)]);
-        props.selectedTags(event, [...tags.filter((_, index) => index !== indexToRemove)]);
+        if (props.selectedTags) {
+            props.selectedTags(event, [...tags.filter((_, index) => index !== indexToRemove)]);
+        }
     };
     const addTags = event => {
         if (event) {
@@ -16,7 +18,9 @@ const TagsInput = props => {
         }
         if (event.target.value !== "") {
             setTags([...tags, event.target.value]);
-            props.selectedTags(event, [...tags, event.target.value]);
+            if (props.selectedTags) {
+                props.selectedTags(event, [...tags, event.target.value]);
+            }
             event.target.value = "";
         }
     };
@@ -37,12 +41,16 @@ const TagsInput = props => {
                 ))}
             </ul>
             <input
-                type="text"
                 //onKeyUp={(event) => keyUp(event)}
                 onKeyDown={(event) => keyUp(event)}
-                placeholder={`${props.disabled ? '' : 'Ingresa y presiona Tab para agregar'}`}
                 className='form-control input'
-                {...props}
+                id={props.id}
+                name={props.id}
+                placeholder={`${props.disabled ? '' : props.placeholder}`}
+                type={props.type}
+                required={props.required}
+                disabled={props.disabled}
+                autoComplete='off'
             />
         </div>
     );

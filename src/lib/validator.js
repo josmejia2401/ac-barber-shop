@@ -7,16 +7,30 @@ export default class Validator {
                 errors.push(`${schema.name} es requerido.`);
             }
         }
-        if (schema.minLength !== undefined && schema.minLength >= 0) {
-            if (String(value).length < schema.minLength) {
-                errors.push(`${schema.name} requiere una longitud mínima de ${schema.minLength}.`);
+        if (Array.isArray(value)) {
+            if (schema.minLength !== undefined && schema.minLength >= 0) {
+                if (value.length < schema.minLength) {
+                    errors.push(`${schema.name} requiere una longitud mínima de ${schema.minLength}.`);
+                }
+            }
+            if (schema.minLength !== undefined && schema.maxLength >= 0) {
+                if (value.length > schema.maxLength) {
+                    errors.push(`${schema.name} requiere una longitud máxima de ${schema.maxLength}.`);
+                }
+            }
+        } else {
+            if (schema.minLength !== undefined && schema.minLength >= 0) {
+                if (String(value).length < schema.minLength) {
+                    errors.push(`${schema.name} requiere una longitud mínima de ${schema.minLength}.`);
+                }
+            }
+            if (schema.minLength !== undefined && schema.maxLength >= 0) {
+                if (String(value).length > schema.maxLength) {
+                    errors.push(`${schema.name} requiere una longitud máxima de ${schema.maxLength}.`);
+                }
             }
         }
-        if (schema.minLength !== undefined && schema.maxLength >= 0) {
-            if (String(value).length > schema.maxLength) {
-                errors.push(`${schema.name} requiere una longitud máxima de ${schema.maxLength}.`);
-            }
-        }
+
         if (schema.email !== undefined && schema.email === true) {
             if (value && !String(value)
                 .toLowerCase()
