@@ -69,3 +69,10 @@ https://colorhunt.co/palette/ff8a8af4deb3f0eaaccce0ac
 .text-bg-primary {
   background-color: var(--color-orange-pastel) !important;
 }
+
+
+
+.custom-tooltip {
+  --bs-tooltip-bg: var(--color-orange-pastel);
+  --bs-tooltip-color: var(--bs-white);
+}

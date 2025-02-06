@@ -24,7 +24,6 @@ class LocalComponent extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectedTags = this.handleSelectedTags.bind(this);
         this.handleSelectedAssociatedCampaigns = this.handleSelectedAssociatedCampaigns.bind(this);
-
         this.handleSetAccordion = this.handleSetAccordion.bind(this);
     }
 
@@ -349,7 +348,7 @@ class LocalComponent extends React.Component {
                     processedMessage: "Procesado correctamente",
                     processedError: false,
                 });
-                this.props.handleAfterClosedDialog(result.data, 'created');
+                this.props.handleAfterClosedDialog(result.data, 'updated');
             }).catch(error => {
                 this.updateState({
                     processed: true,
@@ -417,7 +416,7 @@ class LocalComponent extends React.Component {
                     <div className="modal-content">
 
                         <div className="modal-header">
-                            <h4 className="modal-title" id='myModalLabel33'>Crear elemento</h4>
+                            <h4 className="modal-title" id='myModalLabel33'>Editar elemento</h4>
                             <button type="button" className="close btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={this.props.handleHideDialog}>
                                 <i data-feather="x" ></i>
                             </button>
@@ -542,7 +541,7 @@ class LocalComponent extends React.Component {
                                                                                 type="button"
                                                                                 data-bs-toggle="collapse"
                                                                                 data-bs-target="#collapseOne"
-                                                                                aria-expanded={!this.state.accordionSelected ? false : true}
+                                                                                aria-expanded={`${!this.state.accordionSelected ? false : true}`}
                                                                                 aria-controls="collapseOne"
                                                                                 onClick={this.handleSetAccordion}>
                                                                                 Información de segmentación y notas
@@ -568,7 +567,6 @@ class LocalComponent extends React.Component {
                                                                                                 autoComplete='off'
                                                                                                 maxLength={this.state.data.associatedCampaigns.schema.maxLength}
                                                                                             />
-                                                                                            <small class="form-text text-muted">Si el cliente fue captado a través de una campaña específica</small>
                                                                                             <div
                                                                                                 className="invalid-feedback"
                                                                                                 style={{
@@ -594,7 +592,6 @@ class LocalComponent extends React.Component {
                                                                                                 autoComplete='off'
                                                                                                 maxLength={this.state.data.tags.schema.maxLength}
                                                                                             />
-                                                                                            <small class="form-text text-muted">Para segmentar al cliente por tipo, industria, interés, etc.</small>
                                                                                             <div
                                                                                                 className="invalid-feedback"
                                                                                                 style={{
@@ -637,7 +634,7 @@ class LocalComponent extends React.Component {
                                     loading={this.state.loading}
                                     showText={true}
                                     textLoading={'Procesando...'}
-                                    text='Crear'
+                                    text='Editar'
                                 />
                             </div>
                         </form>

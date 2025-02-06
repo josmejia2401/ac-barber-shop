@@ -22,7 +22,10 @@ export const createItem = async (payload) => {
                         "tags": ["envíos rápidos", "descuentos exclusivos"],
                         "createdAt": DateUtil.currentDateToISO(),
                         "status": 1,
-                        "purchaseHistory": []
+                        "purchaseHistory": [],
+                        "associatedCampaigns": [],
+                        "documentType": 1,
+                        "documentNumber": "123456"
                     }
                 });
             }, 2000);

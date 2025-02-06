@@ -41,11 +41,10 @@ const TagsInput = props => {
                 ))}
             </ul>
             <input
-                //onKeyUp={(event) => keyUp(event)}
                 onKeyDown={(event) => keyUp(event)}
                 className='form-control input'
-                id={props.id}
-                name={props.id}
+                id={props.id === "tags" ? "tags1" : props.id}
+                name={props.id === "tags" ? "tags1" : props.id}
                 placeholder={`${props.disabled ? '' : props.placeholder}`}
                 type={props.type}
                 required={props.required}

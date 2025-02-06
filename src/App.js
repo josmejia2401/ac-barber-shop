@@ -16,6 +16,7 @@ import ChatView from '../src/views/chats';
 
 
 import CustomersManagementView from '../src/views/customers/management/view';
+import EmployeesManagementView from '../src/views/employees/management/view';
 
 
 class App extends React.Component {
@@ -217,7 +218,7 @@ function Inner(props) {
       <Route exact path="/customers/transaction-history" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
       <Route exact path="/customers/marketing-automation-customer-segmentation" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
 
-      <Route exact path="/employees/employee-management" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
+      <Route exact path="/employees/employee-management" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
       <Route exact path="/employees/control-personal-data-roles" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
       <Route exact path="/employees/management-schedules-attendance" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
 
