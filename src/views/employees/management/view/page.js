@@ -6,10 +6,11 @@ import EditComponent from '../components/edit';
 import RemoveComponent from '../components/remove';
 import ButtonIcon from '../../../../components/button-icon';
 import { filterItems } from '../../../../services/employees.service';
-import { buildAndGetClassStatus, findStatusById } from '../../../../lib/list-values';
-import { formatBirthdateToView, formatTextToView } from '../../../../lib/format';
-import { DOCUMENT_TYPES, getDocumentTypeFromList } from '../../../../lib/constants/document_types.constants';
+import { formatTextToView } from '../../../../lib/format';
+import { getDocumentTypeFromList } from '../../../../lib/constants/document_types.constants';
 import { getEmployeeStatusFromList } from '../../../../lib/constants/employee_status.constants';
+import { downloadCSV, jsonToCsv } from '../../../../lib/csv';
+import Notification from '../../../../components/notification';
 
 class Page extends React.Component {
 
@@ -31,6 +32,11 @@ class Page extends React.Component {
         this.handleAfterClosedDialog = this.handleAfterClosedDialog.bind(this);
         this.handleShowDialog = this.handleShowDialog.bind(this);
         this.handleHideDialog = this.handleHideDialog.bind(this);
+        //EXPORT CSV
+        this.handleExportToCSV = this.handleExportToCSV.bind(this);
+        this.handleChecked = this.handleChecked.bind(this);
+        //NOTIFICATION
+        this.handleShowNotification = this.handleShowNotification.bind(this);
     }
 
     componentDidMount() {
@@ -52,6 +58,13 @@ class Page extends React.Component {
             lastEvaluatedKey: undefined,
             tableOrderBy: false,
             tableInputSearch: '',
+            tableAllChecked: false,
+            downloading: false,
+            notificationParams: {
+                show: false,
+                type: 'info',
+                message: ''
+            }
         };
     }
 
@@ -75,6 +88,9 @@ class Page extends React.Component {
         e?.stopPropagation();
         this.updateState({ loading: true, lastEvaluatedKey: undefined, loadingMoreData: false });
         filterItems({}).then(result => {
+            result.data.forEach(p => {
+                p["checked"] = false;
+            });
             this.updateState({
                 data: result.data,
                 dataFiltered: result.data.map(clone => ({ ...clone })),
@@ -89,6 +105,9 @@ class Page extends React.Component {
         e?.stopPropagation();
         this.updateState({ loadingMoreData: true });
         filterItems(this.state.lastEvaluatedKey).then(result => {
+            result.data.forEach(p => {
+                p["checked"] = false;
+            });
             this.state.data.push(...result.data);
             this.state.dataFiltered.push(...result.data);
             this.updateState({
@@ -176,9 +195,59 @@ class Page extends React.Component {
         });
     }
 
+    async handleChecked(e, item = null) {
+        e?.preventDefault();
+        e?.stopPropagation();
+        const { data, dataFiltered, tableAllChecked } = this.state;
+        let tableAllCheckedTmp = tableAllChecked;
+        if (item === undefined || item === null) {
+            tableAllCheckedTmp = !tableAllCheckedTmp;
+            data.forEach(p => {
+                p["checked"] = tableAllCheckedTmp;
+            });
+            dataFiltered.forEach(p => {
+                p["checked"] = tableAllCheckedTmp;
+            });
+        } else {
+            const index = data.findIndex(p => p.id === item.id);
+            data[index].checked = !data[index].checked;
+
+            const index2 = dataFiltered.findIndex(p => p.id === item.id);
+            dataFiltered[index2].checked = !dataFiltered[index2].checked;
+        }
+        this.updateState({ data: data, dataFiltered: dataFiltered, tableAllChecked: tableAllCheckedTmp });
+    }
+
+    async handleExportToCSV() {
+        const { data } = this.state;
+        const jsonData = data.filter(p => p.checked === true);
+        if (jsonData.length > 0) {
+            this.updateState({ downloading: true });
+            const csvContent = jsonToCsv(jsonData);
+            downloadCSV(csvContent, 'employees.csv');
+            this.updateState({ downloading: false });
+        } else {
+            this.handleShowNotification('Ops! No hay datos seleccionados.', true, 'warning');
+        }
+    }
+
+    async handleShowNotification(message = '', show = false, type = 'info') {
+        const { notificationParams } = this.state;
+        notificationParams.show = show;
+        notificationParams.type = type;
+        notificationParams.message = message;
+        this.updateState({ notificationParams });
+    }
+
     render() {
         return (
             <div className="col py-3 panel-view">
+                <Notification
+                    type={this.state.notificationParams.type}
+                    message={this.state.notificationParams.message}
+                    show={this.state.notificationParams.show}
+                    handleShowNotification={this.handleShowNotification}
+                />
                 <section className="section container px-5" style={{
                     marginTop: '90px'
                 }}>
@@ -188,18 +257,27 @@ class Page extends React.Component {
                                 <div className="card-header">
                                     <h4 className="card-title title-color">Listado de empleados</h4>
 
-                                    <div className='btn-create-customer'>
+                                    <div className='btn-header-table'>
                                         <ButtonIcon type="button"
-                                            className="btn icon btn-primary-custom btn-create-customer"
+                                            className="btn icon btn-primary"
                                             onClick={this.handleLoadData}>
                                             <i className="fa-solid fa-rotate-right"></i>
                                         </ButtonIcon>
 
                                         <ButtonIcon type="button"
-                                            className="btn icon btn-primary-custom btn-create-customer"
+                                            className="btn icon btn-primary"
                                             style={{ marginLeft: '5px' }}
                                             onClick={() => this.handleShowDialog('create')}>
                                             <i className="fa-solid fa-plus"></i>
+                                        </ButtonIcon>
+
+                                        <ButtonIcon type="button"
+                                            className="btn icon btn-primary"
+                                            style={{ marginLeft: '5px' }}
+                                            onClick={this.handleExportToCSV}
+                                            disabled={this.state.downloading}
+                                            loading={this.state.downloading}>
+                                            <i className="fa-solid fa-file-csv"></i>
                                         </ButtonIcon>
                                     </div>
 
@@ -210,7 +288,7 @@ class Page extends React.Component {
                                         <table className="table table-hover mb-0">
                                             <thead>
                                                 <tr>
-                                                    <th colSpan={9}>
+                                                    <th colSpan={10}>
                                                         <input
                                                             placeholder='Buscar...'
                                                             type="text"
@@ -221,6 +299,11 @@ class Page extends React.Component {
                                                     </th>
                                                 </tr>
                                                 <tr>
+                                                    <th>
+                                                        <div className="form-check">
+                                                            <input className="form-check-input" type="checkbox" value={this.state.tableAllChecked} checked={this.state.tableAllChecked} id="flexCheckDefault" onClick={this.handleChecked} />
+                                                        </div>
+                                                    </th>
                                                     <th><b>Nombres</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('firstName')}></i></th>
                                                     <th><b>Apellidos</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('lastName')}></i></th>
                                                     <th>Correo</th>
@@ -235,17 +318,31 @@ class Page extends React.Component {
                                             <tbody>
 
                                                 {this.state.loading && (<tr>
-                                                    <td className="text-color" colSpan={9}>
-                                                        <div className="skeleton-panel">
-                                                            <div className="skeleton-line" />
-                                                            <div className="skeleton-line" />
-                                                            <div className="skeleton-line" />
+                                                    <td className="text-color" colSpan={10}>
+                                                        <div className="skeleton-container">
+                                                            <div className="skeleton-post">
+                                                                <div className="skeleton-avatar"></div>
+                                                                <div className="skeleton-line"></div>
+                                                                <div className="skeleton-avatar"></div>
+                                                            </div>
+
+                                                            <div className="skeleton-post">
+                                                                <div className="skeleton-avatar"></div>
+                                                                <div className="skeleton-line"></div>
+                                                                <div className="skeleton-avatar"></div>
+                                                            </div>
+
+                                                            <div className="skeleton-post">
+                                                                <div className="skeleton-avatar"></div>
+                                                                <div className="skeleton-line"></div>
+                                                                <div className="skeleton-avatar"></div>
+                                                            </div>
                                                         </div>
                                                     </td>
                                                 </tr>)}
 
                                                 {!this.state.loading && this.state.dataFiltered.length === 0 && (<tr>
-                                                    <td className="text-color" colSpan={9}>
+                                                    <td className="text-color" colSpan={10}>
                                                         <i className="fa-solid fa-circle-exclamation no-found-icon"></i>
                                                         <h1 className="no-found-text">No hay datos</h1>
                                                     </td>
@@ -253,6 +350,12 @@ class Page extends React.Component {
 
                                                 {!this.state.loading && this.state.dataFiltered.length > 0 && this.state.dataFiltered.map((item, index) => {
                                                     return (<tr key={index}>
+                                                        <td className="text-color">
+                                                            <div className="form-check">
+                                                                <input className="form-check-input" type="checkbox" value={item.checked} id="flexCheckChecked" checked={item.checked}
+                                                                    onClick={(e) => this.handleChecked(e, item)} />
+                                                            </div>
+                                                        </td>
                                                         <td className="text-color">{item.firstName}</td>
                                                         <td className="text-color">{item.lastName}</td>
                                                         <td className="text-color">{item.contactInformation.email}</td>
@@ -263,22 +366,21 @@ class Page extends React.Component {
                                                         <td><span className={`text-color ${getEmployeeStatusFromList(item.statusId).cssClass}`}>{getEmployeeStatusFromList(item.statusId).name}</span></td>
                                                         <td>
                                                             <Link to={"#"}>
-                                                                <i className="fa-regular fa-pen-to-square primary-color" onClick={() => this.handleShowDialog('edit', item)}></i>
+                                                                <i className="fa-regular fa-pen-to-square" onClick={() => this.handleShowDialog('edit', item)}></i>
                                                             </Link>
 
                                                             <Link to={"#"} style={{ marginLeft: '15px' }}>
-                                                                <i className="fa-solid fa-trash primary-color" onClick={() => this.handleShowDialog('remove', item)}></i>
+                                                                <i className="fa-solid fa-trash" onClick={() => this.handleShowDialog('remove', item)}></i>
                                                             </Link>
-
                                                         </td>
                                                     </tr>);
                                                 })}
                                             </tbody>
 
-                                            {this.state.lastEvaluatedKey && (<tfoot>
+                                            {this.state.lastEvaluatedKey && !this.state.loading && this.state.dataFiltered.length > 0 && (<tfoot>
                                                 <tr>
-                                                    <td colSpan={9} style={{ textAlign: 'center', alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
-                                                        {this.state.loadingMoreData ? (<div className="spinner-border" role="status">
+                                                    <td colSpan={10} style={{ textAlign: 'center', alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
+                                                        {this.state.loadingMoreData ? (<div className="spinner-border text-primary" role="status">
                                                             <span class="visually-hidden">Loading...</span>
                                                         </div>) : (<Link
                                                             to={"#"}

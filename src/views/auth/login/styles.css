@@ -12,23 +12,3 @@
 .alert-danger {
     padding: 8px;
 }
-
-.form-check-input:checked,
-.form-check-input::before {
-    background-color: var(--color-orange-pastel) !important;
-}
-
-.form-check-input:checked:focus,
-.form-check-input::before {
-    box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem var(--color-orange-pastel)
-}
-
-.form-check-input:focus,
-.form-check-input::before {
-    box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem var(--color-orange-pastel)
-}
-
-.form-check-input:active,
-.form-check-input::before {
-    background-color: #C8FFC8;
-}

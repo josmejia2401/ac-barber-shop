@@ -1,4 +1,4 @@
-.btn-secondary-custom {
+/*.btn-secondary-custom {
     background-color: var(--off-white-color);
     outline: 1px solid;
     outline-color: var(--outline-color);
@@ -20,4 +20,4 @@ button[disabled] {
     border: none;
     background-color: var(--disabled-color);
     color: var(--off-white-color);
-}
+}*/

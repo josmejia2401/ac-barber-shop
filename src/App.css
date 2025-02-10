@@ -20,7 +20,7 @@
   color: var(--color-gray-900);
 }
 
-#mainNav .navbar-nav .nav-item .nav-link {
+/*#mainNav .navbar-nav .nav-item .nav-link {
   color: var(--color-gray-900);
 }
 
@@ -31,24 +31,16 @@
 #mainNav .navbar-nav .nav-item .nav-link.active {
   color: var(--color-gray);
   font-weight: bold;
-}
-
-
+}*/
 
 .navbar-toggler:focus {
   outline: unset;
   box-shadow: unset;
 }
 
-
-
-
-
-
 .spinner-border {
   z-index: 9999 !important;
 }
-
 
 .justify-content-center-spinner {
   position: absolute;
@@ -62,17 +54,3 @@
 https://colorhunt.co/palettes/pastel
 https://colorhunt.co/palette/ff8a8af4deb3f0eaaccce0ac
 */
-.bg-primary {
-  background-color: var(--color-orange-pastel) !important;
-}
-
-.text-bg-primary {
-  background-color: var(--color-orange-pastel) !important;
-}
-
-
-
-.custom-tooltip {
-  --bs-tooltip-bg: var(--color-orange-pastel);
-  --bs-tooltip-color: var(--bs-white);
-}

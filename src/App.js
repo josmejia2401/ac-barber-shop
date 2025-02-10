@@ -8,14 +8,6 @@ import storage from "./lib/storage";
 import AuthLoginView from '../src/views/auth/login';
 import AuthRegisterView from '../src/views/auth/register';
 
-import ProjectsView from '../src/views/projects/view';
-import FunctionalitiesView from '../src/views/functionalities/view';
-import TasksView from '../src/views/tasks/view';
-import LogsView from '../src/views/record-logs/view';
-import ChatView from '../src/views/chats';
-
-
-import CustomersManagementView from '../src/views/customers/management/view';
 import EmployeesManagementView from '../src/views/employees/management/view';
 
 
@@ -117,7 +109,7 @@ class App extends React.Component {
                 </li>
                 <li className="nav-item">
                   <div className="dropdown nav-link me-lg-3">
-                    <Link className="btn btn-secondary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <Link className="btn btn-primary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Inventario
                     </Link>
                     <ul className="dropdown-menu show">
@@ -132,7 +124,7 @@ class App extends React.Component {
 
                 <li className="nav-item">
                   <div className="dropdown nav-link me-lg-3">
-                    <Link className="btn btn-secondary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <Link className="btn btn-primary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Clientes
                     </Link>
                     <ul className="dropdown-menu">
@@ -146,7 +138,7 @@ class App extends React.Component {
 
                 <li className="nav-item">
                   <div className="dropdown nav-link me-lg-3">
-                    <Link className="btn btn-secondary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <Link className="btn btn-primary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Empleados
                     </Link>
                     <ul className="dropdown-menu">
@@ -159,7 +151,7 @@ class App extends React.Component {
 
                 <li className="nav-item">
                   <div className="dropdown nav-link me-lg-3">
-                    <Link className="btn btn-secondary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <Link className="btn btn-primary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Proveedores
                     </Link>
                     <ul className="dropdown-menu">
@@ -171,7 +163,7 @@ class App extends React.Component {
 
                 <li className="nav-item">
                   <div className="dropdown nav-link me-lg-3">
-                    <Link className="btn btn-secondary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <Link className="btn btn-primary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Gastos e Ingresos
                     </Link>
                     <ul className="dropdown-menu">
@@ -207,32 +199,26 @@ function Inner(props) {
       <Route exact path="/auth/login" element={<AuthLoginView {...props} location={useLocation()} navigate={useNavigate()}></AuthLoginView>} />
       <Route exact path="/auth/register" element={<AuthRegisterView {...props} location={useLocation()} navigate={useNavigate()}></AuthRegisterView>} />
 
-      <Route exact path="/projects" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
-      <Route exact path="/functionalities" element={<FunctionalitiesView {...props} location={useLocation()} navigate={useNavigate()}></FunctionalitiesView>} />
-      <Route exact path="/tasks" element={<TasksView {...props} location={useLocation()} navigate={useNavigate()}></TasksView>} />
-      <Route exact path="/logs" element={<LogsView {...props} location={useLocation()} navigate={useNavigate()}></LogsView>} />
-      <Route exact path="/chats" element={<ChatView {...props} location={useLocation()} navigate={useNavigate()}></ChatView>} />
-
-      <Route exact path="/customers/customer-management" element={<CustomersManagementView {...props} location={useLocation()} navigate={useNavigate()}></CustomersManagementView>} />
-      <Route exact path="/customers/interaction-preference-tracking" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
-      <Route exact path="/customers/transaction-history" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
-      <Route exact path="/customers/marketing-automation-customer-segmentation" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
+      <Route exact path="/customers/customer-management" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/customers/interaction-preference-tracking" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/customers/transaction-history" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/customers/marketing-automation-customer-segmentation" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
 
       <Route exact path="/employees/employee-management" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
-      <Route exact path="/employees/control-personal-data-roles" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
-      <Route exact path="/employees/management-schedules-attendance" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
+      <Route exact path="/employees/control-personal-data-roles" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/employees/management-schedules-attendance" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
 
-      <Route exact path="/suppliers/supplier-management" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
-      <Route exact path="/suppliers/purchase-order-tracking" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
+      <Route exact path="/suppliers/supplier-management" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/suppliers/purchase-order-tracking" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
 
-      <Route exact path="/inventory/products" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
-      <Route exact path="/inventory/stock-control" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
-      <Route exact path="/inventory/movement-history" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
-      <Route exact path="/inventory/batch-management" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
-      <Route exact path="/inventory/import-export" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
+      <Route exact path="/inventory/products" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/inventory/stock-control" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/inventory/movement-history" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/inventory/batch-management" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/inventory/import-export" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
 
-      <Route exact path="/expenses-income/recording--categorizing-income-expenses" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
-      <Route exact path="/expenses-income/reconciliation-bank-accounts" element={<ProjectsView {...props} location={useLocation()} navigate={useNavigate()}></ProjectsView>} />
+      <Route exact path="/expenses-income/recording--categorizing-income-expenses" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/expenses-income/reconciliation-bank-accounts" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
 
       <Route path="*" element={<Navigate to={props.isAuthenticated ? "/projects" : "/auth/login"} replace></Navigate>} />
     </Routes>

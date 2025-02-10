@@ -20,7 +20,7 @@ class Component extends React.Component {
             text = '',
             ...props
         } = this.props;
-        return (<button className={`btn btn-secondary-custom ${className}`} type={type} disabled={disabled} {...props}>
+        return (<button className={`btn btn-secondary ${className}`} type={type} disabled={disabled} {...props}>
             {loading && (<div>
                 <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
                 <span className={`${showText ? 'visually-hidden' : ''}`} role="status" style={{ marginLeft: '5px' }}>{textLoading}</span>

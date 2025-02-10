@@ -4,11 +4,12 @@ import ButtonPrimary from '../../../../../components/button-primary';
 import ButtonSecondary from '../../../../../components/button-secondary';
 import TagsInput from '../../../../../components/tags';
 import { createItem } from '../../../../../services/customers.service';
-import { documentTypes, status } from '../../../../../lib/list-values';
 import Validator from '../../../../../lib/validator';
 import InputCustom from '../../../../../components/input';
 import SelectCustom from '../../../../../components/select';
 import TextAreaCustom from '../../../../../components/textarea';
+import { EMPLOYEE_STATUS } from '../../../../../lib/constants/employee_status.constants';
+import { DOCUMENT_TYPES } from '../../../../../lib/constants/document_types.constants';
 
 class LocalComponent extends React.Component {
 
@@ -466,7 +467,7 @@ class LocalComponent extends React.Component {
                                                                 <SelectCustom
                                                                     data={this.state.data.documentType}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    value={documentTypes}
+                                                                    value={DOCUMENT_TYPES}
                                                                     disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
@@ -523,7 +524,7 @@ class LocalComponent extends React.Component {
                                                                 <SelectCustom
                                                                     data={this.state.data.status}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    value={status}
+                                                                    value={EMPLOYEE_STATUS}
                                                                     disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
