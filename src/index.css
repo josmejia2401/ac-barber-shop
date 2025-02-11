@@ -73,6 +73,8 @@ body {
   --color-highlight-bg: #c1c1c1;
   --color-orange-pastel: #FF8A8A;*/
 
+  --color-navbar-hover: #EBF1F3;
+
   --color-outline: transparent;
   --color-black: #2a2927;
   --color-white: #FAF8F6;
@@ -105,6 +107,7 @@ body {
   --bs-dark: #2a2927;
   --bs-hover-dark: #54514C;
   --bs-link-color: #6e77bc;
+  --bs-link-hover-color: #777EBF;
 }
 
 /* ##### BUTTONS ##### */
@@ -325,7 +328,7 @@ body {
 
 a {
   color: var(--bs-link-color) !important;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 /* ##### CHECK ##### */

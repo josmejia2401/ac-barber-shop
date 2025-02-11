@@ -568,7 +568,7 @@ class LocalComponent extends React.Component {
                                                                                                 autoComplete='off'
                                                                                                 maxLength={this.state.data.associatedCampaigns.schema.maxLength}
                                                                                             />
-                                                                                            <small class="form-text text-muted">Si el cliente fue captado a través de una campaña específica</small>
+                                                                                            <small className="form-text text-muted">Si el cliente fue captado a través de una campaña específica</small>
                                                                                             <div
                                                                                                 className="invalid-feedback"
                                                                                                 style={{
@@ -594,7 +594,7 @@ class LocalComponent extends React.Component {
                                                                                                 autoComplete='off'
                                                                                                 maxLength={this.state.data.tags.schema.maxLength}
                                                                                             />
-                                                                                            <small class="form-text text-muted">Para segmentar al cliente por tipo, industria, interés, etc.</small>
+                                                                                            <small className="form-text text-muted">Para segmentar al cliente por tipo, industria, interés, etc.</small>
                                                                                             <div
                                                                                                 className="invalid-feedback"
                                                                                                 style={{

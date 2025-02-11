@@ -91,14 +91,21 @@ class App extends React.Component {
         {this.state.isAuthenticatedValue && <nav className="navbar navbar-expand-lg navbar-light fixed-top shadow-sm" id="mainNav">
           <div className="container px-5">
             <Link className="navbar-brand fw-bold">AppMa</Link>
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"
+            <button
+              className="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarResponsive"
+              aria-controls="navbarResponsive"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
               onClick={this.handleClickOpenNav}>
               Menú
               <i className="fa-solid fa-bars ms-2"></i>
             </button>
             <div className="collapse navbar-collapse" id="navbarResponsive">
               <ul className="navbar-nav ms-auto me-4 my-3 my-lg-0">
-                <li className="nav-item">
+                {/*<li className="nav-item">
                   <Link className={`${this.state.currentPathName === '/projects' ? 'active' : ''} nav-link me-lg-3`} to={"/projects"}>Proyectos</Link>
                 </li>
                 <li className="nav-item">
@@ -106,76 +113,141 @@ class App extends React.Component {
                 </li>
                 <li className="nav-item">
                   <Link className={`${this.state.currentPathName === '/tasks' ? 'active' : ''} nav-link me-lg-3`} to={"/tasks"}>Tareas</Link>
-                </li>
+                </li>*/}
+
                 <li className="nav-item">
                   <div className="dropdown nav-link me-lg-3">
-                    <Link className="btn btn-primary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Inventario
+                    <Link className="btn btn-navbar dropdown-toggle a-navbar d-flex align-items-center" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span className="d-flex align-items-center">
+                        <i className="fa-solid fa-users me-2"></i>
+                        <span className="small">Empleados</span>
+                      </span>
                     </Link>
-                    <ul className="dropdown-menu show">
-                      <li><Link className="dropdown-item" to="#">Gestión de Productos</Link></li>
-                      <li><Link className="dropdown-item" to="#">Control Stock</Link></li>
-                      <li><Link className="dropdown-item" to="#">Historial de Movimientos</Link></li>
-                      <li><Link className="dropdown-item" to="#">Gestión de lotes</Link></li>
-                      <li><Link className="dropdown-item" to="#">Importación/exportación</Link></li>
+                    <ul className="dropdown-menu hide">
+                      <li>
+                        <Link className="dropdown-item" to="#">
+                          <span className="d-flex align-items-center">
+                            <i className="fa-solid fa-people-roof me-2"></i>
+                            <span className="small">Gestión de Empleados</span>
+                          </span>
+                        </Link>
+                      </li>
                     </ul>
                   </div>
                 </li>
 
                 <li className="nav-item">
                   <div className="dropdown nav-link me-lg-3">
-                    <Link className="btn btn-primary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Clientes
+                    <Link className="btn btn-navbar dropdown-toggle a-navbar d-flex align-items-center" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span className="d-flex align-items-center">
+                        <i className="fa-solid fa-people-arrows me-2"></i>
+                        <span className="small">Clientes</span>
+                      </span>
                     </Link>
-                    <ul className="dropdown-menu">
-                      <li><Link className="dropdown-item" to="#">Gestión de Clientes</Link></li>
-                      <li><Link className="dropdown-item" to="#">Seguimiento de interacciones y preferencias</Link></li>
-                      <li><Link className="dropdown-item" to="#">Historial de transacciones</Link></li>
-                      <li><Link className="dropdown-item" to="#">Automatización de marketing y segmentación de clientes.</Link></li>
+                    <ul className="dropdown-menu hide">
+                      <li>
+                        <Link className="dropdown-item" to="#">
+                          <span className="d-flex align-items-center">
+                            <i className="fa-solid fa-people-roof me-2"></i>
+                            <span className="small">Gestión de Clientes</span>
+                          </span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="#">
+                          <span className="d-flex align-items-center">
+                            <i className="fa-solid fa-clock-rotate-left me-2"></i>
+                            <span className="small">Historial de transacciones</span>
+                          </span>
+                        </Link>
+                      </li>
                     </ul>
                   </div>
                 </li>
 
                 <li className="nav-item">
                   <div className="dropdown nav-link me-lg-3">
-                    <Link className="btn btn-primary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Empleados
+                    <Link className="btn btn-navbar dropdown-toggle a-navbar d-flex align-items-center" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span className="d-flex align-items-center">
+                        <i className="fa-solid fa-truck-field me-2"></i>
+                        <span className="small">Proveedores</span>
+                      </span>
                     </Link>
-                    <ul className="dropdown-menu">
-                      <li><Link className="dropdown-item" to="#">Gestión de Empleados</Link></li>
-                      <li><Link className="dropdown-item" to="#">Control de datos personales y roles.</Link></li>
-                      <li><Link className="dropdown-item" to="#">Gestión de horarios y asistencias.</Link></li>
+                    <ul className="dropdown-menu hide">
+                      <li>
+                        <Link className="dropdown-item" to="#">
+                          <span className="d-flex align-items-center">
+                            <i className="fa-solid fa-boxes-packing me-2"></i>
+                            <span className="small">Gestión de Proveedores</span>
+                          </span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="#">
+                          <span className="d-flex align-items-center">
+                            <i className="fa-solid fa-shop me-2"></i>
+                            <span className="small">Seguimiento de órdenes de compra</span>
+                          </span>
+                        </Link>
+                      </li>
                     </ul>
                   </div>
                 </li>
 
                 <li className="nav-item">
                   <div className="dropdown nav-link me-lg-3">
-                    <Link className="btn btn-primary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Proveedores
+                    <Link className="btn btn-navbar dropdown-toggle a-navbar d-flex align-items-center" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span className="d-flex align-items-center">
+                        <i className="fa-solid fa-boxes-stacked me-2"></i>
+                        <span className="small">Inventario</span>
+                      </span>
                     </Link>
-                    <ul className="dropdown-menu">
-                      <li><Link className="dropdown-item" to="#">Gestión de Proveedores</Link></li>
-                      <li><Link className="dropdown-item" to="#">Seguimiento de órdenes de compra.</Link></li>
+                    <ul className="dropdown-menu hide">
+                      <li>
+                        <Link className="dropdown-item" to="#">
+                          <span className="d-flex align-items-center">
+                            <i className="fa-solid fa-sitemap me-2"></i>
+                            <span className="small">Gestión de Productos</span>
+                          </span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="#">
+                          <span className="d-flex align-items-center">
+                            <i className="fa-solid fa-cubes-stacked me-2"></i>
+                            <span className="small">Control de Stock</span>
+                          </span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="#">
+                          <span className="d-flex align-items-center">
+                            <i className="fa-solid fa-file-export me-2"></i>
+                            <span className="small">Importación/exportación</span>
+                          </span>
+                        </Link>
+                      </li>
                     </ul>
                   </div>
                 </li>
 
                 <li className="nav-item">
                   <div className="dropdown nav-link me-lg-3">
-                    <Link className="btn btn-primary dropdown-toggle" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Gastos e Ingresos
+                    <Link className="btn btn-navbar dropdown-toggle a-navbar d-flex align-items-center" to={"#"} role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      <span className="d-flex align-items-center">
+                        <i className="fa-solid fa-money-bill-transfer me-2"></i>
+                        <span className="small">Gastos e Ingresos</span>
+                      </span>
                     </Link>
-                    <ul className="dropdown-menu">
+                    <ul className="dropdown-menu hide">
                       <li><Link className="dropdown-item" to="#">Registro y categorización de ingresos y egresos.</Link></li>
                       <li><Link className="dropdown-item" to="#">Conciliación con cuentas bancarias.</Link></li>
                     </ul>
                   </div>
                 </li>
 
-
               </ul>
-              <button className="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" data-bs-toggle="modal" data-bs-target="#feedbackModal">
+              <button className="btn btn-navbar rounded-pill px-3 mb-2 mb-lg-0" data-bs-toggle="modal" data-bs-target="#feedbackModal">
                 <span className="d-flex align-items-center">
                   <i className="fa-solid fa-door-closed me-2"></i>
                   <span className="small">Iniciar sesión</span>

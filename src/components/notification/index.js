@@ -42,7 +42,7 @@ class Notification extends React.Component {
             message = '',
             handleShowNotification
         } = this.props;
-        return (<div class="position-fixed bottom-0 end-0 p-3" style={{ zIndex: 999 }}>
+        return (<div className="position-fixed bottom-0 end-0 p-3" style={{ zIndex: 999 }}>
             <div className={`toast ${show ? 'show' : 'hide'} ${this.getNotColor(type)}`} role="alert" aria-live="assertive" aria-atomic="true">
                 <div className="toast-header">
                     <strong className="me-auto">{this.getNotTypeName(type)}</strong>

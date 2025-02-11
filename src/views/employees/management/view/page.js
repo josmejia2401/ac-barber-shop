@@ -301,7 +301,13 @@ class Page extends React.Component {
                                                 <tr>
                                                     <th>
                                                         <div className="form-check">
-                                                            <input className="form-check-input" type="checkbox" value={this.state.tableAllChecked} checked={this.state.tableAllChecked} id="flexCheckDefault" onClick={this.handleChecked} />
+                                                            <input
+                                                                className="form-check-input"
+                                                                type="checkbox"
+                                                                checked={this.state.tableAllChecked}
+                                                                value={this.state.tableAllChecked}
+                                                                onClick={this.handleChecked}
+                                                                onChange={() => { }} />
                                                         </div>
                                                     </th>
                                                     <th><b>Nombres</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('firstName')}></i></th>
@@ -352,8 +358,13 @@ class Page extends React.Component {
                                                     return (<tr key={index}>
                                                         <td className="text-color">
                                                             <div className="form-check">
-                                                                <input className="form-check-input" type="checkbox" value={item.checked} id="flexCheckChecked" checked={item.checked}
-                                                                    onClick={(e) => this.handleChecked(e, item)} />
+                                                                <input
+                                                                    className="form-check-input"
+                                                                    type="checkbox"
+                                                                    value={item.checked}
+                                                                    checked={item.checked}
+                                                                    onClick={(e) => this.handleChecked(e, item)}
+                                                                    onChange={() => { }} />
                                                             </div>
                                                         </td>
                                                         <td className="text-color">{item.firstName}</td>
@@ -381,7 +392,7 @@ class Page extends React.Component {
                                                 <tr>
                                                     <td colSpan={10} style={{ textAlign: 'center', alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
                                                         {this.state.loadingMoreData ? (<div className="spinner-border text-primary" role="status">
-                                                            <span class="visually-hidden">Loading...</span>
+                                                            <span className="visually-hidden">Loading...</span>
                                                         </div>) : (<Link
                                                             to={"#"}
                                                             className='center-text'

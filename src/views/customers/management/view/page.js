@@ -280,7 +280,7 @@ class Page extends React.Component {
                                                 <tr>
                                                     <td colSpan={9} style={{ textAlign: 'center', alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
                                                         {this.state.loadingMoreData ? (<div className="spinner-border" role="status">
-                                                            <span class="visually-hidden">Loading...</span>
+                                                            <span className="visually-hidden">Loading...</span>
                                                         </div>) : (<Link
                                                             to={"#"}
                                                             className='center-text'
