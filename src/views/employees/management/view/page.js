@@ -11,6 +11,11 @@ import { getDocumentTypeFromList } from '../../../../lib/constants/document_type
 import { getEmployeeStatusFromList } from '../../../../lib/constants/employee_status.constants';
 import { downloadCSV, jsonToCsv } from '../../../../lib/csv';
 import Notification from '../../../../components/notification';
+import { getGenderFromList } from '../../../../lib/constants/genders.constants';
+import { getNationalityFromList } from '../../../../lib/constants/nationalities.constants';
+import { getMaritalStatusFromList } from '../../../../lib/constants/marital_status.constants';
+import { getBankFromList } from '../../../../lib/constants/banks.constants';
+import { getAccountTypeFromList } from '../../../../lib/constants/account_types.constants';
 
 class Page extends React.Component {
 
@@ -222,8 +227,33 @@ class Page extends React.Component {
         const { data } = this.state;
         const jsonData = data.filter(p => p.checked === true);
         if (jsonData.length > 0) {
+            const newJsonData = jsonData.map(p => ({
+                "Primer Nombre": p.firstName,
+                "Segundo Nombre": p.lastName,
+                "Fecha de Nacimiento": p.birthdate,
+                "Estado": getEmployeeStatusFromList(p.statusId).name,
+                "Género": getGenderFromList(p.genderId).name,
+                "Nacionalidad": getNationalityFromList(p.nationalityId).name,
+                "Estado cívil": getMaritalStatusFromList(p.maritalStatusId).name,
+                "Tipo de Documento": getDocumentTypeFromList(p.documentTypeId).name,
+                "Número de Documento": p.documentNumber,
+                "Email": p.contactInformation?.email,
+                "Teléfono": p.contactInformation?.phone,
+                "Dirección": p.contactInformation?.address,
+                "Email Corporativo": p.contactInformation?.corporateEmail,
+
+                "Posición/Cargo": p.employmentInformation?.position,
+                "Departamento/Área": p.employmentInformation?.department,
+                "Fecha de Contratación": p.employmentInformation?.dateHiring,
+                "Tipo de Contrato": p.employmentInformation?.typeContract,
+                "Jefe Directo": p.employmentInformation?.directBoss,
+
+                "Número de Cuenta": p.bankingInformation?.bankAccountNumber,
+                "Banco": getBankFromList(p.bankingInformation?.bankId).name,
+                "Tipo de Cuenta": getAccountTypeFromList(p.bankingInformation?.accountTypeId).name,
+            }));
             this.updateState({ downloading: true });
-            const csvContent = jsonToCsv(jsonData);
+            const csvContent = jsonToCsv(newJsonData);
             downloadCSV(csvContent, 'employees.csv');
             this.updateState({ downloading: false });
         } else {
