@@ -10,7 +10,14 @@ export const createItem = async (payload) => {
                 resolveOuter({
                     code: 200,
                     message: 'Successful operation',
-                    lastEvaluatedKey: undefined,
+                    metadata: {
+                        totalScannedCount: 0,
+                        totalItemsMatched: 0,
+                        totalConsumedCapacity: 0,
+                        lastEvaluatedKey: {
+                            id: '...'
+                        }
+                    },
                     data: {
                         "id": 12345,
                         "firstName": "Juan",
@@ -19,7 +26,7 @@ export const createItem = async (payload) => {
                         "createdAt": DateUtil.currentDateToISO(),
                         "statusId": "ACT",
                         "genderId": "M",
-                        "nationalityId": "CO", 
+                        "nationalityId": "CO",
                         "maritalStatusId": "S",
                         "documentTypeId": "CC",
                         "documentNumber": "123456",
@@ -74,7 +81,7 @@ export const findItemById = async (id) => {
                     "createdAt": DateUtil.currentDateToISO(),
                     "statusId": "ACT",
                     "genderId": "M",
-                    "nationalityId": "CO", 
+                    "nationalityId": "CO",
                     "maritalStatusId": "S",
                     "documentTypeId": "CC",
                     "documentNumber": "123456",
@@ -130,7 +137,7 @@ export const filterItems = async (payload) => {
                             "createdAt": DateUtil.currentDateToISO(),
                             "statusId": "ACT",
                             "genderId": "M",
-                            "nationalityId": "CO", 
+                            "nationalityId": "CO",
                             "maritalStatusId": "S",
                             "documentTypeId": "CC",
                             "documentNumber": "123456",
@@ -188,7 +195,7 @@ export const updateItemById = async (id, payload) => {
                         "createdAt": DateUtil.currentDateToISO(),
                         "statusId": "ACT",
                         "genderId": "M",
-                        "nationalityId": "CO", 
+                        "nationalityId": "CO",
                         "maritalStatusId": "S",
                         "documentTypeId": "CC",
                         "documentNumber": "123456",
@@ -246,7 +253,7 @@ export const deleteItemById = async (id) => {
                         "createdAt": DateUtil.currentDateToISO(),
                         "statusId": "ACT",
                         "genderId": "M",
-                        "nationalityId": "CO", 
+                        "nationalityId": "CO",
                         "maritalStatusId": "S",
                         "documentTypeId": "CC",
                         "documentNumber": "123456",
