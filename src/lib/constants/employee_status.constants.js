@@ -6,7 +6,8 @@ export const EMPLOYEE_STATUS = [
     { code: "VAC", name: "Vacaciones", cssClass: "badge bg-primary" },
     { code: "DES", name: "Despedido", cssClass: "badge bg-danger" },
     { code: "REN", name: "Renunciado", cssClass: "badge bg-light" },
-    { code: "PEN", name: "Pensionado", cssClass: "badge bg-dark" }
+    { code: "PEN", name: "Pensionado", cssClass: "badge bg-dark" },
+    { code: "ELI", name: "Eliminado", cssClass: "badge bg-danger" },
 ];
 
 export function getEmployeeStatusFromList(value) {

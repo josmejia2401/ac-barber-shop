@@ -4,11 +4,13 @@ import ButtonPrimary from '../../../../../components/button-primary';
 import ButtonSecondary from '../../../../../components/button-secondary';
 import TagsInput from '../../../../../components/tags';
 import { createItem } from '../../../../../services/customers.service';
-import { documentTypes, status } from '../../../../../lib/list-values';
 import Validator from '../../../../../lib/validator';
 import InputCustom from '../../../../../components/input';
 import SelectCustom from '../../../../../components/select';
 import TextAreaCustom from '../../../../../components/textarea';
+import { EMPLOYEE_STATUS } from '../../../../../lib/constants/employee_status.constants';
+import { DOCUMENT_TYPES } from '../../../../../lib/constants/document_types.constants';
+import LoadingCustom from '../../../../../components/loading';
 
 class LocalComponent extends React.Component {
 
@@ -24,7 +26,11 @@ class LocalComponent extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelectedTags = this.handleSelectedTags.bind(this);
         this.handleSelectedAssociatedCampaigns = this.handleSelectedAssociatedCampaigns.bind(this);
+
         this.handleSetAccordion = this.handleSetAccordion.bind(this);
+
+        this.handleScrollToTop = this.handleScrollToTop.bind(this);
+        this.validationMessageRef = React.createRef(null);
     }
 
     componentDidMount() {
@@ -341,21 +347,23 @@ class LocalComponent extends React.Component {
             Object.keys(data).forEach(key => {
                 payload[key] = data[key].value;
             });
-            console.log("payload", payload);
             createItem(payload).then(result => {
                 this.updateState({
                     processed: true,
                     processedMessage: "Procesado correctamente",
                     processedError: false,
                 });
-                this.props.handleAfterClosedDialog(result.data, 'updated');
+                this.props.handleAfterClosedDialog(result.data, 'created');
             }).catch(error => {
                 this.updateState({
                     processed: true,
                     processedMessage: error.message,
                     processedError: true,
                 });
-            }).finally(() => this.updateState({ loading: false, processed: true }));
+            }).finally(() => {
+                this.updateState({ loading: false, processed: true });
+                this.handleScrollToTop();
+            });
         }
         form.classList.add('was-validated');
     }
@@ -394,6 +402,11 @@ class LocalComponent extends React.Component {
         });
     }
 
+    async handleScrollToTop(e) {
+        this.validationMessageRef.current?.scrollIntoView({ block: 'nearest' });
+        this.validationMessageRef.current?.scrollTo(0, 0);
+    }
+
     render() {
         if (!this.state.dataLoaded) {
             return (<div style={{ textAlign: 'center' }}>
@@ -412,17 +425,18 @@ class LocalComponent extends React.Component {
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 aria-hidden="true">
+                {this.state.loading && <LoadingCustom />}
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
                     <div className="modal-content">
 
                         <div className="modal-header">
-                            <h4 className="modal-title" id='myModalLabel33'>Editar elemento</h4>
+                            <h4 className="modal-title" id='myModalLabel33'>Crear elemento</h4>
                             <button type="button" className="close btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={this.props.handleHideDialog}>
                                 <i data-feather="x" ></i>
                             </button>
                         </div>
 
-                        <form className="needs-validation form" onSubmit={this.handleSubmit} noValidate>
+                        <form className="needs-validation form" onSubmit={this.handleSubmit} ref={this.validationMessageRef} noValidate>
 
                             {this.state.processed && !this.state.processedError && <div className="alert alert-success" role="alert">
                                 {/*<h5 className="alert-heading">EXITOSO</h5>*/}
@@ -465,7 +479,7 @@ class LocalComponent extends React.Component {
                                                                 <SelectCustom
                                                                     data={this.state.data.documentType}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    value={documentTypes}
+                                                                    value={DOCUMENT_TYPES}
                                                                     disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
@@ -522,7 +536,7 @@ class LocalComponent extends React.Component {
                                                                 <SelectCustom
                                                                     data={this.state.data.status}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    value={status}
+                                                                    value={EMPLOYEE_STATUS}
                                                                     disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
@@ -541,7 +555,7 @@ class LocalComponent extends React.Component {
                                                                                 type="button"
                                                                                 data-bs-toggle="collapse"
                                                                                 data-bs-target="#collapseOne"
-                                                                                aria-expanded={`${!this.state.accordionSelected ? false : true}`}
+                                                                                aria-expanded={!this.state.accordionSelected ? false : true}
                                                                                 aria-controls="collapseOne"
                                                                                 onClick={this.handleSetAccordion}>
                                                                                 Información de segmentación y notas
@@ -567,6 +581,7 @@ class LocalComponent extends React.Component {
                                                                                                 autoComplete='off'
                                                                                                 maxLength={this.state.data.associatedCampaigns.schema.maxLength}
                                                                                             />
+                                                                                            <small className="form-text text-muted">Si el cliente fue captado a través de una campaña específica</small>
                                                                                             <div
                                                                                                 className="invalid-feedback"
                                                                                                 style={{
@@ -592,6 +607,7 @@ class LocalComponent extends React.Component {
                                                                                                 autoComplete='off'
                                                                                                 maxLength={this.state.data.tags.schema.maxLength}
                                                                                             />
+                                                                                            <small className="form-text text-muted">Para segmentar al cliente por tipo, industria, interés, etc.</small>
                                                                                             <div
                                                                                                 className="invalid-feedback"
                                                                                                 style={{
@@ -634,7 +650,7 @@ class LocalComponent extends React.Component {
                                     loading={this.state.loading}
                                     showText={true}
                                     textLoading={'Procesando...'}
-                                    text='Editar'
+                                    text='Crear'
                                 />
                             </div>
                         </form>

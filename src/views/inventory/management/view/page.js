@@ -42,7 +42,6 @@ class Page extends React.Component {
         this.handleChecked = this.handleChecked.bind(this);
         //NOTIFICATION
         this.handleShowNotification = this.handleShowNotification.bind(this);
-        this.handleSetAccordion = this.handleSetAccordion.bind(this);
     }
 
     componentDidMount() {
@@ -65,14 +64,12 @@ class Page extends React.Component {
             tableOrderBy: false,
             tableInputSearch: '',
             tableAllChecked: false,
-            tableIsPartialChecked: undefined,
             downloading: false,
             notificationParams: {
                 show: false,
                 type: 'info',
                 message: ''
-            },
-            accordionSelected: undefined
+            }
         };
     }
 
@@ -103,7 +100,7 @@ class Page extends React.Component {
                 data: result.data,
                 dataFiltered: result.data.map(clone => ({ ...clone })),
                 loading: false,
-                lastEvaluatedKey: result.metadata.lastEvaluatedKey
+                lastEvaluatedKey: result.lastEvaluatedKey
             });
         }).catch(err => this.updateState({ loading: false }));
     }
@@ -122,7 +119,7 @@ class Page extends React.Component {
                 data: this.state.data,
                 dataFiltered: this.state.dataFiltered,
                 loadingMoreData: false,
-                lastEvaluatedKey: result.metadata.lastEvaluatedKey
+                lastEvaluatedKey: result.lastEvaluatedKey
             });
         }).catch(err => {
             console.log(err.fileName, err);
@@ -206,12 +203,10 @@ class Page extends React.Component {
     async handleChecked(e, item = null) {
         e?.preventDefault();
         e?.stopPropagation();
-        const { data, dataFiltered, tableAllChecked, tableIsPartialChecked } = this.state;
+        const { data, dataFiltered, tableAllChecked } = this.state;
         let tableAllCheckedTmp = tableAllChecked;
-        let tableIsPartialCheckedTmp = tableIsPartialChecked;
         if (item === undefined || item === null) {
             tableAllCheckedTmp = !tableAllCheckedTmp;
-            tableIsPartialCheckedTmp = undefined;
             data.forEach(p => {
                 p["checked"] = tableAllCheckedTmp;
             });
@@ -220,33 +215,12 @@ class Page extends React.Component {
             });
         } else {
             const index = data.findIndex(p => p.id === item.id);
-            const checkedValue = !data[index].checked;;
-
-            data[index].checked = checkedValue;
+            data[index].checked = !data[index].checked;
 
             const index2 = dataFiltered.findIndex(p => p.id === item.id);
-            dataFiltered[index2].checked = checkedValue;
-
-            if (data.filter(p => p.checked).length === data.length) {
-                tableAllCheckedTmp = true;
-                tableIsPartialCheckedTmp = undefined;
-            } else if (data.length === 1 && data.filter(p => p.checked).length === data.length) {
-                tableAllCheckedTmp = true;
-                tableIsPartialCheckedTmp = undefined;
-            } else if (data.filter(p => p.checked).length > 0) {
-                tableAllCheckedTmp = false;
-                tableIsPartialCheckedTmp = true;
-            } else {
-                tableAllCheckedTmp = false;
-                tableIsPartialCheckedTmp = undefined;
-            }
+            dataFiltered[index2].checked = !dataFiltered[index2].checked;
         }
-        this.updateState({
-            data: data,
-            dataFiltered: dataFiltered,
-            tableAllChecked: tableAllCheckedTmp,
-            tableIsPartialChecked: tableIsPartialCheckedTmp
-        });
+        this.updateState({ data: data, dataFiltered: dataFiltered, tableAllChecked: tableAllCheckedTmp });
     }
 
     async handleExportToCSV() {
@@ -295,14 +269,6 @@ class Page extends React.Component {
         this.updateState({ notificationParams });
     }
 
-    async handleSetAccordion(event) {
-        const target = event.target || event.srcElement;
-        const id = target.id
-        this.updateState({
-            accordionSelected: this.state.accordionSelected === id ? undefined : id
-        });
-    }
-
     render() {
         return (
             <div className="col py-3 panel-view">
@@ -319,64 +285,32 @@ class Page extends React.Component {
                         <div className="col-12">
                             <div className="card">
                                 <div className="card-header">
-                                    <div style={{ flexDirection: "column", display: 'flex', width: '100%' }}>
-                                        <div style={{ flexDirection: "row", display: 'flex', width: '100%' }}>
-                                            <h4 className="card-title title-color">Listado de empleados</h4>
-                                            <div className='btn-header-table'>
-                                                <ButtonIcon type="button"
-                                                    className="btn icon btn-primary"
-                                                    onClick={this.handleLoadData}
-                                                    disabled={this.state.loading || this.state.downloading || this.state.loadingMoreData}>
-                                                    <i className="fa-solid fa-rotate-right"></i>
-                                                </ButtonIcon>
+                                    <h4 className="card-title title-color">Listado de empleados</h4>
 
-                                                <ButtonIcon type="button"
-                                                    className="btn icon btn-primary"
-                                                    style={{ marginLeft: '5px' }}
-                                                    onClick={() => this.handleShowDialog('create')}>
-                                                    <i className="fa-solid fa-plus"></i>
-                                                </ButtonIcon>
+                                    <div className='btn-header-table'>
+                                        <ButtonIcon type="button"
+                                            className="btn icon btn-primary"
+                                            onClick={this.handleLoadData}>
+                                            <i className="fa-solid fa-rotate-right"></i>
+                                        </ButtonIcon>
 
-                                                <ButtonIcon type="button"
-                                                    className="btn icon btn-primary"
-                                                    style={{ marginLeft: '5px' }}
-                                                    onClick={this.handleExportToCSV}
-                                                    disabled={this.state.loading || this.state.downloading || this.state.loadingMoreData}
-                                                    loading={this.state.downloading}>
-                                                    <i className="fa-solid fa-file-csv"></i>
-                                                </ButtonIcon>
-                                            </div>
-                                        </div>
-                                        <div className="accordion mt-2" id="accordionExample" style={{ flexDirection: "row", display: 'flex', width: '100%' }}>
-                                            <div className="accordion-item" style={{ width: '100%' }}>
-                                                <h2 className="accordion-header">
-                                                    <button
-                                                        id="segmentationInformation"
-                                                        name="segmentationInformation"
-                                                        className={`accordion-button ${!this.state.accordionSelected ? 'collapsed' : ''}`}
-                                                        type="button"
-                                                        data-bs-toggle="collapse"
-                                                        data-bs-target="#collapseOne"
-                                                        aria-expanded={`${!this.state.accordionSelected ? false : true}`}
-                                                        aria-controls="collapseOne"
-                                                        onClick={this.handleSetAccordion}>
-                                                        Información importante
-                                                    </button>
-                                                </h2>
-                                                <div id="collapseOne"
-                                                    className={`accordion-collapse collapse ${this.state.accordionSelected === "segmentationInformation" ? 'show' : ''}`}
-                                                    data-bs-parent="#accordionExample">
-                                                    <div className="accordion-body" style={{ flexDirection: "column" }}>
-                                                        <h6>1. Si el sistema muestra la opción "Cargar más", significa que hay más elementos en la base de datos que aún no se han mostrado en pantalla.</h6>
-                                                        <h6>2. Al presionar el botón "Refrescar", la información de la tabla se recarga sin necesidad de actualizar la página manualmente (F5).</h6>
-                                                        <h6>3. Al presionar el botón "Descargar CSV", se descargan únicamente los archivos seleccionados mediante las casillas de marcación.</h6>
-                                                        <h6>4. Si el usuario selecciona todos o algunos registros, solo se descargarán los elementos actualmente visibles en pantalla. Los registros adicionales en la base de datos que no se muestran no serán incluidos en la descarga.</h6>
-                                                        <h6>5. El filtro de búsqueda encuentra coincidencias en cualquier campo de los archivos visibles en la tabla.</h6>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <ButtonIcon type="button"
+                                            className="btn icon btn-primary"
+                                            style={{ marginLeft: '5px' }}
+                                            onClick={() => this.handleShowDialog('create')}>
+                                            <i className="fa-solid fa-plus"></i>
+                                        </ButtonIcon>
+
+                                        <ButtonIcon type="button"
+                                            className="btn icon btn-primary"
+                                            style={{ marginLeft: '5px' }}
+                                            onClick={this.handleExportToCSV}
+                                            disabled={this.state.downloading}
+                                            loading={this.state.downloading}>
+                                            <i className="fa-solid fa-file-csv"></i>
+                                        </ButtonIcon>
                                     </div>
+
                                 </div>
                                 <div className="card-content">
 
@@ -398,10 +332,10 @@ class Page extends React.Component {
                                                     <th>
                                                         <div className="form-check">
                                                             <input
-                                                                className={`form-check-input ${this.state.tableIsPartialChecked === true ? 'form-check-input-indeterminate' : ''}`}
+                                                                className="form-check-input"
                                                                 type="checkbox"
-                                                                checked={this.state.tableIsPartialChecked === true ? this.state.tableIsPartialChecked : this.state.tableAllChecked}
-                                                                value={this.state.tableIsPartialChecked === true ? this.state.tableIsPartialChecked : this.state.tableAllChecked}
+                                                                checked={this.state.tableAllChecked}
+                                                                value={this.state.tableAllChecked}
                                                                 onClick={this.handleChecked}
                                                                 onChange={() => { }} />
                                                         </div>
@@ -484,7 +418,7 @@ class Page extends React.Component {
                                                 })}
                                             </tbody>
 
-                                            {this.state.lastEvaluatedKey && !this.state.loading && !this.state.downloading && this.state.dataFiltered.length > 0 && (<tfoot>
+                                            {this.state.lastEvaluatedKey && !this.state.loading && this.state.dataFiltered.length > 0 && (<tfoot>
                                                 <tr>
                                                     <td colSpan={10} style={{ textAlign: 'center', alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
                                                         {this.state.loadingMoreData ? (<div className="spinner-border text-primary" role="status">

@@ -10,6 +10,7 @@ import SelectCustom from '../../../../../components/select';
 import TextAreaCustom from '../../../../../components/textarea';
 import { EMPLOYEE_STATUS } from '../../../../../lib/constants/employee_status.constants';
 import { DOCUMENT_TYPES } from '../../../../../lib/constants/document_types.constants';
+import LoadingCustom from '../../../../../components/loading';
 
 class LocalComponent extends React.Component {
 
@@ -27,6 +28,9 @@ class LocalComponent extends React.Component {
         this.handleSelectedAssociatedCampaigns = this.handleSelectedAssociatedCampaigns.bind(this);
 
         this.handleSetAccordion = this.handleSetAccordion.bind(this);
+
+        this.handleScrollToTop = this.handleScrollToTop.bind(this);
+        this.validationMessageRef = React.createRef(null);
     }
 
     componentDidMount() {
@@ -36,17 +40,27 @@ class LocalComponent extends React.Component {
             dataTemp.id.value = data.id;
             dataTemp.firstName.value = data.firstName;
             dataTemp.lastName.value = data.lastName;
+            dataTemp.birthdate.value = data.birthdate;
+            dataTemp.createdAt.value = data.createdAt;
+            dataTemp.statusId.value = data.statusId;
+            dataTemp.genderId.value = data.genderId;
+            dataTemp.nationalityId.value = data.nationalityId;
+            dataTemp.maritalStatusId.value = data.maritalStatusId;
+            dataTemp.documentTypeId.value = data.documentTypeId;
+            dataTemp.documentNumber.value = data.documentNumber;
             dataTemp.email.value = data.email;
             dataTemp.phone.value = data.phone;
             dataTemp.address.value = data.address;
-            dataTemp.birthdate.value = data.birthdate;
-            dataTemp.tags.value = data.tags || [];
-            dataTemp.status.value = data.status;
-            dataTemp.createdAt.value = data.createdAt;
+            dataTemp.corporateEmail.value = data.corporateEmail;
+            dataTemp.position.value = data.position;
+            dataTemp.department.value = data.department;
+            dataTemp.dateHiring.value = data.dateHiring;
+            dataTemp.typeContract.value = data.typeContract;
+            dataTemp.directBoss.value = data.directBoss;
+            dataTemp.bankAccountNumber.value = data.bankAccountNumber;
+            dataTemp.bankId.value = data.bankId;
+            dataTemp.accountTypeId.value = data.accountTypeId;
             dataTemp.description.value = data.description;
-            dataTemp.associatedCampaigns.value = data.associatedCampaigns || [];
-            dataTemp.documentType.value = data.documentType;
-            dataTemp.documentNumber.value = data.documentNumber;
             this.resetState({ data: dataTemp, dataLoaded: true });
         } else {
             this.resetState({ dataLoaded: true });
@@ -339,11 +353,45 @@ class LocalComponent extends React.Component {
                 processedMessage: undefined,
                 processedError: false,
             });
-            const payload = {};
-            Object.keys(data).forEach(key => {
-                payload[key] = data[key].value;
-            });
-            console.log("payload", payload);
+            const payload = {
+                "id": this.state.data.id.value,
+                "firstName": this.state.data.firstName.value,
+                "lastName": this.state.data.lastName.value,
+                "birthdate": this.state.data.birthdate.value,
+                "createdAt": this.state.data.createdAt.value,
+                "statusId": this.state.data.statusId.value,
+                "genderId": this.state.data.genderId.value,
+                "nationalityId": this.state.data.nationalityId.value,
+                "maritalStatusId": this.state.data.maritalStatusId.value,
+                "documentTypeId": this.state.data.documentTypeId.value,
+                "documentNumber": this.state.data.documentNumber.value,
+                "contactInformation": {
+                    "email": this.state.data.email.value,
+                    "phone": this.state.data.phone.value,
+                    "address": this.state.data.address.value,
+                    "corporateEmail": this.state.data.corporateEmail.value,
+                },
+                "employmentInformation": {
+                    "position": this.state.data.position.value,
+                    "department": this.state.data.department.value,
+                    "dateHiring": this.state.data.dateHiring.value,
+                    "typeContract": this.state.data.typeContract.value,
+                    "directBoss": this.state.data.directBoss.value,
+                },
+                "bankingInformation": {
+                    "bankAccountNumber": this.state.data.bankAccountNumber.value,
+                    "bankId": this.state.data.bankId.value,
+                    "accountTypeId": this.state.data.accountTypeId.value,
+                },
+                "additionalInformation": {
+                    "description": this.state.data.description.value,
+                },
+                "accessSecurityInformation": {
+                    "username": this.state.data.username.value,
+                    "password": this.state.data.password.value,
+                    "accessLevel": this.state.data.accessLevel.value,
+                }
+            };
             createItem(payload).then(result => {
                 this.updateState({
                     processed: true,
@@ -357,7 +405,10 @@ class LocalComponent extends React.Component {
                     processedMessage: error.message,
                     processedError: true,
                 });
-            }).finally(() => this.updateState({ loading: false, processed: true }));
+            }).finally(() => {
+                this.updateState({ loading: false, processed: true });
+                this.handleScrollToTop();
+            });
         }
         form.classList.add('was-validated');
     }
@@ -396,6 +447,11 @@ class LocalComponent extends React.Component {
         });
     }
 
+    async handleScrollToTop(e) {
+        this.validationMessageRef.current?.scrollIntoView({ block: 'nearest' });
+        this.validationMessageRef.current?.scrollTo(0, 0);
+    }
+
     render() {
         if (!this.state.dataLoaded) {
             return (<div style={{ textAlign: 'center' }}>
@@ -414,6 +470,7 @@ class LocalComponent extends React.Component {
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 aria-hidden="true">
+                {this.state.loading && <LoadingCustom />}
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
                     <div className="modal-content">
 
@@ -424,7 +481,7 @@ class LocalComponent extends React.Component {
                             </button>
                         </div>
 
-                        <form className="needs-validation form" onSubmit={this.handleSubmit} noValidate>
+                        <form className="needs-validation form" onSubmit={this.handleSubmit} ref={this.validationMessageRef} noValidate>
 
                             {this.state.processed && !this.state.processedError && <div className="alert alert-success" role="alert">
                                 {/*<h5 className="alert-heading">EXITOSO</h5>*/}

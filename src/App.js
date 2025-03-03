@@ -9,6 +9,7 @@ import AuthLoginView from '../src/views/auth/login';
 import AuthRegisterView from '../src/views/auth/register';
 
 import EmployeesManagementView from '../src/views/employees/management/view';
+import InventaryManagementView from '../src/views/inventory/management/view';
 
 
 class App extends React.Component {
@@ -283,7 +284,7 @@ function Inner(props) {
       <Route exact path="/suppliers/supplier-management" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
       <Route exact path="/suppliers/purchase-order-tracking" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
 
-      <Route exact path="/inventory/products" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/inventory/products-management" element={<InventaryManagementView {...props} location={useLocation()} navigate={useNavigate()}></InventaryManagementView>} />
       <Route exact path="/inventory/stock-control" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
       <Route exact path="/inventory/movement-history" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
       <Route exact path="/inventory/batch-management" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />

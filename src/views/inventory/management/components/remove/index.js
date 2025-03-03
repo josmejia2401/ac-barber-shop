@@ -3,13 +3,12 @@ import "./styles.css";
 import ButtonPrimary from '../../../../../components/button-primary';
 import ButtonSecondary from '../../../../../components/button-secondary';
 import TagsInput from '../../../../../components/tags';
-import { createItem, deleteItemById } from '../../../../../services/customers.service';
+import { createItem } from '../../../../../services/customers.service';
 import { documentTypes, status } from '../../../../../lib/list-values';
 import Validator from '../../../../../lib/validator';
 import InputCustom from '../../../../../components/input';
 import SelectCustom from '../../../../../components/select';
 import TextAreaCustom from '../../../../../components/textarea';
-import LoadingCustom from '../../../../../components/loading';
 
 class LocalComponent extends React.Component {
 
@@ -27,9 +26,6 @@ class LocalComponent extends React.Component {
         this.handleSelectedAssociatedCampaigns = this.handleSelectedAssociatedCampaigns.bind(this);
 
         this.handleSetAccordion = this.handleSetAccordion.bind(this);
-
-        this.handleScrollToTop = this.handleScrollToTop.bind(this);
-        this.validationMessageRef = React.createRef(null);
     }
 
     componentDidMount() {
@@ -51,7 +47,6 @@ class LocalComponent extends React.Component {
             dataTemp.documentType.value = data.documentType;
             dataTemp.documentNumber.value = data.documentNumber;
             this.resetState({ data: dataTemp, dataLoaded: true, isFormValid: true });
-            console.log(dataTemp);
         } else {
             this.resetState({ dataLoaded: true });
         }
@@ -347,23 +342,21 @@ class LocalComponent extends React.Component {
             Object.keys(data).forEach(key => {
                 payload[key] = data[key].value;
             });
-            deleteItemById(payload.id).then(result => {
+            console.log("payload", payload);
+            createItem(payload).then(result => {
                 this.updateState({
                     processed: true,
                     processedMessage: "Procesado correctamente",
                     processedError: false,
                 });
-                this.props.handleAfterClosedDialog(payload, 'deleted');
+                this.props.handleAfterClosedDialog(result.data, 'deleted');
             }).catch(error => {
                 this.updateState({
                     processed: true,
                     processedMessage: error.message,
                     processedError: true,
                 });
-            }).finally(() => {
-                this.updateState({ loading: false, processed: true });
-                this.handleScrollToTop();
-            });
+            }).finally(() => this.updateState({ loading: false, processed: true }));
         }
         form.classList.add('was-validated');
     }
@@ -402,11 +395,6 @@ class LocalComponent extends React.Component {
         });
     }
 
-    async handleScrollToTop(e) {
-        this.validationMessageRef.current?.scrollIntoView({ block: 'nearest' });
-        this.validationMessageRef.current?.scrollTo(0, 0);
-    }
-
     render() {
         if (!this.state.dataLoaded) {
             return (<div style={{ textAlign: 'center' }}>
@@ -426,9 +414,8 @@ class LocalComponent extends React.Component {
                 data-bs-keyboard="false"
                 aria-hidden="true">
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
-                    {this.state.loading && <LoadingCustom />}
-
                     <div className="modal-content">
+
                         <div className="modal-header">
                             <h4 className="modal-title" id='myModalLabel33'>Eliminar elemento</h4>
                             <button type="button" className="close btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={this.props.handleHideDialog}>
@@ -436,7 +423,7 @@ class LocalComponent extends React.Component {
                             </button>
                         </div>
 
-                        <form className="needs-validation form" onSubmit={this.handleSubmit} ref={this.validationMessageRef} noValidate>
+                        <form className="needs-validation form" onSubmit={this.handleSubmit} noValidate>
 
                             {this.state.processed && !this.state.processedError && <div className="alert alert-success" role="alert">
                                 {/*<h5 className="alert-heading">EXITOSO</h5>*/}
@@ -460,7 +447,7 @@ class LocalComponent extends React.Component {
                                                                 <InputCustom
                                                                     data={this.state.data.firstName}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    disabled={true}
+                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
 
@@ -468,7 +455,7 @@ class LocalComponent extends React.Component {
                                                                 <InputCustom
                                                                     data={this.state.data.lastName}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    disabled={true}
+                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
                                                         </div>
@@ -480,14 +467,14 @@ class LocalComponent extends React.Component {
                                                                     data={this.state.data.documentType}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                     value={documentTypes}
-                                                                    disabled={true}
+                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
                                                             <div className="col-12 col-md-6">
                                                                 <InputCustom
                                                                     data={this.state.data.documentNumber}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    disabled={true}
+                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
                                                         </div>
@@ -498,7 +485,7 @@ class LocalComponent extends React.Component {
                                                                 <InputCustom
                                                                     data={this.state.data.email}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    disabled={true}
+                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
 
@@ -506,7 +493,7 @@ class LocalComponent extends React.Component {
                                                                 <InputCustom
                                                                     data={this.state.data.phone}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    disabled={true}
+                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
                                                         </div>
@@ -517,7 +504,7 @@ class LocalComponent extends React.Component {
                                                                 <InputCustom
                                                                     data={this.state.data.address}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    disabled={true}
+                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
 
@@ -525,7 +512,7 @@ class LocalComponent extends React.Component {
                                                                 <InputCustom
                                                                     data={this.state.data.birthdate}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    disabled={true}
+                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
                                                         </div>
@@ -537,7 +524,7 @@ class LocalComponent extends React.Component {
                                                                     data={this.state.data.status}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                     value={status}
-                                                                    disabled={true}
+                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
                                                         </div>
@@ -577,7 +564,7 @@ class LocalComponent extends React.Component {
                                                                                                 placeholder={this.state.data.associatedCampaigns.schema.placeholder}
                                                                                                 type={this.state.data.associatedCampaigns.schema.type}
                                                                                                 required={this.state.data.associatedCampaigns.schema.required}
-                                                                                                disabled={true}
+                                                                                                disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                                                 autoComplete='off'
                                                                                                 maxLength={this.state.data.associatedCampaigns.schema.maxLength}
                                                                                             />
@@ -602,7 +589,7 @@ class LocalComponent extends React.Component {
                                                                                                 placeholder={this.state.data.tags.schema.placeholder}
                                                                                                 type={this.state.data.tags.schema.type}
                                                                                                 required={this.state.data.tags.schema.required}
-                                                                                                disabled={true}
+                                                                                                disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                                                 autoComplete='off'
                                                                                                 maxLength={this.state.data.tags.schema.maxLength}
                                                                                             />
@@ -622,7 +609,7 @@ class LocalComponent extends React.Component {
                                                                                         <TextAreaCustom
                                                                                             data={this.state.data.description}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={true}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                                         />
                                                                                     </div>
                                                                                 </div>

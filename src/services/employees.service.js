@@ -74,7 +74,7 @@ export const findItemById = async (id) => {
                 message: 'Successful operation',
                 lastEvaluatedKey: undefined,
                 data: {
-                    "id": 12345,
+                    "id": getRandomArbitrary(1, 100000),
                     "firstName": "Juan",
                     "lastName": "Pérez",
                     "birthdate": DateUtil.currentDateToFormat3(),
@@ -120,6 +120,10 @@ export const findItemById = async (id) => {
     }
 }
 
+function getRandomArbitrary(min, max) {
+    return Math.trunc((Math.random() * (max - min) + min));
+}
+
 export const filterItems = async (payload) => {
     try {
         return new Promise((resolve, reject) => {
@@ -127,10 +131,17 @@ export const filterItems = async (payload) => {
                 resolve({
                     code: 200,
                     message: 'Successful operation',
-                    lastEvaluatedKey: { id: 1 },
+                    metadata: {
+                        totalScannedCount: 0,
+                        totalItemsMatched: 0,
+                        totalConsumedCapacity: 0,
+                        lastEvaluatedKey: {
+                            id: getRandomArbitrary(1, 100000),
+                        }
+                    },
                     data: [
                         {
-                            "id": 12345,
+                            "id": getRandomArbitrary(1, 100000),
                             "firstName": "Juan",
                             "lastName": "Pérez",
                             "birthdate": DateUtil.currentDateToFormat3(),
