@@ -2,8 +2,6 @@ import * as React from 'react';
 import "./styles.css";
 import { Link } from 'react-router-dom';
 import CreateComponent from '../components/create';
-import EditComponent from '../components/edit';
-import RemoveComponent from '../components/remove';
 import ButtonIcon from '../../../../components/button-icon';
 import { filterItems } from '../../../../services/employees.service';
 import { formatTextToView } from '../../../../lib/format';
@@ -473,11 +471,11 @@ class Page extends React.Component {
                                                         <td><span className={`text-color ${getEmployeeStatusFromList(item.statusId).cssClass}`}>{getEmployeeStatusFromList(item.statusId).name}</span></td>
                                                         <td>
                                                             <Link to={"#"}>
-                                                                <i className="fa-regular fa-pen-to-square" onClick={() => this.handleShowDialog('edit', item)}></i>
+                                                                <i className="fa-regular fa-pen-to-square" onClick={() => this.handleShowDialog('update', item)}></i>
                                                             </Link>
 
                                                             <Link to={"#"} style={{ marginLeft: '15px' }}>
-                                                                <i className="fa-solid fa-trash" onClick={() => this.handleShowDialog('remove', item)}></i>
+                                                                <i className="fa-solid fa-trash" onClick={() => this.handleShowDialog('delete', item)}></i>
                                                             </Link>
                                                         </td>
                                                     </tr>);
@@ -503,24 +501,27 @@ class Page extends React.Component {
                             </div>
                         </div>
                     </div>
-                    {this.state.currentDialog === "create" && (<CreateComponent
+                    {this.state.currentDialog === "create" && <CreateComponent
                         navigate={this.props.navigate}
                         location={this.props.location}
                         data={this.state.currentItemSelected}
                         handleAfterClosedDialog={this.handleAfterClosedDialog}
-                        handleHideDialog={this.handleHideDialog}></CreateComponent>)}
-                    {this.state.currentDialog === "edit" && (<EditComponent
+                        handleHideDialog={this.handleHideDialog}
+                        screenType={"CREATE"} />}
+                    {this.state.currentDialog === "update" && <CreateComponent
                         navigate={this.props.navigate}
                         location={this.props.location}
                         data={this.state.currentItemSelected}
                         handleAfterClosedDialog={this.handleAfterClosedDialog}
-                        handleHideDialog={this.handleHideDialog}></EditComponent>)}
-                    {this.state.currentDialog === "remove" && (<RemoveComponent
+                        handleHideDialog={this.handleHideDialog}
+                        screenType={"UPDATE"} />}
+                    {this.state.currentDialog === "delete" && <CreateComponent
                         navigate={this.props.navigate}
                         location={this.props.location}
                         data={this.state.currentItemSelected}
                         handleAfterClosedDialog={this.handleAfterClosedDialog}
-                        handleHideDialog={this.handleHideDialog}></RemoveComponent>)}
+                        handleHideDialog={this.handleHideDialog}
+                        screenType={"DELETE"} />}
                 </section>
             </div>
         );

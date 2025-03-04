@@ -49,4 +49,14 @@ export default class Utils {
     }
     */
 
+    static stopPropagation(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (event.key === 'Enter' || event.target?.keyCode === 13 || event.target?.key === 'Enter') {
+                return;
+            }
+        }
+    }
+
 }

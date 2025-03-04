@@ -10,29 +10,29 @@ class SelectCustom extends React.Component {
     }
     render() {
         return (<div className="form-group">
-            <label htmlFor={this.props.data.schema.id} className="form-label control-label">{this.props.data.schema.name} {this.props.data.schema.required ? '(*)' : ''}</label>
+            <label htmlFor={this.props.schema.id} className="form-label control-label">{this.props.schema.name} {this.props.schema.required ? '(*)' : ''}</label>
             <select
-                type={this.props.data.schema.type}
-                id={this.props.data.schema.id}
-                name={this.props.data.schema.id}
-                placeholder={this.props.data.schema.placeholder}
-                value={this.props.data.value}
-                onChange={(event) => this.props.handleSetChangeInputEvent(event, this.props.data.schema.id)}
+                type={this.props.schema.type}
+                id={this.props.schema.id}
+                name={this.props.schema.id}
+                placeholder={this.props.schema.placeholder}
+                value={this.props.data}
+                onChange={(event) => this.props.handleSetChangeInputEvent(event)}
                 disabled={this.props.disabled}
                 className="form-select"
                 autoComplete='off'
-                required={this.props.data.schema.required}>
-                <option value={null}>Seleccionar...</option>
+                required={this.props.schema.required}>
+                <option value={""}>Seleccionar...</option>
                 {this.props.value.map((item, index) => {
-                    return (<option value={item.id} key={index}>{item.name}</option>);
+                    return (<option value={item.code} key={index}>{item.name}</option>);
                 })}
             </select>
             <div
                 className="invalid-feedback"
                 style={{
-                    display: this.props.data.errors.length > 0 ? 'block' : 'none'
+                    display: this.props.errors[this.props.schema.id] !== undefined ? 'block' : 'none'
                 }}>
-                {this.props.data.errors[0]}
+                {this.props.errors[this.props.schema.id]}
             </div>
         </div>);
     }
