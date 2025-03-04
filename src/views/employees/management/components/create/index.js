@@ -2,11 +2,10 @@ import * as React from 'react';
 import "./styles.css";
 import ButtonPrimary from '../../../../../components/button-primary';
 import ButtonSecondary from '../../../../../components/button-secondary';
-import { createItem, updateItemById, deleteItemById } from '../../../../../services/customers.service';
+import { createItem, updateItemById, deleteItemById } from '../../../../../services/employees.service';
 import Validator from '../../../../../lib/validator';
 import InputCustom from '../../../../../components/input';
 import SelectCustom from '../../../../../components/select';
-import { EMPLOYEE_STATUS } from '../../../../../lib/constants/employee_status.constants';
 import LoadingCustom from '../../../../../components/loading';
 import { findSchemaByName, findValueByName, transformPayload, updateValueByName } from '../../../../../lib/payload';
 import { validationSchema } from '../../schemas/default';
@@ -15,6 +14,9 @@ import { GENDERS } from '../../../../../lib/constants/genders.constants';
 import { NATIONALITIES } from '../../../../../lib/constants/nationalities.constants';
 import { MARITAL_STATUS } from '../../../../../lib/constants/marital_status.constants';
 import { DOCUMENT_TYPES } from '../../../../../lib/constants/document_types.constants';
+import { EMPLOYEE_STATUS } from '../../../../../lib/constants/employee_status.constants';
+import { CONTRACT_TYPES } from '../../../../../lib/constants/contract_types.constants';
+
 
 class LocalComponent extends React.Component {
 
@@ -40,25 +42,17 @@ class LocalComponent extends React.Component {
 
     componentDidMount() {
         const { data, screenType } = this.props;
+        let buttonName = '';
+        if (screenType === "CREATE") {
+            buttonName = "Crear";
+        } else if (screenType === "UPDATE") {
+            buttonName = "Actualizar";
+        } else if (screenType === "DELETE") {
+            buttonName = "Eliminar";
+        }
         if (data) {
-            let buttonName = '';
-            if (screenType === "CREATE") {
-                buttonName = "Crear";
-            } else if (screenType === "UPDATE") {
-                buttonName = "Actualizar";
-            } else if (screenType === "DELETE") {
-                buttonName = "Eliminar";
-            }
             this.resetState({ data: data, dataLoaded: true, screenType: screenType, buttonName: buttonName });
         } else {
-            let buttonName = '';
-            if (screenType === "CREATE") {
-                buttonName = "Crear";
-            } else if (screenType === "UPDATE") {
-                buttonName = "Actualizar";
-            } else if (screenType === "DELETE") {
-                buttonName = "Eliminar";
-            }
             this.resetState({ dataLoaded: true, screenType: screenType, buttonName: buttonName });
         }
     }
@@ -93,10 +87,16 @@ class LocalComponent extends React.Component {
     async validateForm(key) {
         const { data, errors } = this.state;
         let value = findValueByName(key, data);
+        console.log("valueeee", value);
         let schema = findSchemaByName(key, validationSchema);
+        console.log(">>>>>>>>>>validateForm>", schema);
         let resultError = Validator.validate(value, schema);
-        errors[key] = resultError;
-        let isFormValid = String(resultError).length > 0 ? false : true;
+        console.log("resultError", resultError);
+        let isFormValid = true;
+        if (resultError) {
+            errors[key] = resultError;
+            isFormValid = false;
+        }
         this.updateState({ errors: errors });
         const keys = Object.keys(data);
         for (const keyx of keys) {
@@ -116,12 +116,11 @@ class LocalComponent extends React.Component {
         const { name, value, selectedOptions } = event.target;
         const { data } = this.state;
         const schema = findSchemaByName(name, validationSchema);
-        if (schema.select && schema.multiple) {
-            const valueSelected = Array.from(selectedOptions, option => option.value);
+        if (schema && schema.select && schema.multiple) {
+            const valueSelected = Array.from(selectedOptions, option => option.value) || value;
             updateValueByName(name, valueSelected, data);
-        } else {
+        } else if (schema) {
             updateValueByName(name, value, data);
-
         }
         this.updateState({ data: data });
         this.validateForm(name);
@@ -221,27 +220,21 @@ class LocalComponent extends React.Component {
         Utils.stopPropagation(event);
         const data = this.state.data;
         data.tags.value = tags;
-        this.updateState({
-            data: data
-        });
+        this.updateState({ data: data });
     }
 
     async handleSelectedAssociatedCampaigns(event, tags) {
         Utils.stopPropagation(event);
         const data = this.state.data;
         data.associatedCampaigns.value = tags;
-        this.updateState({
-            data: data
-        });
+        this.updateState({ data: data });
     }
 
     async handleSetAccordion(event) {
         Utils.stopPropagation(event);
         const target = event.target || event.srcElement;
         const id = target.id
-        this.updateState({
-            accordionSelected: this.state.accordionSelected === id ? undefined : id
-        });
+        this.updateState({ accordionSelected: this.state.accordionSelected === id ? undefined : id });
     }
 
     async handleScrollToTop(event) {
@@ -273,7 +266,7 @@ class LocalComponent extends React.Component {
                     <div className="modal-content">
 
                         <div className="modal-header">
-                            <h4 className="modal-title" id='myModalLabel33'>Crear elemento</h4>
+                            <h4 className="modal-title" id='myModalLabel33'>{this.state.buttonName} elemento</h4>
                             <button type="button" className="close btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={this.props.handleHideDialog}>
                                 <i data-feather="x" ></i>
                             </button>
@@ -387,88 +380,136 @@ class LocalComponent extends React.Component {
                                                             </div>
                                                         </div>
 
-                                                        {/*<div className="row mb-4">
+                                                        <div className="row mb-4">
                                                             <div className="col-12 col-md-12">
                                                                 <div className="accordion" id="accordionExample">
                                                                     <div className="accordion-item">
                                                                         <h2 className="accordion-header">
                                                                             <button
-                                                                                id="segmentationInformation"
-                                                                                name="segmentationInformation"
-                                                                                className={`accordion-button ${!this.state.accordionSelected ? 'collapsed' : ''}`}
+                                                                                id="contactInformation"
+                                                                                name="contactInformation"
+                                                                                className={`accordion-button ${this.state.accordionSelected !== "contactInformation" ? 'collapsed' : ''}`}
                                                                                 type="button"
                                                                                 data-bs-toggle="collapse"
                                                                                 data-bs-target="#collapseOne"
-                                                                                aria-expanded={!this.state.accordionSelected ? false : true}
+                                                                                aria-expanded={this.state.accordionSelected !== "contactInformation" ? false : true}
                                                                                 aria-controls="collapseOne"
                                                                                 onClick={this.handleSetAccordion}>
-                                                                                Información de segmentación y notas
+                                                                                Información de contacto
                                                                             </button>
                                                                         </h2>
                                                                         <div id="collapseOne"
-                                                                            className={`accordion-collapse collapse ${this.state.accordionSelected === "segmentationInformation" ? 'show' : ''}`}
+                                                                            className={`accordion-collapse collapse ${this.state.accordionSelected === "contactInformation" ? 'show' : ''}`}
                                                                             data-bs-parent="#accordionExample">
                                                                             <div className="accordion-body">
                                                                                 <div className="row mb-2">
-                                                                                    <div className="col-12 col-md-12">
-                                                                                        <div className="form-group">
-                                                                                            <label htmlFor={this.state.data.associatedCampaigns.schema.id} className="form-label control-label">{this.state.data.associatedCampaigns.schema.name}</label>
-                                                                                            <TagsInput
-                                                                                                selectedTags={this.handleSelectedAssociatedCampaigns}
-                                                                                                tags={this.state.data.associatedCampaigns.value}
-                                                                                                id={this.state.data.associatedCampaigns.schema.id}
-                                                                                                name={this.state.data.associatedCampaigns.schema.id}
-                                                                                                placeholder={this.state.data.associatedCampaigns.schema.placeholder}
-                                                                                                type={this.state.data.associatedCampaigns.schema.type}
-                                                                                                required={this.state.data.associatedCampaigns.schema.required}
-                                                                                                disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
-                                                                                                autoComplete='off'
-                                                                                                maxLength={this.state.data.associatedCampaigns.schema.maxLength}
-                                                                                            />
-                                                                                            <small className="form-text text-muted">Si el cliente fue captado a través de una campaña específica</small>
-                                                                                            <div
-                                                                                                className="invalid-feedback"
-                                                                                                style={{
-                                                                                                    display: this.state.data.associatedCampaigns.errors.length > 0 ? 'block' : 'none'
-                                                                                                }}>
-                                                                                                {this.state.data.associatedCampaigns.errors[0]}
-                                                                                            </div>
-                                                                                        </div>
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <InputCustom
+                                                                                            data={this.state.data.contactInformation.email}
+                                                                                            schema={validationSchema.contactInformation.email}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
                                                                                     </div>
 
-                                                                                    <div className="col-12 col-md-12">
-                                                                                        <div className="form-group">
-                                                                                            <label htmlFor={this.state.data.tags.schema.id} className="form-label control-label">{this.state.data.tags.schema.name}</label>
-                                                                                            <TagsInput
-                                                                                                selectedTags={this.handleSelectedTags}
-                                                                                                tags={this.state.data.tags.value}
-                                                                                                id={this.state.data.tags.schema.id}
-                                                                                                name={this.state.data.tags.schema.id}
-                                                                                                placeholder={this.state.data.tags.schema.placeholder}
-                                                                                                type={this.state.data.tags.schema.type}
-                                                                                                required={this.state.data.tags.schema.required}
-                                                                                                disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
-                                                                                                autoComplete='off'
-                                                                                                maxLength={this.state.data.tags.schema.maxLength}
-                                                                                            />
-                                                                                            <small className="form-text text-muted">Para segmentar al cliente por tipo, industria, interés, etc.</small>
-                                                                                            <div
-                                                                                                className="invalid-feedback"
-                                                                                                style={{
-                                                                                                    display: this.state.data.tags.errors.length > 0 ? 'block' : 'none'
-                                                                                                }}>
-                                                                                                {this.state.data.tags.errors[0]}
-                                                                                            </div>
-                                                                                        </div>
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <InputCustom
+                                                                                            data={this.state.data.contactInformation.phone}
+                                                                                            schema={validationSchema.contactInformation.phone}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
                                                                                     </div>
                                                                                 </div>
 
-                                                                                <div className="row">
-                                                                                    <div className="col-12 col-md-12">
-                                                                                        <TextAreaCustom
-                                                                                            data={this.state.data.description}
+                                                                                <div className="row mb-2">
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <InputCustom
+                                                                                            data={this.state.data.contactInformation.address}
+                                                                                            schema={validationSchema.contactInformation.address}
+                                                                                            errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
+                                                                                    </div>
+
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <InputCustom
+                                                                                            data={this.state.data.contactInformation.corporateEmail}
+                                                                                            schema={validationSchema.contactInformation.corporateEmail}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                    <div className="accordion-item">
+                                                                        <h2 className="accordion-header">
+                                                                            <button
+                                                                                id="employmentInformation"
+                                                                                name="employmentInformation"
+                                                                                className={`accordion-button ${this.state.accordionSelected !== "employmentInformation" ? 'collapsed' : ''}`}
+                                                                                type="button"
+                                                                                data-bs-toggle="collapse"
+                                                                                data-bs-target="#collapseOne"
+                                                                                aria-expanded={this.state.accordionSelected !== "employmentInformation" ? false : true}
+                                                                                aria-controls="collapseOne"
+                                                                                onClick={this.handleSetAccordion}>
+                                                                                Información de empleo
+                                                                            </button>
+                                                                        </h2>
+                                                                        <div id="collapseOne"
+                                                                            className={`accordion-collapse collapse ${this.state.accordionSelected === "employmentInformation" ? 'show' : ''}`}
+                                                                            data-bs-parent="#accordionExample">
+                                                                            <div className="accordion-body">
+                                                                                <div className="row mb-2">
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <InputCustom
+                                                                                            data={this.state.data.employmentInformation.position}
+                                                                                            schema={validationSchema.employmentInformation.position}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
+                                                                                    </div>
+
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <InputCustom
+                                                                                            data={this.state.data.employmentInformation.department}
+                                                                                            schema={validationSchema.employmentInformation.department}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div className="row mb-2">
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <InputCustom
+                                                                                            data={this.state.data.employmentInformation.dateHiring}
+                                                                                            schema={validationSchema.employmentInformation.dateHiring}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
+                                                                                    </div>
+
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <SelectCustom
+                                                                                            data={this.state.data.employmentInformation.typeContractId}
+                                                                                            schema={validationSchema.employmentInformation.typeContractId}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            value={CONTRACT_TYPES}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
                                                                                         />
                                                                                     </div>
                                                                                 </div>
@@ -477,7 +518,7 @@ class LocalComponent extends React.Component {
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>*/}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

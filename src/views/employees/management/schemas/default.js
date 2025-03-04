@@ -5,6 +5,7 @@ export const validationSchema = {
         id: 'id',
         type: 'number',
         required: false,
+        visible: false,
         minLength: 0,
         maxLength: 10,
         min: undefined,
@@ -23,6 +24,7 @@ export const validationSchema = {
         id: 'firstName',
         type: 'text',
         required: true,
+        visible: true,
         minLength: 1,
         maxLength: 100,
         min: undefined,
@@ -203,8 +205,8 @@ export const validationSchema = {
 
     "contactInformation": {
         "email": {
-            name: 'email',
-            placeholder: undefined,
+            name: 'Correo electrónico',
+            placeholder: "Ejemplo: correo@example.com",
             id: 'email',
             type: 'email',
             required: false,
@@ -221,8 +223,8 @@ export const validationSchema = {
             email: true
         },
         "phone": {
-            name: 'phone',
-            placeholder: undefined,
+            name: 'Teléfono',
+            placeholder: "Ejemplo: +573105397777",
             id: 'phone',
             type: 'text',
             required: false,
@@ -239,8 +241,8 @@ export const validationSchema = {
             email: undefined
         },
         "address": {
-            name: 'address',
-            placeholder: undefined,
+            name: 'Dirección',
+            placeholder: "Ejemplo: Calle 1#1-25",
             id: 'address',
             type: 'text',
             required: false,
@@ -257,8 +259,8 @@ export const validationSchema = {
             email: undefined
         },
         "corporateEmail": {
-            name: 'corporateEmail',
-            placeholder: undefined,
+            name: 'Correo corporativo',
+            placeholder: "Ejemplo: correo@example.com",
             id: 'corporateEmail',
             type: 'email',
             required: false,
@@ -277,7 +279,7 @@ export const validationSchema = {
     },
     "employmentInformation": {
         "position": {
-            name: 'position',
+            name: 'Cargo o posición',
             placeholder: undefined,
             id: 'position',
             type: 'text',
@@ -295,7 +297,7 @@ export const validationSchema = {
             email: undefined
         },
         "department": {
-            name: 'department',
+            name: 'Departamento o área',
             placeholder: undefined,
             id: 'department',
             type: 'text',
@@ -313,7 +315,7 @@ export const validationSchema = {
             email: undefined
         },
         "dateHiring": {
-            name: 'dateHiring',
+            name: 'Fecha de contratación',
             placeholder: undefined,
             id: 'dateHiring',
             type: 'date',
@@ -331,7 +333,7 @@ export const validationSchema = {
             email: undefined
         },
         "typeContractId": {
-            name: 'typeContractId',
+            name: 'Tipo de contrato',
             placeholder: undefined,
             id: 'typeContractId',
             type: 'text',
@@ -349,7 +351,7 @@ export const validationSchema = {
             email: undefined
         },
         "directBoss": {
-            name: 'directBoss',
+            name: 'Jefe directo',
             placeholder: undefined,
             id: 'directBoss',
             type: 'text',

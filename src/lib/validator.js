@@ -23,25 +23,25 @@ export default class Validator {
                 return `${schema.name} es requerido.`;
             }
         }
-        if (Array.isArray(value)) {
+        if (value !== undefined && value != null && Array.isArray(value)) {
             if (schema.minLength !== undefined && schema.minLength >= 0) {
                 if (value.length < schema.minLength) {
                     return `${schema.name} requiere una longitud mínima de ${schema.minLength}.`;
                 }
             }
-            if (schema.minLength !== undefined && schema.maxLength >= 0) {
+            if (schema.maxLength !== undefined && schema.maxLength >= 0) {
                 if (value.length > schema.maxLength) {
                     return `${schema.name} requiere una longitud máxima de ${schema.maxLength}.`;
                 }
             }
         } else {
             if (schema.minLength !== undefined && schema.minLength >= 0) {
-                if (String(value).length < schema.minLength) {
+                if (String(value || "").length < schema.minLength) {
                     return `${schema.name} requiere una longitud mínima de ${schema.minLength}.`;
                 }
             }
-            if (schema.minLength !== undefined && schema.maxLength >= 0) {
-                if (String(value).length > schema.maxLength) {
+            if (schema.maxLength !== undefined && schema.maxLength >= 0) {
+                if (String(value || "").length > schema.maxLength) {
                     return `${schema.name} requiere una longitud máxima de ${schema.maxLength}.`;
                 }
             }

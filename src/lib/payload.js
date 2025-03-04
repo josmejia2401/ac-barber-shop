@@ -17,34 +17,50 @@ export function transformPayload(payload) {
 export function findSchemaByName(key, validationSchema) {
     const parentKeys = Object.keys(validationSchema);
     for (const parentKey of parentKeys) {
-        if (parentKey && typeof parentKey === 'object') {
-            return findSchemaByName(key, validationSchema[parentKey]);
-        } else if (parentKey === key) {
-            return validationSchema[parentKey];
+        const value = validationSchema[parentKey];
+        if (typeof value === 'object' && value.id === key) {
+            return value;
+        } else if (typeof value === 'object' && value.id === key) {
+            return value;
+        } else if (typeof value === 'object') {
+            const result = findSchemaByName(key, value);
+            if (result) {
+                return result;
+            }
         }
     }
+    return "";
 }
 
 export function findValueByName(key, payload) {
     const parentKeys = Object.keys(payload);
     for (const parentKey of parentKeys) {
-        if (parentKey && typeof parentKey === 'object') {
-            return findSchemaByName(key, payload[parentKey]);
+        const value = payload[parentKey];
+        if (typeof value === 'object') {
+            const result = findSchemaByName(key, value);
+            if (result) {
+                return result;
+            }
         } else if (parentKey === key) {
-            return payload[parentKey];
+            return value;
         }
     }
+    return;
 }
 
 export function updateValueByName(key, value, payload) {
     const parentKeys = Object.keys(payload);
     for (const parentKey of parentKeys) {
-        if (parentKey && typeof parentKey === 'object') {
-            return findSchemaByName(key, payload[parentKey]);
+        if (typeof payload[parentKey] === 'object') {
+            const result = updateValueByName(key, value, payload[parentKey]);
+            if (result) {
+                payload[parentKey] = result;
+                return payload;
+            }
         } else if (parentKey === key) {
             payload[parentKey] = value;
-            break;
+            return payload;
         }
     }
-    return payload;
+    return;
 }
