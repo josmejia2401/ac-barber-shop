@@ -7,6 +7,16 @@ class InputCustom extends React.Component {
     constructor(props) {
         super(props);
         this.state = {}
+        this.limpiarRegex = this.limpiarRegex.bind(this);
+    }
+    limpiarRegex(regexStr) {
+        // Verifica si la cadena inicia con "/" y termina con "/"
+        if (String(regexStr).startsWith('/') && String(regexStr).endsWith('/')) {
+            // Elimina el primer y último carácter ("/")
+            return String(regexStr).slice(1, -1);
+        }
+        // Si no cumple con el formato, devuelve la cadena original
+        return regexStr;
     }
     render() {
         return (<div className="form-group">
@@ -22,7 +32,7 @@ class InputCustom extends React.Component {
                 max={this.props.schema.max}
                 min={this.props.schema.min}
                 size={this.props.schema.size}
-                pattern={this.props.schema.pattern}
+                pattern={this.limpiarRegex(this.props.schema.pattern)}
                 onChange={(event) => this.props.handleSetChangeInputEvent(event)}
                 disabled={this.props.disabled}
                 autoComplete='off'

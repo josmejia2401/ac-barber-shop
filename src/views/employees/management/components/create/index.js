@@ -7,7 +7,7 @@ import Validator from '../../../../../lib/validator';
 import InputCustom from '../../../../../components/input';
 import SelectCustom from '../../../../../components/select';
 import LoadingCustom from '../../../../../components/loading';
-import { findSchemaByName, findValueByName, transformPayload, updateValueByName } from '../../../../../lib/payload';
+import { findValueByKey, transformPayload, updateValueByKey } from '../../../../../lib/payload';
 import { validationSchema } from '../../schemas/default';
 import Utils from '../../../../../lib/utils';
 import { GENDERS } from '../../../../../lib/constants/genders.constants';
@@ -16,7 +16,9 @@ import { MARITAL_STATUS } from '../../../../../lib/constants/marital_status.cons
 import { DOCUMENT_TYPES } from '../../../../../lib/constants/document_types.constants';
 import { EMPLOYEE_STATUS } from '../../../../../lib/constants/employee_status.constants';
 import { CONTRACT_TYPES } from '../../../../../lib/constants/contract_types.constants';
-
+import { BANKS } from '../../../../../lib/constants/banks.constants';
+import { ACCOUNT_TYPES } from '../../../../../lib/constants/account_types.constants';
+import TextAreaCustom from '../../../../../components/textarea';
 
 class LocalComponent extends React.Component {
 
@@ -43,15 +45,23 @@ class LocalComponent extends React.Component {
     componentDidMount() {
         const { data, screenType } = this.props;
         let buttonName = '';
+        let isFormValid = false;
         if (screenType === "CREATE") {
             buttonName = "Crear";
         } else if (screenType === "UPDATE") {
             buttonName = "Actualizar";
         } else if (screenType === "DELETE") {
             buttonName = "Eliminar";
+            isFormValid = true;
         }
         if (data) {
-            this.resetState({ data: data, dataLoaded: true, screenType: screenType, buttonName: buttonName });
+            this.resetState({
+                data: data,
+                dataLoaded: true,
+                screenType: screenType,
+                buttonName: buttonName,
+                isFormValid: isFormValid
+            });
         } else {
             this.resetState({ dataLoaded: true, screenType: screenType, buttonName: buttonName });
         }
@@ -86,24 +96,28 @@ class LocalComponent extends React.Component {
 
     async validateForm(key) {
         const { data, errors } = this.state;
-        let value = findValueByName(key, data);
-        console.log("valueeee", value);
-        let schema = findSchemaByName(key, validationSchema);
-        console.log(">>>>>>>>>>validateForm>", schema);
+        let value = findValueByKey(data, key);
+        let schema = findValueByKey(validationSchema, key);
         let resultError = Validator.validate(value, schema);
-        console.log("resultError", resultError);
         let isFormValid = true;
-        if (resultError) {
-            errors[key] = resultError;
+        errors[key] = "";
+        if (resultError.length > 0) {
+            console.log("errors", key, resultError, schema);
+            errors[key] = resultError[0];
             isFormValid = false;
         }
         this.updateState({ errors: errors });
         const keys = Object.keys(data);
+        const keysToSkip = ['name', 'id', 'placeholder', 'type', 'required'];
         for (const keyx of keys) {
-            value = findValueByName(keyx, data);
-            schema = findSchemaByName(keyx, validationSchema);
+            if (!keysToSkip.includes(keyx)) {
+                continue;
+            }
+            value = findValueByKey(data, keyx);
+            schema = findValueByKey(validationSchema, keyx);
             resultError = Validator.validate(value, schema);
             if (resultError.length > 0) {
+                console.log("errors", keyx, value, resultError, schema);
                 isFormValid = false;
                 break;
             }
@@ -115,12 +129,12 @@ class LocalComponent extends React.Component {
         Utils.stopPropagation(event);
         const { name, value, selectedOptions } = event.target;
         const { data } = this.state;
-        const schema = findSchemaByName(name, validationSchema);
+        const schema = findValueByKey(validationSchema, name);
         if (schema && schema.select && schema.multiple) {
             const valueSelected = Array.from(selectedOptions, option => option.value) || value;
-            updateValueByName(name, valueSelected, data);
+            updateValueByKey(data, name, valueSelected);
         } else if (schema) {
-            updateValueByName(name, value, data);
+            updateValueByKey(data, name, value);
         }
         this.updateState({ data: data });
         this.validateForm(name);
@@ -197,6 +211,7 @@ class LocalComponent extends React.Component {
         const form = event.target;
         const isValid = form.checkValidity();
         const { data, isFormValid, screenType } = this.state;
+        console.log("data", isFormValid, screenType, isValid, data);
         if (isFormValid === true && isValid === true) {
             this.updateState({
                 loading: true,
@@ -214,7 +229,6 @@ class LocalComponent extends React.Component {
         }
         form.classList.add('was-validated');
     }
-
 
     async handleSelectedTags(event, tags) {
         Utils.stopPropagation(event);
@@ -380,6 +394,18 @@ class LocalComponent extends React.Component {
                                                             </div>
                                                         </div>
 
+                                                        <div className="row mb-2">
+                                                            <div className="col-12 col-md-6">
+                                                                <InputCustom
+                                                                    data={this.state.data.birthdate}
+                                                                    schema={validationSchema.birthdate}
+                                                                    errors={this.state.errors}
+                                                                    handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                />
+                                                            </div>
+                                                        </div>
+
                                                         <div className="row mb-4">
                                                             <div className="col-12 col-md-12">
                                                                 <div className="accordion" id="accordionExample">
@@ -412,7 +438,6 @@ class LocalComponent extends React.Component {
                                                                                             disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
                                                                                         />
                                                                                     </div>
-
                                                                                     <div className="col-12 col-md-6">
                                                                                         <InputCustom
                                                                                             data={this.state.data.contactInformation.phone}
@@ -434,7 +459,6 @@ class LocalComponent extends React.Component {
                                                                                             disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
                                                                                         />
                                                                                     </div>
-
                                                                                     <div className="col-12 col-md-6">
                                                                                         <InputCustom
                                                                                             data={this.state.data.contactInformation.corporateEmail}
@@ -448,7 +472,6 @@ class LocalComponent extends React.Component {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-
 
                                                                     <div className="accordion-item">
                                                                         <h2 className="accordion-header">
@@ -509,6 +532,110 @@ class LocalComponent extends React.Component {
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                                             value={CONTRACT_TYPES}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div className="row mb-2">
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <InputCustom
+                                                                                            data={this.state.data.employmentInformation.directBoss}
+                                                                                            schema={validationSchema.employmentInformation.directBoss}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="accordion-item">
+                                                                        <h2 className="accordion-header">
+                                                                            <button
+                                                                                id="bankingInformation"
+                                                                                name="bankingInformation"
+                                                                                className={`accordion-button ${this.state.accordionSelected !== "bankingInformation" ? 'collapsed' : ''}`}
+                                                                                type="button"
+                                                                                data-bs-toggle="collapse"
+                                                                                data-bs-target="#collapseOne"
+                                                                                aria-expanded={this.state.accordionSelected !== "bankingInformation" ? false : true}
+                                                                                aria-controls="collapseOne"
+                                                                                onClick={this.handleSetAccordion}>
+                                                                                Información bancaria
+                                                                            </button>
+                                                                        </h2>
+                                                                        <div id="collapseOne"
+                                                                            className={`accordion-collapse collapse ${this.state.accordionSelected === "bankingInformation" ? 'show' : ''}`}
+                                                                            data-bs-parent="#accordionExample">
+                                                                            <div className="accordion-body">
+                                                                                <div className="row mb-2">
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <SelectCustom
+                                                                                            data={this.state.data.bankingInformation.bankId}
+                                                                                            schema={validationSchema.bankingInformation.bankId}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            value={BANKS}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
+                                                                                    </div>
+
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <SelectCustom
+                                                                                            data={this.state.data.bankingInformation.accountTypeId}
+                                                                                            schema={validationSchema.bankingInformation.accountTypeId}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            value={ACCOUNT_TYPES}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div className="row mb-2">
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <InputCustom
+                                                                                            data={this.state.data.bankingInformation.bankAccountNumber}
+                                                                                            schema={validationSchema.bankingInformation.bankAccountNumber}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="accordion-item">
+                                                                        <h2 className="accordion-header">
+                                                                            <button
+                                                                                id="additionalInformation"
+                                                                                name="additionalInformation"
+                                                                                className={`accordion-button ${this.state.accordionSelected !== "additionalInformation" ? 'collapsed' : ''}`}
+                                                                                type="button"
+                                                                                data-bs-toggle="collapse"
+                                                                                data-bs-target="#collapseOne"
+                                                                                aria-expanded={this.state.accordionSelected !== "additionalInformation" ? false : true}
+                                                                                aria-controls="collapseOne"
+                                                                                onClick={this.handleSetAccordion}>
+                                                                                Información adicional
+                                                                            </button>
+                                                                        </h2>
+                                                                        <div id="collapseOne"
+                                                                            className={`accordion-collapse collapse ${this.state.accordionSelected === "additionalInformation" ? 'show' : ''}`}
+                                                                            data-bs-parent="#accordionExample">
+                                                                            <div className="accordion-body">
+                                                                                <div className="row mb-2">
+                                                                                    <div className="col-12 col-md-12">
+                                                                                        <TextAreaCustom
+                                                                                            data={this.state.data.additionalInformation.description}
+                                                                                            schema={validationSchema.additionalInformation.description}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            errors={this.state.errors}
                                                                                             disabled={this.state.loading || (this.state.processed && !this.state.processedError) || this.state.screenType === "DELETE"}
                                                                                         />
                                                                                     </div>

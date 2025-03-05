@@ -1,66 +1,77 @@
-function replaceEmptyObjects(obj) {
-    if (obj && typeof obj === 'object' && (Object.keys(obj).length === 0 || obj.required !== undefined)) {
-        return "";
+export function findValueByKey(payload, llave) {
+    // Si el payload es un objeto
+    if (typeof payload === 'object' && payload !== null) {
+        // Si la llave está en el objeto, devuelve el valor
+        if (llave in payload) {
+            return payload[llave];
+        }
+        // Si no, recorre las propiedades del objeto
+        for (let key in payload) {
+            if (payload.hasOwnProperty(key)) {
+                const resultado = findValueByKey(payload[key], llave);
+                if (resultado !== undefined) {
+                    return resultado;
+                }
+            }
+        }
     }
-    if (obj && typeof obj === 'object') {
-        return Object.fromEntries(
-            Object.entries(obj).map(([key, value]) => [key, replaceEmptyObjects(value)])
-        );
+    // Si el payload es una lista
+    else if (Array.isArray(payload)) {
+        // Recorre cada elemento de la lista
+        for (let item of payload) {
+            const resultado = findValueByKey(item, llave);
+            if (resultado !== undefined) {
+                return resultado;
+            }
+        }
     }
-    return obj;
+    // Si no es ni objeto ni lista, no se puede buscar más
+    return undefined;
 }
 
 export function transformPayload(payload) {
+    function replaceEmptyObjects(obj) {
+        if (obj && typeof obj === 'object' && (Object.keys(obj).length === 0 || obj.required !== undefined)) {
+            return "";
+        }
+        if (obj && typeof obj === 'object') {
+            return Object.fromEntries(
+                Object.entries(obj).map(([key, value]) => [key, replaceEmptyObjects(value)])
+            );
+        }
+        return obj;
+    }
     return replaceEmptyObjects(payload);
 }
 
-export function findSchemaByName(key, validationSchema) {
-    const parentKeys = Object.keys(validationSchema);
-    for (const parentKey of parentKeys) {
-        const value = validationSchema[parentKey];
-        if (typeof value === 'object' && value.id === key) {
-            return value;
-        } else if (typeof value === 'object' && value.id === key) {
-            return value;
-        } else if (typeof value === 'object') {
-            const result = findSchemaByName(key, value);
-            if (result) {
-                return result;
+export function updateValueByKey(payload, llave, nuevoValor) {
+    // Si el payload es un objeto
+    if (typeof payload === 'object' && payload !== null) {
+        // Si la llave está en el objeto, actualiza el valor
+        if (llave in payload) {
+            payload[llave] = nuevoValor;
+            return true; // Indica que se actualizó la llave
+        }
+        // Si no, recorre las propiedades del objeto
+        for (let key in payload) {
+            if (payload.hasOwnProperty(key)) {
+                const actualizado = updateValueByKey(payload[key], llave, nuevoValor);
+                if (actualizado) {
+                    return true; // Si se actualizó, detén la búsqueda
+                }
             }
         }
     }
-    return "";
-}
-
-export function findValueByName(key, payload) {
-    const parentKeys = Object.keys(payload);
-    for (const parentKey of parentKeys) {
-        const value = payload[parentKey];
-        if (typeof value === 'object') {
-            const result = findSchemaByName(key, value);
-            if (result) {
-                return result;
+    // Si el payload es una lista
+    else if (Array.isArray(payload)) {
+        // Recorre cada elemento de la lista
+        for (let item of payload) {
+            const actualizado = updateValueByKey(item, llave, nuevoValor);
+            if (actualizado) {
+                return true; // Si se actualizó, detén la búsqueda
             }
-        } else if (parentKey === key) {
-            return value;
         }
     }
-    return;
-}
-
-export function updateValueByName(key, value, payload) {
-    const parentKeys = Object.keys(payload);
-    for (const parentKey of parentKeys) {
-        if (typeof payload[parentKey] === 'object') {
-            const result = updateValueByName(key, value, payload[parentKey]);
-            if (result) {
-                payload[parentKey] = result;
-                return payload;
-            }
-        } else if (parentKey === key) {
-            payload[parentKey] = value;
-            return payload;
-        }
-    }
-    return;
+    // Si no se encontró la llave, retorna false
+    return false;
 }

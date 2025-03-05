@@ -1,7 +1,7 @@
 export const validationSchema = {
     "id": {
         name: 'ID',
-        placeholder: 'Ingrese el ID',
+        placeholder: '',
         id: 'id',
         type: 'number',
         required: false,
@@ -232,7 +232,7 @@ export const validationSchema = {
             maxLength: 15,
             min: undefined,
             max: undefined,
-            pattern: undefined,
+            pattern: /^(\+57|57)?[1-9]\d{9}$/,
             size: undefined,
             select: undefined,
             multiple: undefined,
@@ -371,7 +371,7 @@ export const validationSchema = {
     },
     "bankingInformation": {
         "bankAccountNumber": {
-            name: 'bankAccountNumber',
+            name: 'Número de cuenta',
             placeholder: undefined,
             id: 'bankAccountNumber',
             type: 'text',
@@ -389,7 +389,7 @@ export const validationSchema = {
             email: undefined
         },
         "bankId": {
-            name: 'bankId',
+            name: 'Banco',
             placeholder: undefined,
             id: 'bankId',
             type: 'text',
@@ -407,7 +407,7 @@ export const validationSchema = {
             email: undefined
         },
         "accountTypeId": {
-            name: 'accountTypeId',
+            name: 'Tipo de cuenta',
             placeholder: undefined,
             id: 'accountTypeId',
             type: 'text',
@@ -427,7 +427,7 @@ export const validationSchema = {
     },
     "additionalInformation": {
         "description": {
-            name: 'description',
+            name: 'Descripción',
             placeholder: undefined,
             id: 'description',
             type: 'text',

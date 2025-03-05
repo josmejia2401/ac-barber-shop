@@ -10,26 +10,26 @@ class TextAreaCustom extends React.Component {
     }
     render() {
         return (<div className="form-group">
-            <label htmlFor={this.props.data.schema.id} className="form-label control-label">{this.props.data.schema.name} {this.props.data.schema.required ? '(*)' : ''}</label>
+            <label htmlFor={this.props.schema.id} className="form-label control-label">{this.props.schema.name} {this.props.schema.required ? '(*)' : ''}</label>
             <textarea
-                type={this.props.data.schema.type}
-                id={this.props.data.schema.id}
-                name={this.props.data.schema.id}
-                placeholder={this.props.data.schema.placeholder}
-                value={this.props.data.value}
-                onChange={(event) => this.props.handleSetChangeInputEvent(event, this.props.data.schema.id)}
+                type={this.props.schema.type}
+                id={this.props.schema.id}
+                name={this.props.schema.id}
+                placeholder={this.props.schema.placeholder}
+                value={this.props.data}
+                onChange={(event) => this.props.handleSetChangeInputEvent(event)}
                 disabled={this.props.disabled}
                 autoComplete='off'
-                rows={this.props.data.schema.rows}
-                cols={this.props.data.schema.cols}
+                rows={this.props.schema.rows}
+                cols={this.props.schema.cols}
                 className="form-control"
                 required={false}></textarea>
             <div
                 className="invalid-feedback"
                 style={{
-                    display: this.props.data.errors.length > 0 ? 'block' : 'none'
+                    display: this.props.errors[this.props.schema.id] ? 'block' : 'none'
                 }}>
-                {this.props.data.errors[0]}
+                {this.props.errors[this.props.schema.id]}
             </div>
         </div>);
     }
