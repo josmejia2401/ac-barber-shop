@@ -169,7 +169,7 @@ export const validationSchema = {
         placeholder: undefined,
         id: 'statusId',
         type: 'text',
-        required: false,
+        required: true,
         minLength: 0,
         maxLength: 5,
         min: undefined,

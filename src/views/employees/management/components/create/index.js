@@ -211,7 +211,6 @@ class LocalComponent extends React.Component {
         const form = event.target;
         const isValid = form.checkValidity();
         const { data, isFormValid, screenType } = this.state;
-        console.log("data", isFormValid, screenType, isValid, data);
         if (isFormValid === true && isValid === true) {
             this.updateState({
                 loading: true,
@@ -219,12 +218,14 @@ class LocalComponent extends React.Component {
                 processedMessage: undefined,
                 processedError: false,
             });
+            const newData = { ...data };
+            delete newData["checked"];
             if (screenType === "CREATE") {
-                this.handleSubmitCreate(data);
+                this.handleSubmitCreate(newData);
             } else if (screenType === "UPDATE") {
-                this.handleSubmitUpdate(data);
+                this.handleSubmitUpdate(newData);
             } else if (screenType === "DELETE") {
-                this.handleSubmitDelete(data);
+                this.handleSubmitDelete(newData);
             }
         }
         form.classList.add('was-validated');

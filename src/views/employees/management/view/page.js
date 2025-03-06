@@ -463,9 +463,9 @@ class Page extends React.Component {
                                                         </td>
                                                         <td className="text-color">{item.firstName}</td>
                                                         <td className="text-color">{item.lastName}</td>
-                                                        <td className="text-color">{item.contactInformation.email}</td>
-                                                        <td className="text-color">{item.contactInformation.phone}</td>
-                                                        <td className="text-color">{formatTextToView(item.contactInformation.address)}</td>
+                                                        <td className="text-color">{item.contactInformation?.email}</td>
+                                                        <td className="text-color">{item.contactInformation?.phone}</td>
+                                                        <td className="text-color">{formatTextToView(item.contactInformation?.address)}</td>
                                                         <td><span className={`text-color ${getDocumentTypeFromList(item.documentTypeId).cssClass}`}>{getDocumentTypeFromList(item.documentTypeId).name}</span></td>
                                                         <td className="text-color">{item.documentNumber}</td>
                                                         <td><span className={`text-color ${getEmployeeStatusFromList(item.statusId).cssClass}`}>{getEmployeeStatusFromList(item.statusId).name}</span></td>
