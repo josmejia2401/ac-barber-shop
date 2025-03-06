@@ -80,7 +80,7 @@ export const validationSchema = {
         type: 'text',
         required: false,
         minLength: 0,
-        maxLength: 25,
+        maxLength: 20,
         min: undefined,
         max: undefined,
         pattern: undefined,

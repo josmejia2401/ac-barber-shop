@@ -2,7 +2,7 @@ import Observable from "./observable";
 
 class Storage extends Observable {
 
-    static PREFIX = "PSPC_";
+    static PREFIX = "CELESTE_";
 
     set(key, value) {
         window.localStorage.setItem(`${Storage.PREFIX}${key}`, value);

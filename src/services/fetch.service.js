@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_BASE = "https://m1hg0o6t7l.execute-api.us-east-1.amazonaws.com";
+const API_BASE = "https://u83oit2sq6.execute-api.us-east-1.amazonaws.com";
 
 export const axiosInstance = axios.create({
     baseURL: API_BASE,
