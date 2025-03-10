@@ -33,10 +33,9 @@ export const cleanAll = () => {
 export const buildAndThrowNewError = (error) => {
     if (error && error.response) {
         //en App.js el sistema se encarga de validar si hay datos y redirecciona a login
-        // TODO
-        //if (error.response.status === 401 || error.response.status === 403) {
-        //    cleanAll();
-        //}
+        if (error.response.status === 401 || error.response.status === 403) {
+            cleanAll();
+        }
         console.error(error.response.data);
         console.error(error.response.status);
         console.error(error.response.headers);

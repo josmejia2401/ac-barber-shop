@@ -4,11 +4,8 @@
     --bs-gutter-y: unset;
 }
 
-.p-error {
-    margin-top: 0;
-    margin-bottom: 0rem;
-}
 
-.alert-danger {
-    padding: 8px;
+.alert {
+    margin: 0px !important;
+    margin-bottom: 15px !important;
 }

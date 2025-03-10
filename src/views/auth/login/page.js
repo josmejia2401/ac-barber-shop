@@ -3,22 +3,21 @@ import "./styles.css";
 import ButtonPrimary from '../../../components/button-primary';
 import { signIn } from '../../../services/auth.services';
 import { Link } from 'react-router-dom';
+import banner from '../../../assets/banner/banner1.png';
+
 class Page extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = this.defaultState();
-
         this.defaultState = this.defaultState.bind(this);
         this.validateInputs = this.validateInputs.bind(this);
         this.setChangeInputEvent = this.setChangeInputEvent.bind(this);
         this.propagateState = this.propagateState.bind(this);
         this.updateState = this.updateState.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-
         this.goToHome = this.goToHome.bind(this);
     }
-
 
     componentDidMount() { }
 
@@ -155,11 +154,18 @@ class Page extends React.Component {
                     <div className="row align-items-center">
                         <div className="col-12 col-md-6 col-xl-7">
                             <div className="d-flex justify-content-center text-bg-primary">
-                                <div className="col-12 col-xl-9">
-                                    <img className="img-fluid rounded mb-4" loading="lazy" src="https://cdn-icons-png.flaticon.com/512/1576/1576782.png" width="245" height="80" alt="BootstrapBrain Logo" />
+                                <div className="col-12 col-xl-9" style={{ display: "flex", flexDirection: "column" }}>
+                                    <img className="img-fluid rounded mb-1"
+                                        loading="lazy"
+                                        src={banner}
+                                        width="245"
+                                        height="80"
+                                        alt="BootstrapBrain Logo"
+                                        style={{ alignContent: 'center', alignItems: 'center', alignSelf: 'center', marginTop: '15px' }} />
                                     <hr className="border-primary-subtle mb-4" />
-                                    <h2 className="h1 mb-4">Registra tiempos y haz seguimiento a tus tareas y actividades.</h2>
-                                    <p className="lead mb-5">Ahora puedes realizar análisis e informes en tiempo real.</p>
+                                    <h2 className="h1 mb-2">Bienvenido a CelestePro</h2>
+                                    <h2 className="h4 mb-4">Simplifica, gestiona, crece</h2>
+                                    <p className="lead mb-3">Controla tu inventario, gestiona empleados, atiende a tus clientes y optimiza proveedores. Todo en un solo lugar.</p>
                                     <div className="text-endx">
                                         <i className="fa-solid fa-grip" style={{ fontSize: '30px' }}></i>
                                     </div>
@@ -178,7 +184,6 @@ class Page extends React.Component {
                                         </div>
                                     </div>
                                     {this.state.errorMessage && <div className="alert alert-danger" role="alert">
-                                        <h5 className="alert-heading">ERROR</h5>
                                         <p className='p-error'>{this.state.errorMessage}</p>
                                     </div>}
                                     <form className="form needs-validation" onSubmit={this.handleSubmit} noValidate>

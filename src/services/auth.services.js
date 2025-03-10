@@ -10,7 +10,7 @@ export const signIn = async (payload) => {
                 ...authHeaders
             },
         });
-        setAccessToken(res.data["accessToken"]);
+        setAccessToken(res.data.data["accessToken"]);
         return res.data;
     } catch (error) {
         console.error(error);

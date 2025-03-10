@@ -166,9 +166,10 @@ class Page extends React.Component {
             return;
         } else {
             if (eventType === "deleted") {
-                data.splice(index, 1);
+                //data.splice(index, 1);
+                data[index] = { ...data[index], ...newData };
             } else {
-                data[index] = newData;
+                data[index] = { ...data[index], ...newData };
             }
         }
     }
@@ -370,6 +371,7 @@ class Page extends React.Component {
                                                         <h6>3. Al presionar el botón "Descargar CSV", se descargan únicamente los archivos seleccionados mediante las casillas de marcación.</h6>
                                                         <h6>4. Si el usuario selecciona todos o algunos registros, solo se descargarán los elementos actualmente visibles en pantalla. Los registros adicionales en la base de datos que no se muestran no serán incluidos en la descarga.</h6>
                                                         <h6>5. El filtro de búsqueda encuentra coincidencias en cualquier campo de los archivos visibles en la tabla.</h6>
+                                                        <h6>6. La eliminación es lógica.</h6>
                                                     </div>
                                                 </div>
                                             </div>
@@ -382,7 +384,7 @@ class Page extends React.Component {
                                         <table className="table table-hover mb-0">
                                             <thead>
                                                 <tr>
-                                                    <th colSpan={10}>
+                                                    <th colSpan={9}>
                                                         <input
                                                             placeholder='Buscar...'
                                                             type="text"
@@ -406,11 +408,10 @@ class Page extends React.Component {
                                                     </th>
                                                     <th><b>Nombres</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('firstName')}></i></th>
                                                     <th><b>Apellidos</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('lastName')}></i></th>
-                                                    <th>Correo</th>
-                                                    <th>Teléfono</th>
-                                                    <th>Dirección</th>
                                                     <th><b>Tipo documento</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('documentTypeId')}></i></th>
                                                     <th><b>Número documento</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('documentNumber')}></i></th>
+                                                    <th>Correo</th>
+                                                    <th>Teléfono</th>
                                                     <th><b>Estado</b><i className="fa fa-fw fa-sort" onClick={() => this.handleSortTableByColumn('statusId')}></i></th>
                                                     <th>Acción</th>
                                                 </tr>
@@ -418,7 +419,7 @@ class Page extends React.Component {
                                             <tbody>
 
                                                 {this.state.loading && (<tr>
-                                                    <td className="text-color" colSpan={10}>
+                                                    <td className="text-color" colSpan={9}>
                                                         <div className="skeleton-container">
                                                             <div className="skeleton-post">
                                                                 <div className="skeleton-avatar"></div>
@@ -442,7 +443,7 @@ class Page extends React.Component {
                                                 </tr>)}
 
                                                 {!this.state.loading && this.state.dataFiltered.length === 0 && (<tr>
-                                                    <td className="text-color" colSpan={10}>
+                                                    <td className="text-color" colSpan={9}>
                                                         <i className="fa-solid fa-circle-exclamation no-found-icon"></i>
                                                         <h1 className="no-found-text">No hay datos</h1>
                                                     </td>
@@ -463,11 +464,10 @@ class Page extends React.Component {
                                                         </td>
                                                         <td className="text-color">{item.firstName}</td>
                                                         <td className="text-color">{item.lastName}</td>
-                                                        <td className="text-color">{item.contactInformation?.email}</td>
-                                                        <td className="text-color">{item.contactInformation?.phone}</td>
-                                                        <td className="text-color">{formatTextToView(item.contactInformation?.address)}</td>
                                                         <td><span className={`text-color ${getDocumentTypeFromList(item.documentTypeId).cssClass}`}>{getDocumentTypeFromList(item.documentTypeId).name}</span></td>
                                                         <td className="text-color">{item.documentNumber}</td>
+                                                        <td className="text-color">{formatTextToView(item.contactInformation?.email)}</td>
+                                                        <td className="text-color">{item.contactInformation?.phone}</td>
                                                         <td><span className={`text-color ${getEmployeeStatusFromList(item.statusId).cssClass}`}>{getEmployeeStatusFromList(item.statusId).name}</span></td>
                                                         <td>
                                                             <Link to={"#"}>
@@ -484,7 +484,7 @@ class Page extends React.Component {
 
                                             {this.state.lastEvaluatedKey && !this.state.loading && !this.state.downloading && this.state.dataFiltered.length > 0 && (<tfoot>
                                                 <tr>
-                                                    <td colSpan={10} style={{ textAlign: 'center', alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
+                                                    <td colSpan={9} style={{ textAlign: 'center', alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}>
                                                         {this.state.loadingMoreData ? (<div className="spinner-border text-primary" role="status">
                                                             <span className="visually-hidden">Loading...</span>
                                                         </div>) : (<Link

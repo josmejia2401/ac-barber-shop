@@ -22,14 +22,13 @@ class App extends React.Component {
       isAuthenticatedValue: false
     };
 
-    this.refreshPage = this.refreshPage.bind(this);
-    this.validateStatus = this.validateStatus.bind(this);
+    this.checkPath = this.checkPath.bind(this);
     this.checkDocumentState = this.checkDocumentState.bind(this);
     this.handleClickOpenNav = this.handleClickOpenNav.bind(this);
   }
 
   componentDidMount() {
-    this.timeoutId = setInterval(() => this.validateStatus(), 1000);
+    this.timeoutId = setInterval(() => this.checkPath(), 500);
     this.checkDocumentState();
   }
 
@@ -38,28 +37,19 @@ class App extends React.Component {
     document.removeEventListener('load', () => this.setState({ preloader: false }));
   }
 
-
-  validateStatus = () => {
-    const auth = isAuthenticated();
-    const currentPathName = window.location.pathname;
-    const { isAuthenticatedValue } = this.state;
-    this.setState({ currentPathName: currentPathName || "" });
-
-    if (isAuthenticatedValue !== auth) {
-      this.setState({ isAuthenticatedValue: auth });
+  checkPath() {
+    const pathname = window.location.pathname;
+    const isAuthenticatedValue = isAuthenticated();
+    // Si el usuario está autenticado y está en /login o /register, redirige a /home
+    if (pathname && isAuthenticatedValue && (pathname.includes('login') || pathname.includes('register'))) {
+      window.location.replace('/employees/employee-management');
     }
-    if (auth === false) {
-      this.refreshPage(currentPathName);
-    }
-  }
-
-  refreshPage = (currentPathName) => {
-    const exists = [currentPathName, window.location.pathname]
-      .filter(p => p.includes("auth"))[0];
-    if (!exists) {
+    // Si el usuario no está autenticado y no está en /login o /register, redirige a /login
+    else if (pathname && !isAuthenticatedValue && !pathname.includes('login') && !pathname.includes('register')) {
       storage.clear();
-      window.location.replace("/");
+      window.location.replace('/auth/login');
     }
+    this.setState({ currentPathName: pathname, isAuthenticatedValue: isAuthenticatedValue });
   }
 
 
@@ -91,7 +81,7 @@ class App extends React.Component {
 
         {this.state.isAuthenticatedValue && <nav className="navbar navbar-expand-lg navbar-light fixed-top shadow-sm" id="mainNav">
           <div className="container px-5">
-            <Link className="navbar-brand fw-bold">AppMa</Link>
+            <Link className="navbar-brand fw-bold">CELESTE</Link>
             <button
               className="navbar-toggler"
               type="button"
@@ -293,7 +283,7 @@ function Inner(props) {
       <Route exact path="/expenses-income/recording--categorizing-income-expenses" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
       <Route exact path="/expenses-income/reconciliation-bank-accounts" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
 
-      <Route path="*" element={<Navigate to={props.isAuthenticated ? "/projects" : "/auth/login"} replace></Navigate>} />
+      <Route path="*" element={<Navigate to={props.isAuthenticated ? "/employees/employee-management" : "/auth/login"} replace></Navigate>} />
     </Routes>
   )
 }
