@@ -2,6 +2,9 @@ import * as React from 'react';
 import "./styles.css";
 import { Link } from 'react-router-dom';
 import CreateComponent from '../components/create';
+import UpdateComponent from '../components/update';
+import DeleteComponent from '../components/delete';
+
 import ButtonIcon from '../../../../components/button-icon';
 import { filterItems } from '../../../../services/employees.service';
 import { formatTextToView } from '../../../../lib/format';
@@ -356,7 +359,7 @@ class Page extends React.Component {
                                                         type="button"
                                                         data-bs-toggle="collapse"
                                                         data-bs-target="#collapseOne"
-                                                        aria-expanded={`${!this.state.accordionSelected ? false : true}`}
+                                                        aria-expanded={!this.state.accordionSelected ? false : true}
                                                         aria-controls="collapseOne"
                                                         onClick={this.handleSetAccordion}>
                                                         Información importante
@@ -507,21 +510,21 @@ class Page extends React.Component {
                         data={this.state.currentItemSelected}
                         handleAfterClosedDialog={this.handleAfterClosedDialog}
                         handleHideDialog={this.handleHideDialog}
-                        screenType={"CREATE"} />}
-                    {this.state.currentDialog === "update" && <CreateComponent
+                    />}
+                    {this.state.currentDialog === "update" && <UpdateComponent
                         navigate={this.props.navigate}
                         location={this.props.location}
                         data={this.state.currentItemSelected}
                         handleAfterClosedDialog={this.handleAfterClosedDialog}
                         handleHideDialog={this.handleHideDialog}
-                        screenType={"UPDATE"} />}
-                    {this.state.currentDialog === "delete" && <CreateComponent
+                    />}
+                    {this.state.currentDialog === "delete" && <DeleteComponent
                         navigate={this.props.navigate}
                         location={this.props.location}
                         data={this.state.currentItemSelected}
                         handleAfterClosedDialog={this.handleAfterClosedDialog}
                         handleHideDialog={this.handleHideDialog}
-                        screenType={"DELETE"} />}
+                    />}
                 </section>
             </div>
         );

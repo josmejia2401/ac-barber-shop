@@ -2,12 +2,12 @@ import * as React from 'react';
 import "./styles.css";
 import ButtonPrimary from '../../../../../components/button-primary';
 import ButtonSecondary from '../../../../../components/button-secondary';
-import { createItem } from '../../../../../services/employees.service';
+import { deleteItemById } from '../../../../../services/employees.service';
 import Validator from '../../../../../lib/validator';
 import InputCustom from '../../../../../components/input';
 import SelectCustom from '../../../../../components/select';
 import LoadingCustom from '../../../../../components/loading';
-import { findValueByKey, transformPayload, updateValueByKey } from '../../../../../lib/payload';
+import { findValueByKey, transformPayload, updateJSON, updateValueByKey } from '../../../../../lib/payload';
 import { validationSchema } from '../../schemas/default';
 import Utils from '../../../../../lib/utils';
 import { GENDERS } from '../../../../../lib/constants/genders.constants';
@@ -43,10 +43,9 @@ class LocalComponent extends React.Component {
     componentDidMount() {
         const { data } = this.props;
         if (data) {
-            this.resetState({
-                data: data,
-                dataLoaded: true,
-            });
+            const origen = transformPayload(validationSchema);
+            const newData = updateJSON(origen, data);
+            this.resetState({ data: newData, dataLoaded: true, isFormValid: true });
         } else {
             this.resetState({ dataLoaded: true });
         }
@@ -115,9 +114,7 @@ class LocalComponent extends React.Component {
             const valueSelected = Array.from(selectedOptions, option => option.value) || value;
             updateValueByKey(data, name, valueSelected);
         } else if (schema) {
-            console.log(name, schema.type === 'number', schema);
-            const newValueWithFormat = (schema.type === 'number') ? Number(value) : value;
-            updateValueByKey(data, name, newValueWithFormat);
+            updateValueByKey(data, name, value);
         }
         this.updateState({ data: data });
         this.validateForm(name);
@@ -128,6 +125,7 @@ class LocalComponent extends React.Component {
     async updateState(payload) {
         this.setState({ ...payload }, () => this.propagateState());
     }
+
 
     async handleSubmit(event) {
         Utils.stopPropagation(event);
@@ -143,13 +141,13 @@ class LocalComponent extends React.Component {
             });
             const newData = { ...data };
             delete newData["checked"];
-            createItem(newData).then(result => {
+            deleteItemById(newData.id).then(result => {
                 this.updateState({
                     processed: true,
-                    processedMessage: "Creado correctamente",
+                    processedMessage: "Eliminado correctamente",
                     processedError: false,
                 });
-                this.props.handleAfterClosedDialog(result.data, 'created');
+                this.props.handleAfterClosedDialog(result.data, 'deleted');
             }).catch(error => {
                 this.updateState({
                     processed: true,
@@ -214,12 +212,11 @@ class LocalComponent extends React.Component {
                     <div className="modal-content">
 
                         <div className="modal-header">
-                            <h4 className="modal-title" id='myModalLabel33'>Crear elemento</h4>
+                            <h4 className="modal-title" id='myModalLabel33'>Eliminar elemento</h4>
                             <button type="button" className="close btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={this.props.handleHideDialog}>
                                 <i data-feather="x" ></i>
                             </button>
                         </div>
-
                         <form className="needs-validation form" onSubmit={this.handleSubmit} ref={this.validationMessageRef} noValidate>
 
                             {this.state.processed && !this.state.processedError && <div className="alert alert-success" role="alert">
@@ -244,7 +241,7 @@ class LocalComponent extends React.Component {
                                                                     schema={validationSchema.firstName}
                                                                     errors={this.state.errors}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                    disabled={true}
                                                                 />
                                                             </div>
 
@@ -254,7 +251,7 @@ class LocalComponent extends React.Component {
                                                                     schema={validationSchema.lastName}
                                                                     errors={this.state.errors}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                    disabled={true}
                                                                 />
                                                             </div>
                                                         </div>
@@ -267,7 +264,7 @@ class LocalComponent extends React.Component {
                                                                     errors={this.state.errors}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                     value={DOCUMENT_TYPES}
-                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                    disabled={true}
                                                                 />
                                                             </div>
                                                             <div className="col-12 col-md-6">
@@ -276,7 +273,7 @@ class LocalComponent extends React.Component {
                                                                     schema={validationSchema.documentNumber}
                                                                     errors={this.state.errors}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                    disabled={true}
                                                                 />
                                                             </div>
                                                         </div>
@@ -290,7 +287,7 @@ class LocalComponent extends React.Component {
                                                                     errors={this.state.errors}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                     value={GENDERS}
-                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                    disabled={true}
                                                                 />
                                                             </div>
                                                             <div className="col-12 col-md-6">
@@ -300,7 +297,7 @@ class LocalComponent extends React.Component {
                                                                     errors={this.state.errors}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                     value={NATIONALITIES}
-                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                    disabled={true}
                                                                 />
                                                             </div>
                                                         </div>
@@ -313,7 +310,7 @@ class LocalComponent extends React.Component {
                                                                     errors={this.state.errors}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                     value={MARITAL_STATUS}
-                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                    disabled={true}
                                                                 />
                                                             </div>
                                                             <div className="col-12 col-md-6">
@@ -323,7 +320,7 @@ class LocalComponent extends React.Component {
                                                                     errors={this.state.errors}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                     value={EMPLOYEE_STATUS}
-                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                    disabled={true}
                                                                 />
                                                             </div>
                                                         </div>
@@ -335,7 +332,7 @@ class LocalComponent extends React.Component {
                                                                     schema={validationSchema.birthdate}
                                                                     errors={this.state.errors}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                    disabled={true}
                                                                 />
                                                             </div>
                                                         </div>
@@ -369,7 +366,7 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.contactInformation.email}
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                     <div className="col-12 col-md-6">
@@ -378,7 +375,7 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.contactInformation.phone}
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                 </div>
@@ -390,7 +387,7 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.contactInformation.address}
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                     <div className="col-12 col-md-6">
@@ -399,7 +396,7 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.contactInformation.corporateEmail}
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                 </div>
@@ -433,7 +430,7 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.employmentInformation.position}
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
 
@@ -443,7 +440,7 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.employmentInformation.department}
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                 </div>
@@ -455,7 +452,7 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.employmentInformation.dateHiring}
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
 
@@ -466,7 +463,7 @@ class LocalComponent extends React.Component {
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                                             value={CONTRACT_TYPES}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                 </div>
@@ -478,7 +475,7 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.employmentInformation.directBoss}
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                 </div>
@@ -490,7 +487,7 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.employmentInformation.salary}
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                     <div className="col-12 col-md-6">
@@ -500,7 +497,7 @@ class LocalComponent extends React.Component {
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                                             value={PAYMENT_TYPE}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                 </div>
@@ -536,7 +533,7 @@ class LocalComponent extends React.Component {
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                                             value={BANKS}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
 
@@ -547,7 +544,7 @@ class LocalComponent extends React.Component {
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                                             value={ACCOUNT_TYPES}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                 </div>
@@ -559,7 +556,7 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.bankingInformation.bankAccountNumber}
                                                                                             errors={this.state.errors}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                 </div>
@@ -593,7 +590,7 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.additionalInformation.description}
                                                                                             handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                                             errors={this.state.errors}
-                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                            disabled={true}
                                                                                         />
                                                                                     </div>
                                                                                 </div>
@@ -619,7 +616,7 @@ class LocalComponent extends React.Component {
                                     loading={this.state.loading}
                                     showText={true}
                                     textLoading={'Procesando...'}
-                                    text={'Crear'}
+                                    text={'Eliminar'}
                                 />
                             </div>
                         </form>

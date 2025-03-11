@@ -368,6 +368,43 @@ export const validationSchema = {
             cols: undefined,
             email: undefined
         },
+        "salary": {
+            name: 'Salario',
+            placeholder: undefined,
+            id: 'salary',
+            type: 'number',
+            required: false,
+            minLength: 0,
+            maxLength: 0,
+            min: 0,
+            max: 999999999999,
+            pattern: undefined,
+            size: undefined,
+            select: true,
+            multiple: undefined,
+            rows: undefined,
+            cols: undefined,
+            email: undefined,
+            step: "any"
+        },
+        "paymentTypeId": {
+            name: 'Tipo de pago',
+            placeholder: undefined,
+            id: 'paymentTypeId',
+            type: 'text',
+            required: false,
+            minLength: 0,
+            maxLength: 5,
+            min: undefined,
+            max: undefined,
+            pattern: undefined,
+            size: undefined,
+            select: true,
+            multiple: undefined,
+            rows: undefined,
+            cols: undefined,
+            email: undefined
+        },
     },
     "bankingInformation": {
         "bankAccountNumber": {

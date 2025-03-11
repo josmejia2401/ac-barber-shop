@@ -2,12 +2,12 @@ import * as React from 'react';
 import "./styles.css";
 import ButtonPrimary from '../../../../../components/button-primary';
 import ButtonSecondary from '../../../../../components/button-secondary';
-import { createItem } from '../../../../../services/employees.service';
+import { updateItemById } from '../../../../../services/employees.service';
 import Validator from '../../../../../lib/validator';
 import InputCustom from '../../../../../components/input';
 import SelectCustom from '../../../../../components/select';
 import LoadingCustom from '../../../../../components/loading';
-import { findValueByKey, transformPayload, updateValueByKey } from '../../../../../lib/payload';
+import { findValueByKey, transformPayload, updateJSON, updateValueByKey } from '../../../../../lib/payload';
 import { validationSchema } from '../../schemas/default';
 import Utils from '../../../../../lib/utils';
 import { GENDERS } from '../../../../../lib/constants/genders.constants';
@@ -43,10 +43,9 @@ class LocalComponent extends React.Component {
     componentDidMount() {
         const { data } = this.props;
         if (data) {
-            this.resetState({
-                data: data,
-                dataLoaded: true,
-            });
+            const origen = transformPayload(validationSchema);
+            const newData = updateJSON(origen, data);
+            this.resetState({ data: newData, dataLoaded: true });
         } else {
             this.resetState({ dataLoaded: true });
         }
@@ -115,8 +114,7 @@ class LocalComponent extends React.Component {
             const valueSelected = Array.from(selectedOptions, option => option.value) || value;
             updateValueByKey(data, name, valueSelected);
         } else if (schema) {
-            console.log(name, schema.type === 'number', schema);
-            const newValueWithFormat = (schema.type === 'number') ? Number(value) : value;
+            const newValueWithFormat = schema.type === 'number' ? Number(value) : value;
             updateValueByKey(data, name, newValueWithFormat);
         }
         this.updateState({ data: data });
@@ -143,13 +141,13 @@ class LocalComponent extends React.Component {
             });
             const newData = { ...data };
             delete newData["checked"];
-            createItem(newData).then(result => {
+            updateItemById(newData.id, newData).then(result => {
                 this.updateState({
                     processed: true,
-                    processedMessage: "Creado correctamente",
+                    processedMessage: "Actualizado correctamente",
                     processedError: false,
                 });
-                this.props.handleAfterClosedDialog(result.data, 'created');
+                this.props.handleAfterClosedDialog(result.data, 'updated');
             }).catch(error => {
                 this.updateState({
                     processed: true,
@@ -212,24 +210,19 @@ class LocalComponent extends React.Component {
                 {this.state.loading && <LoadingCustom />}
                 <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
                     <div className="modal-content">
-
                         <div className="modal-header">
-                            <h4 className="modal-title" id='myModalLabel33'>Crear elemento</h4>
+                            <h4 className="modal-title" id='myModalLabel33'>Modificar elemento</h4>
                             <button type="button" className="close btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={this.props.handleHideDialog}>
                                 <i data-feather="x" ></i>
                             </button>
                         </div>
-
                         <form className="needs-validation form" onSubmit={this.handleSubmit} ref={this.validationMessageRef} noValidate>
-
                             {this.state.processed && !this.state.processedError && <div className="alert alert-success" role="alert">
                                 <p className='p-error'>{this.state.processedMessage}</p>
                             </div>}
-
                             {this.state.processed && this.state.processedError && <div className="alert alert-danger" role="alert">
                                 <p className='p-error'>{this.state.processedMessage}</p>
                             </div>}
-
                             <div className="modal-body">
                                 <section id="multiple-column-form">
                                     <div className="row match-height">
@@ -247,7 +240,6 @@ class LocalComponent extends React.Component {
                                                                     disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
-
                                                             <div className="col-12 col-md-6">
                                                                 <InputCustom
                                                                     data={this.state.data.lastName}
@@ -258,7 +250,6 @@ class LocalComponent extends React.Component {
                                                                 />
                                                             </div>
                                                         </div>
-
                                                         <div className="row mb-2">
                                                             <div className="col-12 col-md-6">
                                                                 <SelectCustom
@@ -280,8 +271,6 @@ class LocalComponent extends React.Component {
                                                                 />
                                                             </div>
                                                         </div>
-
-
                                                         <div className="row mb-2">
                                                             <div className="col-12 col-md-6">
                                                                 <SelectCustom
@@ -304,7 +293,6 @@ class LocalComponent extends React.Component {
                                                                 />
                                                             </div>
                                                         </div>
-
                                                         <div className="row mb-2">
                                                             <div className="col-12 col-md-6">
                                                                 <SelectCustom
@@ -327,7 +315,6 @@ class LocalComponent extends React.Component {
                                                                 />
                                                             </div>
                                                         </div>
-
                                                         <div className="row mb-2">
                                                             <div className="col-12 col-md-6">
                                                                 <InputCustom
@@ -339,7 +326,6 @@ class LocalComponent extends React.Component {
                                                                 />
                                                             </div>
                                                         </div>
-
                                                         <div className="row mb-4">
                                                             <div className="col-12 col-md-12">
                                                                 <div className="accordion" id="accordionExample">
@@ -382,7 +368,6 @@ class LocalComponent extends React.Component {
                                                                                         />
                                                                                     </div>
                                                                                 </div>
-
                                                                                 <div className="row mb-2">
                                                                                     <div className="col-12 col-md-6">
                                                                                         <InputCustom
@@ -406,7 +391,6 @@ class LocalComponent extends React.Component {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-
                                                                     <div className="accordion-item">
                                                                         <h2 className="accordion-header">
                                                                             <button
@@ -436,7 +420,6 @@ class LocalComponent extends React.Component {
                                                                                             disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                                         />
                                                                                     </div>
-
                                                                                     <div className="col-12 col-md-6">
                                                                                         <InputCustom
                                                                                             data={this.state.data.employmentInformation.department}
@@ -447,7 +430,6 @@ class LocalComponent extends React.Component {
                                                                                         />
                                                                                     </div>
                                                                                 </div>
-
                                                                                 <div className="row mb-2">
                                                                                     <div className="col-12 col-md-6">
                                                                                         <InputCustom
@@ -458,7 +440,6 @@ class LocalComponent extends React.Component {
                                                                                             disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                                         />
                                                                                     </div>
-
                                                                                     <div className="col-12 col-md-6">
                                                                                         <SelectCustom
                                                                                             data={this.state.data.employmentInformation.typeContractId}
@@ -470,7 +451,6 @@ class LocalComponent extends React.Component {
                                                                                         />
                                                                                     </div>
                                                                                 </div>
-
                                                                                 <div className="row mb-2">
                                                                                     <div className="col-12 col-md-6">
                                                                                         <InputCustom
@@ -482,7 +462,6 @@ class LocalComponent extends React.Component {
                                                                                         />
                                                                                     </div>
                                                                                 </div>
-
                                                                                 <div className="row mb-2">
                                                                                     <div className="col-12 col-md-6">
                                                                                         <InputCustom
@@ -504,11 +483,9 @@ class LocalComponent extends React.Component {
                                                                                         />
                                                                                     </div>
                                                                                 </div>
-
                                                                             </div>
                                                                         </div>
                                                                     </div>
-
                                                                     <div className="accordion-item">
                                                                         <h2 className="accordion-header">
                                                                             <button
@@ -551,7 +528,6 @@ class LocalComponent extends React.Component {
                                                                                         />
                                                                                     </div>
                                                                                 </div>
-
                                                                                 <div className="row mb-2">
                                                                                     <div className="col-12 col-md-6">
                                                                                         <InputCustom
@@ -566,7 +542,6 @@ class LocalComponent extends React.Component {
                                                                             </div>
                                                                         </div>
                                                                     </div>
-
                                                                     <div className="accordion-item">
                                                                         <h2 className="accordion-header">
                                                                             <button
@@ -619,7 +594,7 @@ class LocalComponent extends React.Component {
                                     loading={this.state.loading}
                                     showText={true}
                                     textLoading={'Procesando...'}
-                                    text={'Crear'}
+                                    text={'Modificar'}
                                 />
                             </div>
                         </form>

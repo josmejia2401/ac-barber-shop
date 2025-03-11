@@ -31,8 +31,13 @@ export function findValueByKey(payload, llave) {
 
 export function transformPayload(payload) {
     function replaceEmptyObjects(obj) {
+        const keysToSkip = ['id', 'placeholder', 'type', 'required'];
         if (obj && typeof obj === 'object' && (Object.keys(obj).length === 0 || obj.required !== undefined)) {
-            return "";
+            for (const objKey of Object.keys(obj)) {
+                if (keysToSkip.includes(objKey)) {
+                    return obj.type === 'number' ? 0 : "";
+                }
+            }
         }
         if (obj && typeof obj === 'object') {
             return Object.fromEntries(
@@ -74,4 +79,18 @@ export function updateValueByKey(payload, llave, nuevoValor) {
     }
     // Si no se encontró la llave, retorna false
     return false;
+}
+
+export function updateJSON(destino, origen) {
+    for (let key in origen) {
+        // Si el valor es un objeto y existe en el destino, actualiza recursivamente
+        if (origen[key] && typeof origen[key] === 'object' && !Array.isArray(origen[key])) {
+            if (!destino[key]) destino[key] = {}; // Si no existe, crea el objeto
+            updateJSON(destino[key], origen[key]);
+        } else {
+            // Si no es un objeto, copia el valor directamente
+            destino[key] = origen[key];
+        }
+    }
+    return destino;
 }

@@ -38,6 +38,7 @@ class InputCustom extends React.Component {
                 autoComplete='off'
                 className="form-control"
                 required={this.props.schema.required}
+                step={this.props.schema.step}
             />
             <div
                 className="invalid-feedback"
