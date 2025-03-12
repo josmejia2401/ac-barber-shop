@@ -10,5 +10,11 @@ export default Object.freeze({
         delete: `/dev/api/v1/employees/:id`,
         update: `/dev/api/v1/employees/:id`,
         filter: `/dev/api/v1/employees`
+    },
+    customers: {
+        create: `/dev/api/v1/customers`,
+        delete: `/dev/api/v1/customers/:id`,
+        update: `/dev/api/v1/customers/:id`,
+        filter: `/dev/api/v1/customers`
     }
 });

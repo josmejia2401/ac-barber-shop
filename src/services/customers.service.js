@@ -1,63 +1,16 @@
 import { axiosInstance } from './fetch.service.js'
 import api from './api.constants';
 import { buildAndThrowNewError, buildDefaultHeaders } from '../lib/auth.js';
-import DateUtil from '../lib/date.js';
 
 export const createItem = async (payload) => {
     try {
-        return new Promise((resolveOuter) => {
-            setTimeout(() => {
-                resolveOuter({
-                    code: 200,
-                    message: 'Successful operation',
-                    lastEvaluatedKey: undefined,
-                    data: {
-                        "id": 12345,
-                        "firstName": "Juan",
-                        "lastName": "Pérez",
-                        "email": "juan.perez@example.com",
-                        "phone": "+573105397699",
-                        "address": "Av. Siempre Viva 123, Ciudad, País",
-                        "birthdate": DateUtil.currentDateToFormat3(),
-                        "tags": ["envíos rápidos", "descuentos exclusivos"],
-                        "createdAt": DateUtil.currentDateToISO(),
-                        "status": 1,
-                        "purchaseHistory": [],
-                        "associatedCampaigns": [],
-                        "documentType": 1,
-                        "documentNumber": "123456"
-                    }
-                });
-            }, 2000);
+        const authHeaders = buildDefaultHeaders();
+        const res = await axiosInstance.post(`${api.customers.create}`, payload, {
+            headers: {
+                ...authHeaders
+            },
         });
-    } catch (error) {
-        console.error(error);
-        buildAndThrowNewError(error);
-    }
-}
-
-export const findItemById = async (id) => {
-    try {
-        return new Promise((resolveOuter) => {
-            resolveOuter({
-                code: 200,
-                message: 'Successful operation',
-                lastEvaluatedKey: undefined,
-                data: {
-                    "id": id,
-                    "firstName": "Juan",
-                    "lastName": "Pérez",
-                    "email": "juan.perez@example.com",
-                    "phone": "+573105397699",
-                    "address": "Av. Siempre Viva 123, Ciudad, País",
-                    "birthdate": DateUtil.currentDateToFormat3(),
-                    "tags": ["envíos rápidos", "descuentos exclusivos"],
-                    "createdAt": DateUtil.currentDateToISO(),
-                    "status": 1,
-                    "purchaseHistory": []
-                }
-            });
-        });
+        return res.data;
     } catch (error) {
         console.error(error);
         buildAndThrowNewError(error);
@@ -66,146 +19,47 @@ export const findItemById = async (id) => {
 
 export const filterItems = async (payload) => {
     try {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve({
-                    code: 200,
-                    message: 'Successful operation',
-                    lastEvaluatedKey: { id: 1 },
-                    data: [
-                        {
-                            "id": 12345,
-                            "firstName": "Juan",
-                            "lastName": "Pérez",
-                            "email": "juan.perez@example.com",
-                            "phone": "+573105397699",
-                            "address": "Av. Siempre Viva 123, Ciudad, País",
-                            "birthdate": DateUtil.currentDateToFormat3(),
-                            "tags": ["envíos rápidos", "descuentos exclusivos"],
-                            "createdAt": DateUtil.currentDateToISO(),
-                            "status": 1,
-                            "purchaseHistory": [
-                                {
-                                    "transactionId": 123456,
-                                    "date": DateUtil.currentDateToISO(),
-                                    "amount": 1200,
-                                    "items": [
-                                        {
-                                            "id": 123456,
-                                            "name": "Laptop Lenovo T14",
-                                            "reference": "20W1S2YY2P",
-                                            "stock": 70,
-                                            "price": 1200,
-                                            "category": {
-                                                "id": 1,
-                                                "name": "Electrónica"
-                                            },
-                                            "stockLocation": {
-                                                "id": 1,
-                                                "name": "Bodega principal"
-                                            },
-                                            "description": "I7 11th+16GB+SSD256GB"
-                                        },
-                                        {
-                                            "id": 123456,
-                                            "name": "Smartphone Samsung Galaxy",
-                                            "reference": "20W1S2YY2P",
-                                            "stock": 70,
-                                            "price": 1200,
-                                            "category": {
-                                                "id": 1,
-                                                "name": "Electrónica"
-                                            },
-                                            "stockLocation": {
-                                                "id": 1,
-                                                "name": "Bodega principal"
-                                            },
-                                            "description": "I7 11th+16GB+SSD256GB"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "id": 123456,
-                            "firstName": "Juanx",
-                            "lastName": "Mejia",
-                            "email": "juan.perez@example.com",
-                            "phone": "+573105397699",
-                            "address": "Av. Siempre Viva 123, Ciudad, País",
-                            "birthdate": DateUtil.currentDateToFormat3(),
-                            "tags": ["envíos rápidos", "descuentos exclusivos"],
-                            "createdAt": DateUtil.currentDateToISO(),
-                            "purchaseHistory": [],
-                            "status": 1,
-                        }
-                    ]
-                })
-            }, 2000)
+        const urlParameters = payload && Object.keys(payload).length !== 0 ? `?${Object.entries(payload).map(e => e.join('=')).join('&')}` : '';
+        const authHeaders = buildDefaultHeaders();
+        const res = await axiosInstance.get(`${api.customers.filter}${urlParameters}`, {
+            headers: {
+                ...authHeaders
+            },
         });
+        const data = res.data;
+        return data;
     } catch (error) {
         console.error(error);
         buildAndThrowNewError(error);
     }
 }
-
 
 export const updateItemById = async (id, payload) => {
     try {
-        return new Promise((resolveOuter) => {
-            setTimeout(() => {
-                resolveOuter({
-                    code: 200,
-                    message: 'Successful operation',
-                    lastEvaluatedKey: undefined,
-                    data: {
-                        "id": 12345,
-                        "firstName": "Juan",
-                        "lastName": "Pérez",
-                        "email": "juan.perez@example.com",
-                        "phone": "+573105397699",
-                        "address": "Av. Siempre Viva 123, Ciudad, País",
-                        "birthdate": DateUtil.currentDateToFormat3(),
-                        "tags": ["envíos rápidos", "descuentos exclusivos"],
-                        "createdAt": DateUtil.currentDateToISO(),
-                        "status": 1,
-                        "purchaseHistory": []
-                    }
-                });
-            }, 2000);
+        const authHeaders = buildDefaultHeaders();
+        const res = await axiosInstance.put(`${api.customers.update.replace(":id", id)}`, payload, {
+            headers: {
+                ...authHeaders
+            },
         });
+        const data = res.data;
+        return data;
     } catch (error) {
         console.error(error);
         buildAndThrowNewError(error);
     }
 }
 
-
 export const deleteItemById = async (id) => {
     try {
-        return new Promise((resolveOuter) => {
-
-            setTimeout(() => {
-                resolveOuter({
-                    code: 200,
-                    message: 'Successful operation',
-                    lastEvaluatedKey: undefined,
-                    data: {
-                        "id": 12345,
-                        "firstName": "Juan",
-                        "lastName": "Pérez",
-                        "email": "juan.perez@example.com",
-                        "phone": "+573105397699",
-                        "address": "Av. Siempre Viva 123, Ciudad, País",
-                        "birthdate": DateUtil.currentDateToFormat3(),
-                        "tags": ["envíos rápidos", "descuentos exclusivos"],
-                        "createdAt": DateUtil.currentDateToISO(),
-                        "status": 1,
-                        "purchaseHistory": []
-                    }
-                });
-            }, 2000);
+        const authHeaders = buildDefaultHeaders();
+        const res = await axiosInstance.delete(`${api.customers.delete.replace(":id", id)}`, {
+            headers: {
+                ...authHeaders
+            },
         });
+        const data = res.data;
+        return data;
     } catch (error) {
         console.error(error);
         buildAndThrowNewError(error);

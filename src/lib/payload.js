@@ -35,7 +35,13 @@ export function transformPayload(payload) {
         if (obj && typeof obj === 'object' && (Object.keys(obj).length === 0 || obj.required !== undefined)) {
             for (const objKey of Object.keys(obj)) {
                 if (keysToSkip.includes(objKey)) {
-                    return obj.type === 'number' ? 0 : "";
+                    let newValue = "";
+                    if (obj.isArray === true) {
+                        newValue = [];
+                    } else if (obj.type === 'number' ) {
+                        newValue = 0;
+                    }
+                    return newValue;
                 }
             }
         }

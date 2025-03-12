@@ -9,6 +9,8 @@ import AuthLoginView from '../src/views/auth/login';
 import AuthRegisterView from '../src/views/auth/register';
 
 import EmployeesManagementView from '../src/views/employees/management/view';
+import CustomersManagementView from '../src/views/customers/management/view';
+
 import InventaryManagementView from '../src/views/inventory/management/view';
 
 
@@ -262,7 +264,7 @@ function Inner(props) {
       <Route exact path="/auth/login" element={<AuthLoginView {...props} location={useLocation()} navigate={useNavigate()}></AuthLoginView>} />
       <Route exact path="/auth/register" element={<AuthRegisterView {...props} location={useLocation()} navigate={useNavigate()}></AuthRegisterView>} />
 
-      <Route exact path="/customers/customer-management" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
+      <Route exact path="/customers/customer-management" element={<CustomersManagementView {...props} location={useLocation()} navigate={useNavigate()}></CustomersManagementView>} />
       <Route exact path="/customers/interaction-preference-tracking" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
       <Route exact path="/customers/transaction-history" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
       <Route exact path="/customers/marketing-automation-customer-segmentation" element={<EmployeesManagementView {...props} location={useLocation()} navigate={useNavigate()}></EmployeesManagementView>} />
