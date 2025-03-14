@@ -33,8 +33,6 @@ class LocalComponent extends React.Component {
         this.propagateState = this.propagateState.bind(this);
         this.updateState = this.updateState.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectedTags = this.handleSelectedTags.bind(this);
-        this.handleSelectedAssociatedCampaigns = this.handleSelectedAssociatedCampaigns.bind(this);
         this.handleSetAccordion = this.handleSetAccordion.bind(this);
         this.handleScrollToTop = this.handleScrollToTop.bind(this);
         this.validationMessageRef = React.createRef(null);
@@ -162,20 +160,6 @@ class LocalComponent extends React.Component {
             });
         }
         form.classList.add('was-validated');
-    }
-
-    async handleSelectedTags(event, tags) {
-        Utils.stopPropagation(event);
-        const data = this.state.data;
-        data.tags.value = tags;
-        this.updateState({ data: data });
-    }
-
-    async handleSelectedAssociatedCampaigns(event, tags) {
-        Utils.stopPropagation(event);
-        const data = this.state.data;
-        data.associatedCampaigns.value = tags;
-        this.updateState({ data: data });
     }
 
     async handleSetAccordion(event) {

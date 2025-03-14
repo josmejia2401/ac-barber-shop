@@ -118,7 +118,7 @@ class App extends React.Component {
                     </Link>
                     <ul className="dropdown-menu hide">
                       <li>
-                        <Link className="dropdown-item" to="#">
+                        <Link className="dropdown-item" to="/employees/employee-management">
                           <span className="d-flex align-items-center">
                             <i className="fa-solid fa-people-roof me-2"></i>
                             <span className="small">Gestión de Empleados</span>
@@ -139,7 +139,7 @@ class App extends React.Component {
                     </Link>
                     <ul className="dropdown-menu hide">
                       <li>
-                        <Link className="dropdown-item" to="#">
+                        <Link className="dropdown-item" to="/customers/customer-management">
                           <span className="d-flex align-items-center">
                             <i className="fa-solid fa-people-roof me-2"></i>
                             <span className="small">Gestión de Clientes</span>

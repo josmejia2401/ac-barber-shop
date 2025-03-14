@@ -148,7 +148,7 @@ class LocalComponent extends React.Component {
             deleteItemById(newData.id).then(result => {
                 this.updateState({
                     processed: true,
-                    processedMessage: "Actualizado correctamente",
+                    processedMessage: "Eliminado correctamente",
                     processedError: false,
                 });
                 this.props.handleAfterClosedDialog(result.data, 'updated');
