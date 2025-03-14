@@ -4,13 +4,14 @@ const TagsInput = props => {
     const [value, setValue] = React.useState(props.value);
     const removeTags = (event, indexToRemove) => {
         setValue([...value.filter((_, index) => index !== indexToRemove)]);
-        if (props.selectedTags) {
+        if (props.handleSetChangeInputEvent) {
             event.target.value = [...value.filter((_, index) => index !== indexToRemove)];
-            props.selectedTags(event);
+            props.handleSetChangeInputEvent(event);
         }
     };
     const keyUp = (event) => {
-        if (event.key === "Tab") {
+        
+        if (event.key === "Tab" || event.key === ",") {
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -21,9 +22,9 @@ const TagsInput = props => {
             if (event.target.value !== "") {
                 const newValue = [...value, event.target.value];
                 setValue(newValue);
-                if (props.selectedTags) {
+                if (props.handleSetChangeInputEvent) {
                     event.target.value = newValue;
-                    props.selectedTags(event);
+                    props.handleSetChangeInputEvent(event);
                 }
                 event.target.value = "";
             }

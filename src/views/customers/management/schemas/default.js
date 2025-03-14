@@ -42,7 +42,7 @@ export const validationSchema = {
         placeholder: '',
         id: 'lastName',
         type: 'text',
-        required: true,
+        required: false,
         minLength: 1,
         maxLength: 100,
         min: undefined,
@@ -278,10 +278,10 @@ export const validationSchema = {
         }
     },
     "preferences": {
-        "communicationChannel": {
+        "communicationChannels": {
             name: 'Canal de comunicación preferido',
             placeholder: undefined,
-            id: 'bankAccountNumber',
+            id: 'communicationChannels',
             type: 'text',
             required: false,
             minLength: 0,
@@ -290,29 +290,12 @@ export const validationSchema = {
             max: undefined,
             pattern: undefined,
             size: undefined,
-            select: undefined,
-            multiple: undefined,
-            rows: undefined,
-            cols: undefined,
-            email: undefined
-        },
-        "acceptPromotions": {
-            name: 'Acepta envío de promociones',
-            placeholder: undefined,
-            id: 'acceptPromotions',
-            type: 'text',
-            required: false,
-            minLength: 0,
-            maxLength: 5,
-            min: undefined,
-            max: undefined,
-            pattern: undefined,
-            size: undefined,
             select: true,
             multiple: undefined,
             rows: undefined,
             cols: undefined,
-            email: undefined
+            email: undefined,
+            isArray: true
         },
         "favoriteCategories": {
             name: 'Categorías favoritas',
@@ -321,7 +304,7 @@ export const validationSchema = {
             type: 'text',
             required: false,
             minLength: 0,
-            maxLength: 5,
+            maxLength: 100,
             min: undefined,
             max: undefined,
             pattern: undefined,
@@ -330,7 +313,8 @@ export const validationSchema = {
             multiple: undefined,
             rows: undefined,
             cols: undefined,
-            email: undefined
+            email: undefined,
+            isArray: true
         },
     },
     "additionalInformation": {

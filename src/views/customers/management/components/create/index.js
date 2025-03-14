@@ -2,7 +2,7 @@ import * as React from 'react';
 import "./styles.css";
 import ButtonPrimary from '../../../../../components/button-primary';
 import ButtonSecondary from '../../../../../components/button-secondary';
-import { createItem } from '../../../../../services/employees.service';
+import { createItem } from '../../../../../services/customers.service';
 import Validator from '../../../../../lib/validator';
 import InputCustom from '../../../../../components/input';
 import SelectCustom from '../../../../../components/select';
@@ -12,16 +12,13 @@ import { validationSchema } from '../../schemas/default';
 import Utils from '../../../../../lib/utils';
 import { GENDERS } from '../../../../../lib/constants/genders.constants';
 import { NATIONALITIES } from '../../../../../lib/constants/nationalities.constants';
-import { MARITAL_STATUS } from '../../../../../lib/constants/marital_status.constants';
 import { DOCUMENT_TYPES } from '../../../../../lib/constants/document_types.constants';
-import { EMPLOYEE_STATUS } from '../../../../../lib/constants/employee_status.constants';
-import { CONTRACT_TYPES } from '../../../../../lib/constants/contract_types.constants';
-import { BANKS } from '../../../../../lib/constants/banks.constants';
-import { ACCOUNT_TYPES } from '../../../../../lib/constants/account_types.constants';
 import TextAreaCustom from '../../../../../components/textarea';
-import { PAYMENT_TYPE } from '../../../../../lib/constants/payment_type.constants';
 import { CUSTOMERS_TYPE } from '../../../../../lib/constants/customers_type.constants';
 import TagsInput from '../../../../../components/tags';
+import SelectCheckboxCustom from '../../../../../components/select-checkbox';
+import { COMMUNICATION_CHANNEL } from '../../../../../lib/constants/communication_channel.constants';
+import { CUSTOMERS_STATUS } from '../../../../../lib/constants/customers_status_with_descriptions.constants';
 
 class LocalComponent extends React.Component {
 
@@ -35,7 +32,6 @@ class LocalComponent extends React.Component {
         this.propagateState = this.propagateState.bind(this);
         this.updateState = this.updateState.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSelectedAssociatedCampaigns = this.handleSelectedAssociatedCampaigns.bind(this);
         this.handleSetAccordion = this.handleSetAccordion.bind(this);
         this.handleScrollToTop = this.handleScrollToTop.bind(this);
         this.validationMessageRef = React.createRef(null);
@@ -110,20 +106,22 @@ class LocalComponent extends React.Component {
     async handleSetChangeInputEvent(event) {
         Utils.stopPropagation(event);
         const { name, value, selectedOptions } = event.target;
-        console.log(name, value);
         const { data } = this.state;
         const schema = findValueByKey(validationSchema, name);
         if (schema && schema.select && schema.multiple) {
             const valueSelected = Array.from(selectedOptions, option => option.value) || value;
             updateValueByKey(data, name, valueSelected);
         } else if (schema) {
-            console.log(name, schema.type === 'number', schema);
-            const newValueWithFormat = (schema.type === 'number') ? Number(value) : value;
-            updateValueByKey(data, name, newValueWithFormat);
+            let newValue = value;
+            if (schema.isArray === true) {
+                newValue = value.split(",");
+            } else if (schema.type === 'number') {
+                newValue = Number(value);
+            }
+            updateValueByKey(data, name, newValue);
         }
         this.updateState({ data: data });
         this.validateForm(name);
-        console.log("data", data);
     }
 
     async propagateState() { }
@@ -165,13 +163,6 @@ class LocalComponent extends React.Component {
             });
         }
         form.classList.add('was-validated');
-    }
-
-    async handleSelectedAssociatedCampaigns(event, tags) {
-        Utils.stopPropagation(event);
-        const data = this.state.data;
-        data.associatedCampaigns.value = tags;
-        this.updateState({ data: data });
     }
 
     async handleSetAccordion(event) {
@@ -308,7 +299,7 @@ class LocalComponent extends React.Component {
                                                                     schema={validationSchema.statusId}
                                                                     errors={this.state.errors}
                                                                     handleSetChangeInputEvent={this.handleSetChangeInputEvent}
-                                                                    value={EMPLOYEE_STATUS}
+                                                                    value={CUSTOMERS_STATUS}
                                                                     disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                 />
                                                             </div>
@@ -411,7 +402,7 @@ class LocalComponent extends React.Component {
                                                                                             value={CUSTOMERS_TYPE}
                                                                                             disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                                         />
-                                                                                        <small className="form-text text-muted">Para segmentar al cliente por tipo.</small>
+                                                                                        <small className="form-text text-muted">Para segmentar al cliente por tipo</small>
                                                                                     </div>
                                                                                     <div className="col-12 col-md-6">
                                                                                         <TagsInput
@@ -419,6 +410,53 @@ class LocalComponent extends React.Component {
                                                                                             schema={validationSchema.segmentationAndTags.customerTags}
                                                                                             errors={this.state.errors}
                                                                                             selectedTags={this.handleSetChangeInputEvent}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                        />
+                                                                                        <small className="form-text text-muted">Presiona TAB o COMA(,) para agregar</small>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                    <div className="accordion-item">
+                                                                        <h2 className="accordion-header">
+                                                                            <button
+                                                                                id="preferences"
+                                                                                name="preferences"
+                                                                                className={`accordion-button ${this.state.accordionSelected !== "preferences" ? 'collapsed' : ''}`}
+                                                                                type="button"
+                                                                                data-bs-toggle="collapse"
+                                                                                data-bs-target="#collapseOne"
+                                                                                aria-expanded={this.state.accordionSelected !== "preferences" ? false : true}
+                                                                                aria-controls="collapseOne"
+                                                                                onClick={this.handleSetAccordion}>
+                                                                                Información de canal de comunicación
+                                                                            </button>
+                                                                        </h2>
+                                                                        <div id="collapseOne"
+                                                                            className={`accordion-collapse collapse ${this.state.accordionSelected === "preferences" ? 'show' : ''}`}
+                                                                            data-bs-parent="#accordionExample">
+                                                                            <div className="accordion-body">
+                                                                                <div className="row mb-2">
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <TagsInput
+                                                                                            value={this.state.data.preferences.favoriteCategories}
+                                                                                            schema={validationSchema.preferences.favoriteCategories}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
+                                                                                            disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
+                                                                                        />
+                                                                                        <small className="form-text text-muted">Presiona TAB o COMA(,) para agregar</small>
+                                                                                    </div>
+                                                                                    <div className="col-12 col-md-6">
+                                                                                        <SelectCheckboxCustom
+                                                                                            value={this.state.data.preferences.communicationChannels}
+                                                                                            data={COMMUNICATION_CHANNEL}
+                                                                                            schema={validationSchema.preferences.communicationChannels}
+                                                                                            errors={this.state.errors}
+                                                                                            handleSetChangeInputEvent={this.handleSetChangeInputEvent}
                                                                                             disabled={this.state.loading || (this.state.processed && !this.state.processedError)}
                                                                                         />
                                                                                     </div>

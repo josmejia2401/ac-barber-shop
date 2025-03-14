@@ -18,6 +18,9 @@ import { getMaritalStatusFromList } from '../../../../lib/constants/marital_stat
 import { getBankFromList } from '../../../../lib/constants/banks.constants';
 import { getAccountTypeFromList } from '../../../../lib/constants/account_types.constants';
 import DateUtil from '../../../../lib/date';
+import { getCustomersStatusFromList } from '../../../../lib/constants/customers_status_with_descriptions.constants';
+import { getCustomerTypesFromList } from '../../../../lib/constants/contract_types.constants';
+import { getCustomerTypeFromList } from '../../../../lib/constants/customers_type.constants';
 
 class Page extends React.Component {
 
@@ -386,58 +389,62 @@ class Page extends React.Component {
                                     <div className="album py-5 bg-body-tertiary">
                                         <div className="container">
                                             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
-                                                <div className="col">
-                                                    <div className="text-center card-box card shadow-sm">
-                                                        <div className="member-card pt-2 pb-2">
-                                                            <div className="thumb-lg member-thumb mx-auto"><img src="https://bootdey.com/img/Content/avatar/avatar2.png" className="rounded-circle img-thumbnail" alt="profile-image" /></div>
-                                                            <div className="">
-                                                                <h4>Freddie J. Plourde</h4>
-                                                                <p className="text-muted">@Founder <span>| </span><span><a href="#" className="text-pink">ACTIVO</a></span></p>
-                                                            </div>
-                                                            <ul className="social-links list-inline">
-                                                                <li className="list-inline-item">
-                                                                    <Link title="" data-placement="top" data-toggle="tooltip" className="tooltips" href="" data-original-title="Historial de facturación">
-                                                                        <i className="fa-solid fa-money-bill-trend-up"></i>
-                                                                    </Link>
-                                                                </li>
-                                                                <li className="list-inline-item">
-                                                                    <Link title="" data-placement="top" data-toggle="tooltip" className="tooltips" href="" data-original-title="Twitter">
-                                                                        <i className="fa-brands fa-x-twitter"></i>
-                                                                    </Link>
-                                                                </li>
-                                                                <li className="list-inline-item">
-                                                                    <Link title="" data-placement="top" data-toggle="tooltip" className="tooltips" href="" data-original-title="Skype">
-                                                                        <i className="fa-brands fa-instagram"></i>
-                                                                    </Link>
-                                                                </li>
-                                                            </ul>
-                                                            <div className="divider"><hr /></div>
-                                                            <div className="row">
-                                                                <div className="col-6">
-                                                                    <div className="mt-1">
-                                                                        <h4 style={{ marginBottom: '0px' }}>6952</h4>
-                                                                        <p className="mb-0 text-muted">Ingresos</p>
+                                                {this.state.dataFiltered.map((item, index) => {
+                                                    return (<div className="col">
+                                                        <div className="text-center card-box card shadow-sm">
+                                                            <div className="member-card pt-2 pb-2">
+                                                                <div className="thumb-lg member-thumb mx-auto"><img src="https://bootdey.com/img/Content/avatar/avatar2.png" className="rounded-circle img-thumbnail" alt="profile-image" /></div>
+                                                                <div className="">
+                                                                    <h4>{item.firstName}</h4>
+                                                                    <p className="text-muted">{getCustomerTypeFromList(item.segmentationAndTags.customerTypeId).name} <span>| </span><span><a href="#" className={getCustomersStatusFromList(item.statusId).cssClass}>{getCustomersStatusFromList(item.statusId).name}</a></span></p>
+                                                                </div>
+                                                                <ul className="social-links list-inline"> 
+                                                                    <li className="list-inline-item">
+                                                                        <Link title="" data-placement="top" data-toggle="tooltip" className="tooltips" href="" data-original-title="Historial de facturación">
+                                                                            <i className="fa-solid fa-money-bill-trend-up"></i>
+                                                                        </Link>
+                                                                    </li>
+                                                                    <li className="list-inline-item">
+                                                                        <Link title="" data-placement="top" data-toggle="tooltip" className="tooltips" href="" data-original-title="Twitter">
+                                                                            <i className="fa-brands fa-x-twitter"></i>
+                                                                        </Link>
+                                                                    </li>
+                                                                    <li className="list-inline-item">
+                                                                        <Link title="" data-placement="top" data-toggle="tooltip" className="tooltips" href="" data-original-title="Skype">
+                                                                            <i className="fa-brands fa-instagram"></i>
+                                                                        </Link>
+                                                                    </li>
+                                                                </ul>
+                                                                <div className="divider"><hr /></div>
+                                                                {/*
+                                                                <div className="row">
+                                                                    <div className="col-6">
+                                                                        <div className="mt-1">
+                                                                            <h4 style={{ marginBottom: '0px' }}>6952</h4>
+                                                                            <p className="mb-0 text-muted">Ingresos</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="col-6">
+                                                                        <div className="mt-1">
+                                                                            <h4>1125</h4>
+                                                                            <p className="mb-0 text-muted">Total trans.</p>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                                <div className="col-6">
-                                                                    <div className="mt-1">
-                                                                        <h4>1125</h4>
-                                                                        <p className="mb-0 text-muted">Total trans.</p>
+                                                                */}
+                                                                <div className="d-flex justify-content-between align-items-center mt-4">
+                                                                    <div className="btn-group">
+                                                                        <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => this.handleShowDialog('update', item)}>Editar</button>
+                                                                        <button type="button" className="btn btn-sm btn-outline-secondary" onClick={() => this.handleShowDialog('delete', item)}>Eliminar</button>
                                                                     </div>
+                                                                    <small className="text-body-secondary">{DateUtil.elapsedTime(item.createdAt)}</small>
                                                                 </div>
-                                                            </div>
-                                                            <div className="d-flex justify-content-between align-items-center mt-4">
-                                                                <div className="btn-group">
-                                                                    <button type="button" className="btn btn-sm btn-outline-secondary">Ver</button>
-                                                                    <button type="button" className="btn btn-sm btn-outline-secondary">Editar</button>
-                                                                    <button type="button" className="btn btn-sm btn-outline-secondary">Eliminar</button>
-                                                                </div>
-                                                                <small className="text-body-secondary">{DateUtil.elapsedTime(new Date().toISOString())}</small>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col">
+                                                    </div>);
+                                                })}
+
+                                                {/*<div className="col">
                                                     <div className="card shadow-sm">
                                                         <svg className="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c" /><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
                                                         <div className="card-body">
@@ -558,7 +565,7 @@ class Page extends React.Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div>*/}
                                             </div>
                                         </div>
                                     </div>
